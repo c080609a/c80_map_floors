@@ -4,18 +4,18 @@
   var MAP_HEIGHT = <%= mapheight %>;
 </script>
 
-<div class="container" id="container_left_side">
+<!--<div class="container" id="container_left_side">
   <div id="left_side">
     <div class="clearfix"><span id="pbrown">ПЛОЩАДИ от</span></div>
-    <span id="pnavy"><%= @spro.header_price %></span>
+    <span id="pnavy"><%# @spro.header_price %></span>
     <span id="pdark">руб/кв.м.</span>
   </div>
   <div id="right_side">
-    <p id="ptele"><%= @spro.address_telephone_1 %></p>
-    <p id="paddress"><%= @spro.address_locality %>
-      <%= @spro.address_street %></p>
+    <p id="ptele"><%# @spro.address_telephone_1 %></p>
+    <p id="paddress"><%# @spro.address_locality %>
+      <%# @spro.address_street %></p>
   </div>
-</div>
+</div>-->
 
 <div id="map_wrapper">
   <%= render "c80_map_floors/shared/save_preloader" %>
@@ -29,7 +29,7 @@
       <svg id='svg_overlay' xmlns="http://www.w3.org/2000/svg" version="1.2" viewbox='0 0 <%= mapwidth %> <%=mapheight%>' baseProfile="tiny" preserveAspectRatio="xMaxYMax"></svg>
     </div>
     <div class="container" id="ui">
-      <%= render "layouts/shared/map_row/building_info" %>
+      <%= render "c80_map_floors/shared/map_row/building_info" %>
       <%# render "layouts/shared/map_row/area_order_button" %>
     </div>
     <div class="container" id="container_buttons">

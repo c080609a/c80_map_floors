@@ -9,49 +9,36 @@ TODO: Delete this and the text above, and describe your gem
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'c80_map_floors'
+    gem 'historyjs-rails'
+    gem 'bootstrap-sass', '~> 3.3.4'
+    gem 'bootstrap-select-rails'
+    gem 'c80_map_floors'
 ```
 
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install c80_map_floors
-
-## Usage
-
-0. Requires:
-
-```
-    #= require bootstrap/alert
-    #= require bootstrap/dropdown
-    #= require bootstrap-select
-```
-
-2. Add this:
-
-```
-    @import "c80_map_floors";
-```
+Host `application.js.coffee` requires:
 
 ```
     #= require c80_map_floors
 ```
 
-1. Start (Host application script):
+Add this to `application.scss`:
 
 ```
-   $(document).ready(function() {
-       InitMap();
-   });
+    @import "c80_map_floors";
 ```
-    
-2. Seeds:
+
+Seeds:
 
 ```
     $ rake db:seed:801_fill_map_settings
+```
+
+1. Start (Host application script):
+
+```js
+   $(document).ready(function() {
+       InitMap();
+   });
 ```
 
 ## Development

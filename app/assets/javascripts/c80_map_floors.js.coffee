@@ -1,3 +1,11 @@
+#= require history_jquery
+#= require bootstrap/transition
+#= require bootstrap/modal
+#= require bootstrap/tooltip
+#= require bootstrap/alert
+#= require bootstrap/dropdown
+#= require bootstrap-select
+
 #= require ./svg_elements/helper.js
 #= require ./svg_elements/polygon.js
 #= require ./svg_elements/area_label.js

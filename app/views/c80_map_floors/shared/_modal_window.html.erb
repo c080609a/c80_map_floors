@@ -1,0 +1,28 @@
+<%= link_to 'Показать modal window',
+            '#modal_window',
+            :data => {
+                    :toggle => 'modal'
+            },
+            :class => 'hidden2 show_modal_window',
+            :title => 'Показать modal window'
+%>
+
+<div class="modal fade" id="modal_window" tabindex="-1" role="dialog" aria-labelledby="modalShowWindow" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title" id="myModalLabel">%modal-title%</h4>
+      </div>
+
+      <div class="modal-body">
+        %modal-body%
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+      </div>
+    </div>
+  </div>
+</div>

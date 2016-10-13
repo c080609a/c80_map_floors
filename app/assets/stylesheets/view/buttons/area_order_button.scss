@@ -1,0 +1,16 @@
+#area_order_button {
+  width: auto;
+  padding: 0 15px;
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  font-weight: normal;
+  border-radius: 2px;
+}
+
+// когда входим в здание - кнопка не видна
+div.view_building {
+  #area_order_button {
+    display: none;
+  }
+}

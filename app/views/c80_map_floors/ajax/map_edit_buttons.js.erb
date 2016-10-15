@@ -1,0 +1,36 @@
+<%# особым пользователям разрешает редактировать %>
+<% if current_admin_user.present? %>
+    //console.log("<js.erb>");
+
+    var $btn_layer = $("<%= params[:div_css_selector] %>");
+    var $html = $('<a href="#" class="mapplic-edit-button"></a>');
+    $btn_layer.append($html);
+
+    $html = $('<a href="#" class="mapplic-remove-button mapplic-disabled" data-placement="right" data-toggle="tooltip" title="Удалить полигон"></a>');
+    $btn_layer.prepend($html);
+
+    $html = $('<a href="#" class="mapplic-new-button mapplic-disabled" data-placement="right" data-toggle="tooltip" title="Добавить полигон"></a>');
+    $btn_layer.prepend($html);
+
+    $html = $('<a href="#" class="mapplic-building-link-button" data-placement="right" data-toggle="tooltip" title="Назначить Здание"></a>');
+    $btn_layer.prepend($html);
+
+    $html = $('<a href="#" class="mapplic-save-button mapplic-disabled" data-placement="right" data-toggle="tooltip" title="Сохранить изменения"></a>');
+    $btn_layer.prepend($html);
+
+    $html = $('<a href="#" class="mapplic-area-link-button" data-placement="right" data-toggle="tooltip" title="Назначить Площадь"></a>');
+    $btn_layer.prepend($html);
+
+    var $status_layer = $('.status_bar');
+    $html = $("<%= j render 'c80_map_floors/ajax/shared/map_creating' %>");
+    $status_layer.append($html);
+
+    $html = $("<%= j render 'c80_map_floors/ajax/shared/map_editing' %>");
+    $status_layer.append($html);
+
+    $html = $("<%= j render 'c80_map_floors/ajax/shared/map_removing' %>");
+    $status_layer.append($html);
+
+    IS_ADMIN = true;
+
+<% end %>

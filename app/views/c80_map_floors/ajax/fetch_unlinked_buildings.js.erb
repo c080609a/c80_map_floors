@@ -1,0 +1,7 @@
+var $m = $('#modal_window');
+var $cc = $m.find('.modal-body');
+var html_str = "<%= j render :partial => "c80_map_floors/ajax/shared/select_list_unlinked_buildings",
+                                            :locals => {
+                                                buildings:@unlinked_buildings
+                                            } %>";
+$cc.html(html_str);

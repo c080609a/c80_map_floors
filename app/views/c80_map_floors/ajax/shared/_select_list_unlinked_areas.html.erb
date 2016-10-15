@@ -1,0 +1,6 @@
+<select id="unlinked_areas" class="selectpicker" data-style="btn-default">
+<% areas.each do |area|%>
+    <option value="<%= area.id%>"><%= area.title %></option>
+<% end %>
+</select>
+<button type="button" id='submit_area_link' class="btn btn-primary">Сохранить</button>

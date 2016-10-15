@@ -1,0 +1,10 @@
+<select id="unlinked_buildings" class="selectpicker" data-style="btn-default">
+<% buildings.each do |building| %>
+      <% tt = building.title %>
+      <% if building.map_buildings.count > 0 %>
+        <% tt += ' (полигон назначен)' %>
+      <% end %>
+    <option value="<%= building.id%>"><%= tt %></option>
+<% end %>
+</select>
+<button type="button" id='submit_building_link' class="btn btn-primary">Сохранить</button>

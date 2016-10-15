@@ -31,6 +31,12 @@ Add this to host app's `application_controller.rb`:
     helper C80MapFloors::Engine.helpers
 ```
 
+Add this to `routes.rb`:
+
+```
+    mount C80MapFloors::Engine => '/'
+```
+
 # Configure
 
 Use seeds:

@@ -604,7 +604,7 @@ var clog = function () {
         /* --- ivalidateViewArea BEGIN --------------------------------------------------------------------------------- */
 
         var _$m = $("#map_wrapper");
-        var _$b = $('footer .container');
+        var _$b = $('.container');//$('footer .container');
         var $building_info = $('.building_info'); // "layouts/shared/map_row/building_info"
         var $area_order_button = $('.area_order_button');
         var $container_buttons = $('#container_buttons');

@@ -62,7 +62,9 @@ function Building() {
     };
 
     _this.init = function (options, link_to_map) {
-        console.log("<Building.init>");
+
+        if (options['coords'] != undefined) {
+            console.log("<Building.init>");
 
         //console.log(options);
         /*
@@ -197,29 +199,30 @@ function Building() {
                     "floors": []
                 }*/
 
-        _map = link_to_map;
-        _options = options;
-        _this.options = options;
-        _this.id = options["id"];
+            _map = link_to_map;
+            _options = options;
+            _this.options = options;
+            _this.id = options["id"];
 
-        // [56dfaw1]
-        for (var i=0; i<_this.options.coords.length; i++) {
-            _this.options.coords[i] = Number(_this.options.coords[i]);
+            // [56dfaw1]
+            for (var i=0; i<_this.options.coords.length; i++) {
+                _this.options.coords[i] = Number(_this.options.coords[i]);
+            }
+
+            // [4ddl5df]: в случае, если это только что отрисованное Здание - генерим временный случайный id
+            if (_this.options["id"] == undefined) {
+                _this.options["id"] = Math.ceil((Math.random()*100000));
+            }
+
+            _polygon = Polygon.createFromSaved(options, false, _map);
+            _polygon.building = _this;
+
+            _this._calcBBox();
+
+            // подпись над зданием - сколько свободных площадей
+            _this._label = new BuildingLabel(options, _map);
+
         }
-
-        // [4ddl5df]: в случае, если это только что отрисованное Здание - генерим временный случайный id
-        if (_this.options["id"] == undefined) {
-            _this.options["id"] = Math.ceil((Math.random()*100000));
-        }
-
-        _polygon = Polygon.createFromSaved(options, false, _map);
-        _polygon.building = _this;
-
-        _this._calcBBox();
-
-        // подпись над зданием - сколько свободных площадей
-        _this._label = new BuildingLabel(options, _map);
-
     };
 
     _this.enter = function () {

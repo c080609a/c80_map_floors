@@ -8,10 +8,6 @@ module C80MapFloors
     def fetch_unlinked_areas
       # Rails.logger.debug "<AjaxController.fetch_unlinked_areas> params = #{params}"
 
-      # b = Building.find(params[:building_id])
-      # unlinked_areas  = b.unlinked_areas
-      # unlinked_areas
-
       @unlinked_areas = Rent::Area.unlinked_areas
 
     end
@@ -50,7 +46,7 @@ module C80MapFloors
       Rails.logger.debug "<AjaxController.link_building> params = #{params}"
 
       rent_building = Rent::Building.find(params[:rent_building_id])
-      map_building = C80Map::Building.find(params[:map_building_id])
+      map_building = C80Map::MapBuilding.find(params[:map_building_id])
       rent_building.map_buildings.delete_all
       rent_building.map_buildings << map_building
       rent_building.save

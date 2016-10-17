@@ -26,7 +26,7 @@ module C80MapFloors
           new_building_options = params[:buildings][key]
           # puts "<MapAjaxController.save_map_data> new_building_options = #{new_building_options}"
           # puts "<MapAjaxController.save_map_data> new_building_options[:coords] = #{new_building_options[:coords]}"
-          b = Building.new({ coords: new_building_options[:coords].join(',') })
+          b = C80MapFloors::MapBuilding.new({ coords: new_building_options[:coords].join(',') })
 
           if b.valid?
             b.save
@@ -43,9 +43,9 @@ module C80MapFloors
           new_area_options = params[:areas][key]
           # Rails.logger.debug "<MapAjaxController.save_map_data> new_area_options = #{new_area_options}"
           # puts "<MapAjaxController.save_map_data> new_area_options[:coords] = #{new_area_options[:coords]}"
-          a = Area.new({
+          a = C80MapFloors::Area.new({
                            coords: new_area_options[:coords].join(','),
-                           building_id: new_area_options[:parent_building_id]
+                           map_building_id: new_area_options[:parent_building_id]
                        })
 
           if a.valid?

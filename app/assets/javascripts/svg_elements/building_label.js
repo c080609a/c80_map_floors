@@ -2,9 +2,9 @@
 
 var BuildingLabel = function (options, link_to_map) {
 
-    if (    options.building_hash != undefined &&
-            typeof options.building_hash.id != 'undefined' &&
-            options.building_hash.props.free_areas_count != 0
+    if (    options["rent_building_hash"] != undefined &&
+            typeof options["rent_building_hash"].id != 'undefined' &&
+            options["rent_building_hash"].props.free_areas_count != 0
     ) {
 
         this._x = options.coords[0];
@@ -40,7 +40,7 @@ var BuildingLabel = function (options, link_to_map) {
         this._text_element_ns.setAttribute('x', center_for_cicrle_x);
         this._text_element_ns.setAttribute('y', center_for_cicrle_y);
         this._text_element_ns.setAttribute('class', 'text');
-        this._text_element_ns.textContent = options.building_hash.props.free_areas_count;
+        this._text_element_ns.textContent = options["rent_building_hash"].props.free_areas_count;
 
         this._aLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
         this._aLine.setAttribute('x1', this._x);

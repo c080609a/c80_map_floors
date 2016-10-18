@@ -969,10 +969,10 @@ var clog = function () {
         };
 
         // показать инфо о здании
-        self.showBuildingInfo = function (building_hash) {
-            console.log("<main.showBuildingInfo> id = " + building_hash.id);
+        self.showBuildingInfo = function (rent_building_hash) {
+            console.log("<main.showBuildingInfo> Показать информацию о Rent-здании с id = " + rent_building_hash.id);
 
-            //"building_hash": {
+            //"rent_building_hash": {
             //    "id": 2,
             //        "title": "Здание 2",
             //        "props": {
@@ -985,16 +985,16 @@ var clog = function () {
             //            "price": "от 155 руб/кв.м в месяц"
             //    }
 
-            if (building_hash.id == undefined) {
+            if (rent_building_hash.id == undefined) {
                 $building_info.css('display','none');
             } else {
                 $building_info.css('display','block');
-                $building_info.find("h2").text(building_hash["title"]);
+                $building_info.find("h2").text(rent_building_hash["title"]);
 
                 var v, $ili, p;
-                for (p in building_hash["props"]) {
+                for (p in rent_building_hash["props"]) {
 
-                    v = building_hash["props"][p];
+                    v = rent_building_hash["props"][p];
                     $ili = $building_info.find("#" + p);
                     $ili.find('span').text(v);
                     //console.log("."+v+".");
@@ -1030,7 +1030,7 @@ var clog = function () {
             //            "price": "от 155 руб/кв.м в месяц"
             //    }
 
-            //"building_hash": {
+            //"rent_building_hash": {
             //        "id": 2,
             //        "title": "Здание 2",
             //        "props": {

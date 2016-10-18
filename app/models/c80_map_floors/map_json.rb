@@ -11,44 +11,76 @@ module C80MapFloors
       locs_hash = JSON.parse(locs)
 
       # обходим все Building и составляем массив вида
-      # [{id, object_type=object_type, coords, building_hash, img, childs:[<areas>]},..]
+      # [{id, object_type=object_type, coords, rent_building_hash, img, childs:[<areas>]},..]
       buildings_to_location_json = []
-      Building.all.each do |b|
+      C80MapFloors::MapBuilding.all.each do |b|
         # Rails.logger.debug "[TRACE] <MapJson.update_json> building: #{b}; building_representator: #{b.building_representator}"
 
-        # сначала соберём детей - Area
+        # соберём детей - этажи
         childs = []
-        b.areas.each do |area|
-          # Rails.logger.debug "[TRACE] <MapJson.update_json> [1] area #{area}; area_representator: #{area.area_representator}"
 
-          # соберём хэш привязанной к полигону площади
-          har = {}
-          if area.area_representator.present?
-            # Rails.logger.debug "[TRACE] <MapJson.update_json> [2] area #{area}; area_representator: #{area.area_representator}"
-            har = area.area_representator.to_hash_a
-            har["is_free"] = area.area_representator.is_free?
+        b.floors.all.each do |floor|
+          # {
+          #     "map_building_id": 4,
+          #     "id": 1,
+          #     "coords": "",
+          #     "title": null,
+          # "tag": null,
+          # "ord": 10,
+          #     "img_bg": {
+          #     "url": "/uploads/map/floors/floor_8be1.gif",
+          #     "thumb": {"url": "/uploads/map/floors/thumb_floor_8be1.gif"}
+          # },
+          #     "img_overlay": {
+          #     "url": null,
+          # "thumb": {"url": null}
+          # },
+          #     "created_at": "2016-10-18T03:17:00.000Z",
+          #     "updated_at": "2016-10-18T03:17:00.000Z"
+          # }
+          floor_hash = {
+              id: floor.id,
+              object_type: "floor",
+              coords: floor.coords.split(','),
+              # rent_floor_hash: har, # если у этажа появится некий набор свойств - надо будет завести модель Rent::Floor и обзавестись методом acts_like_floor
+              childs: [] # соберём детей-площади тут
+          }
+
+          floor.areas.each do |area|
+            # Rails.logger.debug "[TRACE] <MapJson.update_json> [1] area #{area}; area_representator: #{area.area_representator}"
+
+            # соберём хэш привязанной к полигону площади
+            har = {}
+            if area.area_representator.present?
+              # Rails.logger.debug "[TRACE] <MapJson.update_json> [2] area #{area}; area_representator: #{area.area_representator}"
+              har = area.area_representator.to_hash_a
+              har["is_free"] = area.area_representator.is_free?
+            end
+
+            ab = {
+                id: area.id,
+                object_type: 'area',
+                coords: area.coords.split(','),
+                area_hash: har
+                # area_hash: {
+                #     id: 2,
+                #     title: "Площадь #{area.id}.#{area.id}",
+                #     is_free: true,
+                #     props: {
+                #         square: "124 кв.м.",
+                #         floor_height: "6 кв. м",
+                #         column_step: "2 м",
+                #         gate_type: "распашные",
+                #         communications: "Интернет, электричество, водоснабжение",
+                #         price: "от 155 руб/кв.м в месяц"
+                #     }
+                # }
+            }
+            floor_hash[:childs] << ab
           end
 
-          ab = {
-              id: area.id,
-              object_type: 'area',
-              coords: area.coords.split(','),
-              area_hash: har
-              # area_hash: {
-              #     id: 2,
-              #     title: "Площадь #{area.id}.#{area.id}",
-              #     is_free: true,
-              #     props: {
-              #         square: "124 кв.м.",
-              #         floor_height: "6 кв. м",
-              #         column_step: "2 м",
-              #         gate_type: "распашные",
-              #         communications: "Интернет, электричество, водоснабжение",
-              #         price: "от 155 руб/кв.м в месяц"
-              #     }
-              # }
-          }
-          childs << ab
+          childs << floor_hash
+
         end
 
         # соберём хэш привязанного к полигону здания
@@ -69,8 +101,8 @@ module C80MapFloors
             id: b.id,
             object_type: 'building',
             coords: cc,
-            building_hash: hbu,
-            # building_hash: {
+            rent_building_hash: hbu,
+            # rent_building_hash: {
             #     id: 2,
             #     title: "Здание 2",
             #     props: {
@@ -83,14 +115,7 @@ module C80MapFloors
             #         price: "от 155 руб/кв.м в месяц"
             #     }
             # },
-            img: {
-                bg: {
-                    src: b.img_bg.url
-                },
-                overlay: {
-                    src: b.img_overlay.url
-                }
-            },
+            img: b.img.url,
             childs: childs
         }
         buildings_to_location_json << ob

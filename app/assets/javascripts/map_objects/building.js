@@ -70,7 +70,7 @@ function Building() {
         /*
                 {
                     "object_type": "building",
-                    "building_hash": {
+                    "rent_building_hash": {
                     "id": 2,
                         "title": "Здание 2",
                         "props": {
@@ -236,8 +236,8 @@ function Building() {
             _image_overlay = _map.draw_child_bg_image(_options.img.overlay.src, 'building', true);
             _image_bg = _map.draw_child_bg_image(_options.img.bg.src, 'building');
             _map.setMode('view_building');
-            _map.showBuildingInfo(_options.building_hash);
-            _map.draw_childs(_options.childs, _options.building_hash);
+            _map.showBuildingInfo(_options["rent_building_hash"]);
+            _map.draw_childs(_options.childs, _options["rent_building_hash"]);
         }, 400);
 
         _map.svgRemoveAllNodes();

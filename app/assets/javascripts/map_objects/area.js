@@ -52,6 +52,9 @@ function Area() {
 
         _map = pself;
         _this._options = options;
+        if (typeof _this._options["coords"] == "string") { /* когда нажимаем ENTER в редакторе и завершаем рисование полигона - приходит массив */
+            _this._options["coords"] = _this._options["coords"].split(',');
+        }
         _this.id = options["id"];
 
         // [4ddl5df]
@@ -59,7 +62,7 @@ function Area() {
             _this._options["id"] = Math.ceil((Math.random()*100000));
         }
 
-        // [56dfaw1]
+        // [NOTE::56dfaw1: парсим координаты объекта на карте, поданные в виде строки]
         for (var i=0; i<_this._options.coords.length; i++) {
             _this._options.coords[i] = Number(_this._options.coords[i]);
         }

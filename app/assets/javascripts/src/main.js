@@ -180,8 +180,28 @@ var clog = function () {
                 'height': data.mapheight
             });
 
+            /*  NOTE:: важная строка: определяет css и js поведение кое-где [qwwqq]:
+                2016-10-19
+
+                1. Всё начинается в JSON - в самом начале разработки проектировался JSON:
+                2. там для root объекта указан был
+                руками
+                набор характеристик. Среди которых был и object_type[переименован в class_name].
+                3. на тот момент object_type был равен строке "main_map".
+                4. Затем эта строка (в процессе разработки) стала использоваться, как
+                имя css класса, и были накиданы стили для оформления.
+                5. Затем, уже css класс был использован внутри StateController.js, который
+                работает с состоянием приложения и видимостью детей '.main_map'.
+
+                По хорошему - надо убрать из JSON этот параметр,
+                а здесь рукми напишем строку 'main_map', что и сделаем.
+            */
             // Create new map layer
-            var layer = $('<div></div>').addClass('mlayer').addClass(data["object_type"]).appendTo(self.map_layers); // .hide()
+            var layer = $('<div></div>')
+                .addClass('mlayer')
+                //.addClass(data["class_name"])/* [qwwqq] */
+                .addClass("main_map")/* [qwwqq] */
+                .appendTo(self.map_layers); // .hide()
             $('<img>').attr('src', data["img"]).addClass('mmap-image').appendTo(layer);
 
             // Zoom buttons
@@ -244,7 +264,7 @@ var clog = function () {
             // Controls
             initAddControls();
 
-            self.draw_childs(data["childs"]);
+            self.draw_childs(data["buildings"]);
 
             self.ivalidateViewArea();
 
@@ -725,8 +745,8 @@ var clog = function () {
             for (var i = 0; i < childs.length; i++) {
                 iobj = childs[i];
 
-                switch (iobj["object_type"]) {
-                    case 'building':
+                switch (iobj["class_name"]) { /* NOTE:: сопоставление Ruby класса и JS класса */
+                    case 'C80MapFloors::MapBuilding':
                         ib = new Building();
                         ib.init(iobj,self);
                         break;
@@ -734,10 +754,14 @@ var clog = function () {
                         id = new Dot();
                         id.init(iobj,self);
                         break;
-                    case 'area':
+                    case 'C80MapFloors::Area':
                         ia = new Area();
                         ia.init(iobj, parent_hash, self);
                         break;
+                    /*case 'C80MapFloors::Floor':
+                        ia = new Floor();
+                        ia.init(iobj, parent_hash, self);
+                        break;*/
                 }
                 //ip = Polygon.createFromSaved(iobj);
                 //utils.id('svg').appendChild(ip.g);

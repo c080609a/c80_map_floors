@@ -13,7 +13,7 @@ function StateController() {
     _this.map_creating = $('#map_creating');
     _this.map_editing = $('#map_editing');
     _this.map_removing = $('#map_removing');
-    _this.main_map = $('.main_map');
+    _this.main_map = $('.main_map'); /*qwwqq*/
     _this.svg_overlay = $('#svg_overlay');
     _this.building_info = $('.building_info');
     _this.area_order_button = $('.area_order_button');
@@ -60,7 +60,7 @@ function StateController() {
         if (_this.map_creating.length == 0) _this.map_creating = $('#map_creating');
         if (_this.map_editing.length == 0) _this.map_editing = $('#map_editing');
         if (_this.map_removing.length == 0) _this.map_removing = $('#map_removing');
-        if (_this.main_map.length == 0) _this.main_map = $('.main_map');
+        if (_this.main_map.length == 0) _this.main_map = $('.main_map'); /*qwwqq*/
         if (_this.svg_overlay.length == 0) _this.svg_overlay = $('#svg_overlay');
         if (_this.building_info.length == 0) _this.building_info = $('.building_info');
         if (_this.area_order_button.length == 0) _this.area_order_button = $('.area_order_button');

@@ -15,6 +15,7 @@ module C80MapFloors
 
           # has_many :map_buildings, :as => :building_representator, :class_name => 'C80MapFloors::MapBuilding', :dependent => :destroy
           after_save :update_json
+          # after_destroy :update_json
           validates :coords, uniqueness: true
 
           def update_json
@@ -27,6 +28,7 @@ module C80MapFloors
 
     module InstanceMethods
 
+      # используется для сопоставления js классов
       def class_name
         self.class.name
       end

@@ -23,7 +23,7 @@ module C80MapFloors
                 :include => [
                     :floors => {
                         :except => [:created_at,:updated_at],
-                        :methods => :class_name,
+                        :methods => [:class_name, :img_bg_width, :img_bg_height],
                         :include => [
                             :areas => {
                                 :except => [:created_at,:updated_at,:area_representator_type],

@@ -782,8 +782,13 @@ var clog = function () {
             }
         };
 
-        // создаёт DOM элемент <img src='img_src' class='mmap-image' />,
-        // и помещает его либо в map_overlay_layers, либо в map_layers (~ от параметра is_overlay)
+        /**
+         *  создаёт DOM элемент:
+         *      <div class='mlayer #{obj_type}'>
+         *          <img src='#{img_src}' class='mmap-image' />
+         *      </div>
+         *  и помещает его либо в map_overlay_layers, либо в map_layers (~ от параметра is_overlay)
+         */
         self.draw_child_bg_image = function (img_src, obj_type, is_overlay) {
             var t;
             if (is_overlay == true) {
@@ -796,6 +801,47 @@ var clog = function () {
             $('<img>').attr('src', img_src).addClass('mmap-image').appendTo(layer);
 
             return layer;
+        };
+
+        /**
+         *  создаёт DOM элемент:
+         *      <div class='map_object_image_bg'>        // style='background-image:url(#{img_src});'
+         *          <img src=#{img_src} />
+         *      </div>
+         *  и помещает его map_layers
+         *
+         *  left и top - координаты bound box верхнего левого угла здания
+         *
+         */
+        self.draw_map_object_image_bg = function (img_src, params) {
+
+            var left = params["x"];
+            var top = params["y"];
+            var width = params["width"];
+            var height = params["height"];
+
+            var $div_map_object_image_bg = $('<div></div>')
+                .addClass('mlayer')
+                //.attr('style','background-image:url("'+img_src+'")')
+                .appendTo(self.map_layers); // .hide()
+
+            var style = 'top:';
+            style += top + 'px;';
+            style += "left:";
+            style += left + 'px;';
+            style += "width:";
+            style += width + 'px;';
+            style += "height:";
+            style += height + 'px;';
+
+            $('<img>')
+                .attr('src', img_src)
+                .addClass('map_object_image_bg')
+                .attr('style',style)
+                .appendTo($div_map_object_image_bg);
+
+            return $div_map_object_image_bg;
+
         };
 
         self.onEdit = function (e) {

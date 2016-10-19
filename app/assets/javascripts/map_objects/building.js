@@ -90,13 +90,19 @@ function Building() {
     ]
     }*/
     var _draw_floor = function (the_floor) {
+        console.log('<Building._draw_floor>');
 
         // это тот самый код, который остался без изменений с версии c80_map (прошлой версии)
         if (the_floor["img_overlay"]["url"] != "null") {
-            _image_overlay = _map.draw_child_bg_image(the_floor["img_overlay"]["url"], 'building', true);
+            //_image_overlay = _map.draw_child_bg_image(the_floor["img_overlay"]["url"], 'building', true);
         }
         if (the_floor["img_bg"]["url"] != "null") {
-            _image_bg = _map.draw_child_bg_image(the_floor["img_bg"]["url"], 'building');
+            _image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
+                x: _bbox.xmin,
+                y: _bbox.ymin,
+                width: the_floor["img_bg_width"],
+                height: the_floor["img_bg_height"]
+            }/*, 'building'*/);
         }
         _map.draw_childs(the_floor["areas"]/*, _options["rent_building_hash"]*/);
 

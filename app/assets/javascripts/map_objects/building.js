@@ -97,6 +97,7 @@ function Building() {
             //_image_overlay = _map.draw_child_bg_image(the_floor["img_overlay"]["url"], 'building', true);
         }
         if (the_floor["img_bg"]["url"] != "null") {
+            // просим карту нарисовать картинку с данными характеристиками
             _image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
                 x: _bbox.xmin,
                 y: _bbox.ymin,
@@ -104,6 +105,8 @@ function Building() {
                 height: the_floor["img_bg_height"]
             }/*, 'building'*/);
         }
+
+        // просим карту нарисовать площади
         _map.draw_childs(the_floor["areas"]/*, _options["rent_building_hash"]*/);
 
     };

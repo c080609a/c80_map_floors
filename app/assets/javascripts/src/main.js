@@ -815,10 +815,10 @@ var clog = function () {
          */
         self.draw_map_object_image_bg = function (img_src, params) {
 
-            var left = params["x"];
-            var top = params["y"];
-            var width = params["width"];
-            var height = params["height"];
+            var left = params["x"]*self.scale;
+            var top = params["y"]*self.scale;
+            var width = params["width"]*self.scale;
+            var height = params["height"]*self.scale;
 
             var $div_map_object_image_bg = $('<div></div>')
                 .addClass('mlayer')

@@ -782,7 +782,8 @@ var clog = function () {
             }
         };
 
-        //
+        // создаёт DOM элемент <img src='img_src' class='mmap-image' />,
+        // и помещает его либо в map_overlay_layers, либо в map_layers (~ от параметра is_overlay)
         self.draw_child_bg_image = function (img_src, obj_type, is_overlay) {
             var t;
             if (is_overlay == true) {

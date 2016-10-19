@@ -27,6 +27,7 @@ function BackToMapButton() {
         _map.draw_childs(_map.data["childs"]);
 
         if (_map.initial_map_position != null) {
+            /* TODO:: необходимо удостовериться, что параметр scale используется и используется правильно*/
             _map.moveTo(
                 _map.initial_map_position.x,
                 _map.initial_map_position.y,

@@ -34,7 +34,7 @@ function Building() {
         //var selfX = _map.calcCoord(scale, _map.X1, _bbox.xmin);
         //var selfY = _map.calcCoord(scale, _map.Y1, _bbox.ymin);
 
-        _map.scale = scale;
+        //_map.scale = scale;
         //_map.x = selfX;
         //_map.y = selfY;
 
@@ -54,11 +54,21 @@ function Building() {
 
         // совмещаем точку на экране, в которую надо центрировать дома, с центром дома с учётом рассчитанного масштаба
         // или, другими словами, перегоняем логические координаты в систему координат экрана
-        _map.x = _map.normalizeX(_map.CX - _map.scale * _cx - _map.container.offset().left);
-        _map.y = _map.normalizeY(_map.CY - _map.scale * _cy - _map.container.offset().top);
+        //_map.x = _map.normalizeX(_map.CX - scale * _cx - _map.container.offset().left);
+        //_map.y = _map.normalizeY(_map.CY - scale * _cy - _map.container.offset().top);
+
+        var x = _map.normalizeX({
+            x: _map.CX - scale * _cx - _map.container.offset().left,
+            scale: scale
+        });
+
+        var y = _map.normalizeY({
+            y: _map.CY - scale * _cy - _map.container.offset().top,
+            scale: scale
+        });
 
         //console.log("<Building.enter> [qq] moveTo: " + _map.x + ", " + _map.y);
-        _map.moveTo(_map.x, _map.y, _map.scale, 400, 'easeInOutCubic');
+        _map.moveTo(x, y, scale, 400, 'easeInOutCubic');
     };
 
     // the_floor - это as_json модели C80MapFloors::Floor

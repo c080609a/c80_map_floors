@@ -108,7 +108,7 @@ var clog = function () {
 
             self.x = self.o.x;
             self.y = self.o.y;
-            self.scale = self.o.scale;
+            self.scale = self.o.scale; /* NOTE:: инициализация: начальные значения */
 
             self.el = el.addClass('melem mloading').addClass(self.o.skin).height(self.o.height);
 
@@ -296,7 +296,7 @@ var clog = function () {
                     var scaleX = self.calcScale(self.o.mapwidth*0.05, self.o.mapwidth *.95, self.X10, self.X20);
                     var scaleY = self.calcScale(self.o.mapheight*0.05, self.o.mapheight *.95, self.Y10, self.Y20);
                     var scale = (scaleX < scaleY) ? scaleX : scaleY;
-                    self.scale = scale;
+                    self.scale = scale; /* NOTE:: вызывается во время window resize */
                 }
 
                 // совмещаем точку на экране, в которую надо центрировать карту,
@@ -327,9 +327,15 @@ var clog = function () {
                 }
 
                 if (mark_do_moving) {
-                    self.x = self.normalizeX(self.CX - self.scale * cx - self.container.offset().left);
-                    self.y = self.normalizeY(self.CY - self.scale * cy - self.container.offset().top);
-                    clog("<Map.initProcessData> call moveTo");
+                    self.x = self.normalizeX({
+                        x: self.CX - self.scale * cx - self.container.offset().left,
+                        scale: self.scale
+                    });
+                    self.y = self.normalizeY({
+                        y: self.CY - self.scale * cy - self.container.offset().top,
+                        scale: self.scale
+                    });
+                    clog("<$(window).resize> call moveTo");
                     self.moveTo(self.x, self.y, self.scale, 100);
 
                     // если пользователь ещё не взаимодействовал с картой (т.е. она только загрузилась и готова к использованию)
@@ -446,12 +452,18 @@ var clog = function () {
                             var x = event.pageX - map.data('mouseX') + self.x;
                             var y = event.pageY - map.data('mouseY') + self.y;
 
-                            x = self.normalizeX(x);
-                            y = self.normalizeY(y);
+                            x = self.normalizeX({
+                                x:x,
+                                scale: self.scale
+                            });
+                            y = self.normalizeY({
+                                y:y,
+                                scale: self.scale
+                            });
 
                             //clog("<Map.mousemove> x = " + x + "; y = " + y);
                             //clog("<Map.mousemove> Call moveTo.");
-                            self.moveTo(x, y);
+                            self.moveTo(x, y); /* NOTE:: вызывается во время dnd */
                             map.data('lastX', x);
                             map.data('lastY', y);
                         }
@@ -815,16 +827,52 @@ var clog = function () {
          */
         self.draw_map_object_image_bg = function (img_src, params) {
 
-            var left = params["x"]*self.scale;
-            var top = params["y"]*self.scale;
-            var width = params["width"]*self.scale;
-            var height = params["height"]*self.scale;
-
+            // породим DOM
             var $div_map_object_image_bg = $('<div></div>')
                 .addClass('mlayer')
                 //.attr('style','background-image:url("'+img_src+'")')
                 .appendTo(self.map_layers); // .hide()
 
+            // сохраним начальные параметры в data
+            var left = params["x"];
+            var top = params["y"];
+            var width = params["width"];
+            var height = params["height"];
+
+            var $img = $('<img>')
+                .data('top', top)
+                .data('left', left)
+                .data('width', width)
+                .data('height', height)
+                .attr('src', img_src)
+                .addClass('map_object_image_bg') /* этот класс используем при [zoomove]*/
+                .appendTo($div_map_object_image_bg);
+
+            // рассчитаем и применим стиль
+            self.__compose_css_style_for_map_object_image($img);
+
+            return $div_map_object_image_bg;
+
+        };
+
+        /**
+         * Задача этой служебной функции является:
+         *      - рассчёт актуальных (для данного масштаба) размеров и координат местонах указанного объекта (вместо объекта подаётся хэш описывающий его, с x,y,width,height)
+         *      - составление css стиля для картинки с css-классом map_object_image_bg
+         *      - присвоении этого стиля картинке
+         * @private
+         */
+        self.__compose_css_style_for_map_object_image = function ($img_with_class_map_object_image_bg) {
+
+            var $i = $img_with_class_map_object_image_bg;
+
+            // проведём калькуляцию [zoomove-calc]
+            var left = $i.data("left")*self.scale_during_animation;
+            var top = $i.data("top")*self.scale_during_animation;
+            var width = $i.data("width")*self.scale_during_animation;
+            var height = $i.data("height")*self.scale_during_animation;
+
+            // впишем в DOM стили
             var style = 'top:';
             style += top + 'px;';
             style += "left:";
@@ -834,13 +882,8 @@ var clog = function () {
             style += "height:";
             style += height + 'px;';
 
-            $('<img>')
-                .attr('src', img_src)
-                .addClass('map_object_image_bg')
-                .attr('style',style)
-                .appendTo($div_map_object_image_bg);
-
-            return $div_map_object_image_bg;
+            console.log("> scale: " + self.scale + "; style: " + style);
+            $i.attr('style',style);
 
         };
 
@@ -922,8 +965,20 @@ var clog = function () {
             self.drawn_buildings.push(building);
         };
 
-        self.normalizeX = function (x) {
-            var minX = self.container.width() - self.contentWidth * self.scale;
+        /**
+         * Зная ширину контейнера и контента,
+         * используя указанные параметры,
+         * рассчитать нормальный X
+         * @param x
+         * @param scale
+         * @returns {*}
+         */
+        self.normalizeX = function (params) {
+
+            var x = params['x'];
+            var scale = params['scale'];
+
+            var minX = self.container.width() - self.contentWidth * scale;
 
             if (minX < 0) {
                 if (x > 0) x = 0;
@@ -934,8 +989,20 @@ var clog = function () {
             return x;
         };
 
-        self.normalizeY = function (y) {
-            var minY = self.container.height() - self.contentHeight * self.scale;
+        /**
+         * Зная высоту контейнера и контента,
+         * используя указанные параметры,
+         * рассчитать нормальный Y
+         * @param y
+         * @param scale
+         * @returns {*}
+         */
+        self.normalizeY = function (params) {
+
+            var y = params['y'];
+            var scale = params['scale'];
+
+            var minY = self.container.height() - self.contentHeight * scale;
 
             if (minY < 0) {
                 if (y >= 0) y = 0;
@@ -946,6 +1013,11 @@ var clog = function () {
             return y;
         };
 
+        /**
+         * Используя ограничения по масштабу нормализовать scale
+         * @param scale
+         * @returns {*}
+         */
         self.normalizeScale = function (scale) {
             clog('<self.normalizeScale>' + self.o.fitscale);
             if (scale < self.o.fitscale) scale = self.o.fitscale;
@@ -956,10 +1028,11 @@ var clog = function () {
             return scale;
         };
 
-        self.zoomTo = function (x, y, s, duration, easing, ry) {
+        /*self.zoomTo = function (x, y, s, duration, easing, ry) {
             duration = typeof duration !== 'undefined' ? duration : 400;
             ry = typeof ry !== 'undefined' ? ry : 0.5;
 
+            // это значение нужно присвоить только после анимации
             self.scale = self.normalizeScale(self.o.fitscale * s);
 
             self.x = self.normalizeX(self.container.width() * 0.5 - self.scale * self.contentWidth * x);
@@ -967,10 +1040,20 @@ var clog = function () {
 
             clog("<Map.zoomTo> Call moveTo.");
             self.moveTo(self.x, self.y, self.scale, duration, easing);
-        };
+        };*/
 
-        // optimisation
-        var __moveToStep = function () {
+        /** задачи этой функции:
+         *      - быть контейнером кода
+         *      - считывать css атрибут self.map
+         *      - по регулярке извлекать left и top
+         *      - трансформировать эти значения
+         *      - изменить атрибут viewBox обоих svg слоёв
+         *      
+         *      Изначально была задумка каждый шаг анимации вызывать эту функцию.
+         *      Но затем во время оптимизации слои с svg стали видны только тогда,
+         *      когда анимация не проходит. По-этому этот код был поставлен на setTimeout
+         * */
+        var __afterMovingCorrectSvgLayersPositions = function () {
             //clog(self.map.attr('style'));
             // left: -69.9985px; top: -299.999px;
             // left: [-]{0,1}(\d+\.\d+px);
@@ -990,7 +1073,26 @@ var clog = function () {
                 self.svg_overlay.attr('viewBox', att);
             }
 
+            __moveToStep();
+
         };
+
+        /** Задачей этого метода является постоянная корректировка местонах и размера оверлейного слоя,
+         * который сейчас виден (картинка этажа, например), во время анимации zoom\move
+         * 
+         * @private
+         */
+        var __moveToStep = function () {
+            console.log("<__moveToStep>");
+
+            // [zoomove]
+            $('.map_object_image_bg').each(function () {
+                // рассчитаем и применим стиль
+                self.__compose_css_style_for_map_object_image($( this ));
+            });
+            
+        };
+        
         var __moveToTimeout = function () {
             if (self.mode === 'edit_area'|| self.mode === 'view_area') {
                 $("#masked").removeClass('hiddn');
@@ -1001,9 +1103,10 @@ var clog = function () {
         };
 
         // x,y - экранные координаты
+        // сюда подаётся scale, который нужно присвоить map после анимации
         self.moveTo = function (x, y, scale, d, easing) {
-            //clog("<self.moveTo> x = " + x + "; y = " + y + "; scale = " + scale);
-            clog('<self.moveTo>');
+            clog("<self.moveTo> x = " + x + "; y = " + y + "; scale = " + scale + "; delay = " + d);
+            //clog('<self.moveTo>');
 
             // если подан аргумент scale(масштаб)
             // перемещаемся анимированно
@@ -1013,9 +1116,11 @@ var clog = function () {
                 if (self.current_area != null) {
                     $("#masked").addClass('hiddn');
                     setTimeout(__moveToTimeout, d);
-                    setTimeout(__moveToStep, d);
                 }
 
+                setTimeout(__afterMovingCorrectSvgLayersPositions, d);
+
+                /* TODO:: реализовать рассчёт scale во время анимации (но во время анимации мы можем прятать image_bg слои */
                 self.map.stop().animate(
                     {
                         'left': x,
@@ -1023,7 +1128,16 @@ var clog = function () {
                         'width': self.contentWidth * scale,
                         'height': self.contentHeight * scale
                     },
-                    //{ 'step': __moveToStep },
+                    {
+                        'step': __moveToStep,
+                        'complete': function () {
+                            console.log('<CORE>');
+
+                            self.scale = scale; /* NOTE:: CORE */
+                            self.x = x;
+                            self.y = y;
+                        }
+                    },
                     d,
                     easing,
                     __moveToAnimate
@@ -1039,6 +1153,11 @@ var clog = function () {
                     'left': x,
                     'top': y
                 });
+
+                console.log('<CORE>');
+                self.scale = scale; /* NOTE:: CORE */
+                self.x = x;
+                self.y = y;
 
                 var t = (-x) + " " + (-y) + " " + self.contentWidth * self.scale + " " + self.contentHeight * self.scale;
                 self.svg.attr('viewBox',t);

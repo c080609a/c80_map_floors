@@ -2,7 +2,8 @@
 
 // Zoom Buttons
 function ZoomButtons() {
-    
+
+    var self = this;
     var _map = null;
     this.el = null;
 
@@ -21,35 +22,50 @@ function ZoomButtons() {
         //this.el = $('<div></div>').addClass('mzoom_buttons').appendTo(div_container);
         this.el = $('.mzoom_buttons');
 
-        this.zoomin = $('<a></ha>').attr('href', '#').addClass('mapplic-zoomin-button').appendTo(this.el);
+        this.zoomin = $('<a></a>').attr('href', '#').addClass('mapplic-zoomin-button').appendTo(this.el);
 
         this.zoomin.on('click touchstart', function (e) {
             e.preventDefault();
 
-            var scale = _map.scale;
-            _map.scale = _map.normalizeScale(scale + .2);
+            var scale = _map.normalizeScale(_map.scale + 0.2);
+            //_map.scale = _map.normalizeScale(scale + .2);
 
-            _map.x = _map.normalizeX(_map.x - (_map.container.width() / 2 - _map.x) * (_map.scale / scale - 1));
-            _map.y = _map.normalizeY(_map.y - (_map.container.height() / 2 - _map.y) * (_map.scale / scale - 1));
+            //_map.x = _map.normalizeX(_map.x - (_map.container.width() / 2 - _map.x) * (_map.scale / scale - 1));
+            //_map.y = _map.normalizeY(_map.y - (_map.container.height() / 2 - _map.y) * (_map.scale / scale - 1));
 
-            _map.moveTo(_map.x, _map.y, _map.scale, 400, 'easeInOutCubic');
-            _map.mark_virgin = false;
+            self.__execute_zoom(scale);
+
         });
 
-        this.zoomout = $('<a></ha>').attr('href', '#').addClass('mapplic-zoomout-button').appendTo(this.el);
+        this.zoomout = $('<a></a>').attr('href', '#').addClass('mapplic-zoomout-button').appendTo(this.el);
 
         this.zoomout.on('click touchstart', function (e) {
             e.preventDefault();
 
-            var scale = _map.scale;
-            _map.scale = _map.normalizeScale(scale - .2);
+            var scale = _map.normalizeScale(_map.scale - .2);
+            //_map.scale = _map.normalizeScale(scale - .2);
 
-            _map.x = _map.normalizeX(_map.x - (_map.container.width() / 2 - _map.x) * (_map.scale / scale - 1));
-            _map.y = _map.normalizeY(_map.y - (_map.container.height() / 2 - _map.y) * (_map.scale / scale - 1));
+            //_map.x = _map.normalizeX(_map.x - (_map.container.width() / 2 - _map.x) * (_map.scale / scale - 1));
+            //_map.y = _map.normalizeY(_map.y - (_map.container.height() / 2 - _map.y) * (_map.scale / scale - 1));
 
-            _map.moveTo(_map.x, _map.y, _map.scale, 400, 'easeInOutCubic');
-            _map.mark_virgin = false;
+            self.__execute_zoom(scale);
+
         });
+    };
+
+    self.__execute_zoom = function (scale) {
+        var x = _map.normalizeX({
+            x: _map.x - (_map.container.width() / 2 - _map.x) * (scale / _map.scale - 1),
+            scale: scale
+        });
+
+        var y = _map.normalizeY({
+            y: _map.y - (_map.container.width() / 2 - _map.y) * (scale / _map.scale - 1),
+            scale: scale
+        });
+
+        _map.moveTo(x, y, scale, 400, 'easeInOutCubic');
+        _map.mark_virgin = false;
     };
 
     this.update = function (scale) {
@@ -58,4 +74,5 @@ function ZoomButtons() {
         if (scale == _map.o.fitscale) this.zoomout.addClass('mapplic-disabled');
         else if (scale == _map.o.maxscale) this.zoomin.addClass('mapplic-disabled');
     };
+
 }

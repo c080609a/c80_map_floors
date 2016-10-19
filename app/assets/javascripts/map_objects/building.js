@@ -61,12 +61,64 @@ function Building() {
         _map.moveTo(_map.x, _map.y, _map.scale, 400, 'easeInOutCubic');
     };
 
-    var _proccess_floors_data = function () {
-        //_image_overlay = _map.draw_child_bg_image(_options.img.overlay.src, 'building', true);
-        //_image_bg = _map.draw_child_bg_image(_options.img.bg.src, 'building');
-        //_map.draw_childs(_options.childs, _options["rent_building_hash"]);
+    // the_floor - это as_json модели C80MapFloors::Floor
+    /*{
+        "map_building_id": 7,
+        "img_bg": {
+            "url": "/uploads/map/floors/floor_e7dc.gif",
+            "thumb": {"url": "/uploads/map/floors/thumb_floor_e7dc.gif"}
+        },
+        "img_overlay": {
+            "url": null,
+            "thumb": {"url": null}
+        },
+        "id": 2,
+        "title": "Первый этаж",
+        "tag": "first_test_floor",
+        "ord": 1,
+        "coords": "",
+        "class_name": "C80MapFloors::Floor",
+        "areas": [
+        {
+            "floor_id": 2,
+            "id": 2,
+            "tag": "test_area",
+            "coords": "10,12,110,112",
+            "area_representator_id": null,
+            "class_name": "C80MapFloors::Area"
+        }
+    ]
+    }*/
+    var _draw_floor = function (the_floor) {
 
-        _map.draw_childs(_options["floors"]);
+        // это тот самый код, который остался без изменений с версии c80_map (прошлой версии)
+        if (the_floor["img_overlay"]["url"] != "null") {
+            _image_overlay = _map.draw_child_bg_image(the_floor["img_overlay"]["url"], 'building', true);
+        }
+        if (the_floor["img_bg"]["url"] != "null") {
+            _image_bg = _map.draw_child_bg_image(the_floor["img_bg"]["url"], 'building');
+        }
+        _map.draw_childs(the_floor["areas"]/*, _options["rent_building_hash"]*/);
+
+    };
+
+    // options_floors - as_json массива этажей модели C80MapFloors::Floor
+    var _parse_floors = function (options_floors) {
+
+        // NOTE:: тестово возьмем 1й этаж
+        var the_first_floor = options_floors[0];
+
+        _draw_floor(the_first_floor);
+
+    };
+
+    var _proccess_floors_data = function () {
+
+        if (_options["floors"] != undefined && _options["floors"].length) {
+            _parse_floors(_options["floors"]);
+        } else {
+            alert('У здания нет этажей, а должны быть.');
+        }
 
     };
 
@@ -134,7 +186,9 @@ function Building() {
 
     _this.exit = function () {
         _image_bg.remove();
-        _image_overlay.remove();
+        if (_image_overlay != null) {
+            _image_overlay.remove();
+        }
         _image_bg = null;
         _image_overlay = null;
         //_zoomToMe();
@@ -191,10 +245,14 @@ function Building() {
     // добраться до слоя с svg
     // эти методы для этого имплементированы
     _this.changeOverlayZindex = function () {
-        _image_overlay.css('z-index','1');
+        if (_image_overlay != null) {
+            _image_overlay.css('z-index', '1');
+        }
     };
     _this.resetOverlayZindex = function () {
-        _image_overlay.css('z-index','3');
+        if (_image_overlay != null) {
+            _image_overlay.css('z-index', '3');
+        }
     };
 
     _this.to_json = function () {

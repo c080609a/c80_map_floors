@@ -6,13 +6,15 @@ ActiveAdmin.register C80MapFloors::MapBuilding, as: 'MapBuilding' do
 
   permit_params :img, 
                 :coords, 
-                :tag
+                :tag,
+                :title
 
   config.sort_order = 'id_asc'
 
   index do
     column :id
     column :tag
+    column :title
     column :coords do |mp|
       d = mp.coords
       "<div style='width:100px;overflow:hidden;'>#{d}</div>".html_safe
@@ -30,6 +32,7 @@ ActiveAdmin.register C80MapFloors::MapBuilding, as: 'MapBuilding' do
 
     f.inputs 'Свойства' do
       f.input :tag
+      f.input :title
       f.input :coords
       # f.input :img, :hint => "#{image_tag(f.object.img.thumb.url) if f.object.img.present?}".html_safe
     end

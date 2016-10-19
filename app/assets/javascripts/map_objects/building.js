@@ -61,6 +61,15 @@ function Building() {
         _map.moveTo(_map.x, _map.y, _map.scale, 400, 'easeInOutCubic');
     };
 
+    var _proccess_floors_data = function () {
+        //_image_overlay = _map.draw_child_bg_image(_options.img.overlay.src, 'building', true);
+        //_image_bg = _map.draw_child_bg_image(_options.img.bg.src, 'building');
+        //_map.draw_childs(_options.childs, _options["rent_building_hash"]);
+
+        _map.draw_childs(_options["floors"]);
+
+    };
+
     _this.init = function (options, link_to_map) {
 
         if (options['coords'] != undefined && options['coords'].length) {
@@ -103,11 +112,16 @@ function Building() {
 
 
         setTimeout(function () {
-            _image_overlay = _map.draw_child_bg_image(_options.img.overlay.src, 'building', true);
-            _image_bg = _map.draw_child_bg_image(_options.img.bg.src, 'building');
+
+            // попросим изменить состояние окружающей среды
             _map.setMode('view_building');
-            _map.showBuildingInfo(_options["rent_building_hash"]);
-            _map.draw_childs(_options.childs, _options["rent_building_hash"]);
+
+            // попросим показать информацию о Rent::Building здании (привязанному к данному C80MapFloors::MapBuilding)
+            //_map.showBuildingInfo(_options["rent_building_hash"]);
+
+            // запустим внутренний механизм парсинга этажей и их отрисовки
+            _proccess_floors_data();
+
         }, 400);
 
         _map.svgRemoveAllNodes();

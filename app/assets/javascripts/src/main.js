@@ -736,6 +736,20 @@ var clog = function () {
             self.svg_overlay.empty();
         };
 
+        /** Нарисовать на карте объекты из массива childs.
+         *
+         * Массив childs содержит наборы однотипных объектов.
+         * Т.е. объекты только одного типа приходят в фукнцию.
+         * Типы могут быть: C80MapFloors::MapBuilding,C80MapFloors::Area
+         *
+         * Если мы рисуем набор Площадей C80MapFloors::Area, то:
+         *          - это означает, что мы вошли в Здание C80MapFloors::Building.
+         *          - parent_hash - это as_json объекта класса C80Rent:Building,
+         *          который привязан к родителю отрисовываемого C80MapFloors::Area,
+         *          (т.е. родитель - это C80MapFloors::Building).
+         *           - И подаётся он для того, чтобы в окне с информацией о C80Rent:Area
+         *           можно было отобразить характеристики Здания родителя C80Rent:Building.
+         */
         self.draw_childs = function (childs, parent_hash) {
             //clog("<Map.draw_childs>");
 
@@ -758,10 +772,10 @@ var clog = function () {
                         ia = new Area();
                         ia.init(iobj, parent_hash, self);
                         break;
-                    /*case 'C80MapFloors::Floor':
+                    case 'C80MapFloors::Floor':
                         ia = new Floor();
                         ia.init(iobj, parent_hash, self);
-                        break;*/
+                        break;
                 }
                 //ip = Polygon.createFromSaved(iobj);
                 //utils.id('svg').appendChild(ip.g);

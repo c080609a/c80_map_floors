@@ -1169,7 +1169,6 @@ var clog = function () {
 
                 //setTimeout(__afterMovingCorrectSvgLayersPositions, d);
 
-                /* TODO:: реализовать рассчёт scale во время анимации (но во время анимации мы можем прятать image_bg слои */
                 self.map.stop().animate(
                     {
                         'left': x,

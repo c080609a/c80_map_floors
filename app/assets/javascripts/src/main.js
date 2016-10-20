@@ -826,6 +826,7 @@ var clog = function () {
          *
          */
         self.draw_map_object_image_bg = function (img_src, params) {
+            console.log('<draw_map_object_image_bg>');
 
             // породим DOM
             var $div_map_object_image_bg = $('<div></div>')
@@ -860,6 +861,11 @@ var clog = function () {
          *      - рассчёт актуальных (для данного масштаба) размеров и координат местонах указанного объекта (вместо объекта подаётся хэш описывающий его, с x,y,width,height)
          *      - составление css стиля для картинки с css-классом map_object_image_bg
          *      - присвоении этого стиля картинке
+         *
+         * Вызывается после того, как завершилось движение, анимация.
+         *
+         * Пользуется map.scale при рассчётах (т.е. значениеmap.scale должно быть правильным, иначе будут баги).
+         *
          * @private
          */
         self.__compose_css_style_for_map_object_image = function ($img_with_class_map_object_image_bg) {
@@ -867,10 +873,10 @@ var clog = function () {
             var $i = $img_with_class_map_object_image_bg;
 
             // проведём калькуляцию [zoomove-calc]
-            var left = $i.data("left")*self.scale_during_animation;
-            var top = $i.data("top")*self.scale_during_animation;
-            var width = $i.data("width")*self.scale_during_animation;
-            var height = $i.data("height")*self.scale_during_animation;
+            var left = $i.data("left")*self.scale;
+            var top = $i.data("top")*self.scale;
+            var width = $i.data("width")*self.scale;
+            var height = $i.data("height")*self.scale;
 
             // впишем в DOM стили
             var style = 'top:';
@@ -1042,7 +1048,8 @@ var clog = function () {
             self.moveTo(self.x, self.y, self.scale, duration, easing);
         };*/
 
-        /** задачи этой функции:
+        /**
+         * задачи этой функции:
          *      - быть контейнером кода
          *      - считывать css атрибут self.map
          *      - по регулярке извлекать left и top
@@ -1052,6 +1059,10 @@ var clog = function () {
          *      Изначально была задумка каждый шаг анимации вызывать эту функцию.
          *      Но затем во время оптимизации слои с svg стали видны только тогда,
          *      когда анимация не проходит. По-этому этот код был поставлен на setTimeout
+         *
+         *      Отличие этого кода от [qq1] лишь в механике вычисления (извлечения) нужных значений.
+         *      Скорее всего, это код-дубликат, который появился во время rush разработки.
+         *      Т.е. желателен рефакторинг и упрощение логики, но не сейчас.
          * */
         var __afterMovingCorrectSvgLayersPositions = function () {
             //clog(self.map.attr('style'));
@@ -1073,24 +1084,39 @@ var clog = function () {
                 self.svg_overlay.attr('viewBox', att);
             }
 
-            __moveToStep();
-
         };
 
-        /** Задачей этого метода является постоянная корректировка местонах и размера оверлейного слоя,
-         * который сейчас виден (картинка этажа, например), во время анимации zoom\move
-         * 
+        /**
+         * Вызывается после анимации moveTo
+         * Задачей этого метода является :
+         *  - сохранение x,y,scale в данных карты,
+         *  - корректировка местонах и размера оверлейного слоя после анимации
+         *
+         * @param y                 // эти параметры есть конечная точка анимации moveTo,
+         * @param x                 // т.е. к этим параметрам позиции стремится картинка карты и это анимируется
+         * @param scale             // как только картинка карты дойдёт до цели - их надо сохранить в map
+         *
          * @private
          */
-        var __moveToStep = function () {
-            console.log("<__moveToStep>");
+        var __moveToComplete = function (x,y,scale) {
+            console.log("<__moveToComplete> x = " + x + "; y = " + y + "; scale = " + scale);
+
+            /* NOTE:: CORE */
+
+            if (scale !== undefined) self.scale = scale;
+            self.x = x;
+            self.y = y;
 
             // [zoomove]
             $('.map_object_image_bg').each(function () {
                 // рассчитаем и применим стиль
                 self.__compose_css_style_for_map_object_image($( this ));
             });
-            
+
+            if (self.tooltip) self.tooltip.position();
+
+            __afterMovingCorrectSvgLayersPositions();
+
         };
         
         var __moveToTimeout = function () {
@@ -1098,9 +1124,9 @@ var clog = function () {
                 $("#masked").removeClass('hiddn');
             }
         };
-        var __moveToAnimate = function () {
-            if (self.tooltip) self.tooltip.position();
-        };
+        /*var __moveToAnimate = function () {
+
+        };*/
 
         // x,y - экранные координаты
         // сюда подаётся scale, который нужно присвоить map после анимации
@@ -1118,7 +1144,7 @@ var clog = function () {
                     setTimeout(__moveToTimeout, d);
                 }
 
-                setTimeout(__afterMovingCorrectSvgLayersPositions, d);
+                //setTimeout(__afterMovingCorrectSvgLayersPositions, d);
 
                 /* TODO:: реализовать рассчёт scale во время анимации (но во время анимации мы можем прятать image_bg слои */
                 self.map.stop().animate(
@@ -1129,18 +1155,14 @@ var clog = function () {
                         'height': self.contentHeight * scale
                     },
                     {
-                        'step': __moveToStep,
+                        //'step': __moveToStep,
                         'complete': function () {
-                            console.log('<CORE>');
-
-                            self.scale = scale; /* NOTE:: CORE */
-                            self.x = x;
-                            self.y = y;
+                            __moveToComplete(x,y,scale);
                         }
                     },
                     d,
-                    easing,
-                    __moveToAnimate
+                    easing          //,
+                    //__moveToAnimate
                 );
 
             }
@@ -1154,14 +1176,14 @@ var clog = function () {
                     'top': y
                 });
 
-                console.log('<CORE>');
-                self.scale = scale; /* NOTE:: CORE */
-                self.x = x;
-                self.y = y;
+                __moveToComplete(x,y);
 
-                var t = (-x) + " " + (-y) + " " + self.contentWidth * self.scale + " " + self.contentHeight * self.scale;
-                self.svg.attr('viewBox',t);
-                self.svg_overlay.attr('viewBox', t);
+                // отличие этого кода [qq1] от кода в [__afterMovingCorrectSvgLayersPositions] лишь в том,
+                // что строка для атрибута viewbox формируется иным образом
+                // Скорее всего, это код-дубликат, который появился во время rush разработки.
+                //var t = (-x) + " " + (-y) + " " + self.contentWidth * self.scale + " " + self.contentHeight * self.scale;
+                //self.svg.attr('viewBox',t);
+                //self.svg_overlay.attr('viewBox', t);
             }
 
             if (self.current_area != null) {

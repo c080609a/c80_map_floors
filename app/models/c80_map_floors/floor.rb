@@ -13,15 +13,16 @@ module C80MapFloors
     mount_uploader :img_bg, C80MapFloors::FloorImageUploader   # TODO:: FloorImageUploader класс должен использоваться только для загрузки img_bg [потому что 78aasq]
     mount_uploader :img_overlay, C80MapFloors::FloorImageUploader
 
+    # NOTE:: Т.к. для этажей используются картинки в два раза детальнее (в два раза больше, чем оригинал карты), то делим попалам
     # размеры картинки уйдут в js - они помогут её css-абсолютно правильно масштабировать и позиционировать
     def img_bg_width
       img = MiniMagick::Image.open(img_bg.path)
-      img["width"]
+      img["width"]/2
     end
 
     def img_bg_height
       img = MiniMagick::Image.open(img_bg.path)
-      img["height"]
+      img["height"]/2
     end
 
     # private

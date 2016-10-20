@@ -10,7 +10,7 @@ module C80MapFloors
     # validates :coords, uniqueness: true
     # after_save :update_json
 
-    mount_uploader :img_bg, C80MapFloors::FloorImageUploader
+    mount_uploader :img_bg, C80MapFloors::FloorImageUploader   # TODO:: FloorImageUploader класс должен использоваться только для загрузки img_bg [потому что 78aasq]
     mount_uploader :img_overlay, C80MapFloors::FloorImageUploader
 
     # размеры картинки уйдут в js - они помогут её css-абсолютно правильно масштабировать и позиционировать
@@ -26,9 +26,11 @@ module C80MapFloors
 
     # private
 
-    # def update_json
-    #   MapJson.update_json
-    # end
+    # TODO:: после того, как апдейтим этаж, не обновляются данные в JSON - изза ебучей ошибки с путями в CarrierWave
+    def update_json
+      Rails.logger.debug "[TRACE] <update_json> nope"
+      # MapJson.update_json
+    end
 
   end
 end

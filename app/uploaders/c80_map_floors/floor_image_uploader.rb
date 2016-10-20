@@ -1,5 +1,7 @@
 module C80MapFloors
 
+  # TODO:: FloorImageUploader класс должен использоваться только для загрузки img_bg [потому что 78aasq]
+
   class FloorImageUploader < CarrierWave::Uploader::Base
 
     include CarrierWave::MiniMagick

@@ -91,6 +91,9 @@ var clog = function () {
         self.last_clicked_g = null; // начали просматривать area\building (запустили сессию), и здесь храним ссылку на последний кликнутый полигон из svg_overlay в течение сессии
         self.dnd_enable = null; // если да, то можно карту dnd мышкой
 
+        // во время анимации каждый шаг рассчитывается мгновенный scale
+        self.scale_during_animation = null;
+
         // true, если:
         //- юзер еще не кликал по кнопкам zoom
         //- юзер еще не делал drag-n-drop
@@ -849,7 +852,7 @@ var clog = function () {
                 .addClass('map_object_image_bg') /* этот класс используем при [zoomove]*/
                 .appendTo($div_map_object_image_bg);
 
-            // рассчитаем и применим стиль
+            // рассчитаем позиционирующий стиль и применим его к созданной оверлейной картинке
             self.__compose_css_style_for_map_object_image($img);
 
             return $div_map_object_image_bg;
@@ -857,14 +860,14 @@ var clog = function () {
         };
 
         /**
-         * Задача этой служебной функции является:
+         * Задача этой служебной функции:
          *      - рассчёт актуальных (для данного масштаба) размеров и координат местонах указанного объекта (вместо объекта подаётся хэш описывающий его, с x,y,width,height)
          *      - составление css стиля для картинки с css-классом map_object_image_bg
          *      - присвоении этого стиля картинке
          *
-         * Вызывается после того, как завершилось движение, анимация.
+         * Вызывается каждый шаг анимации и при входе в здание на первый этаж.
          *
-         * Пользуется map.scale при рассчётах (т.е. значениеmap.scale должно быть правильным, иначе будут баги).
+         * Пользуется map.scale_during_animation при рассчётах
          *
          * @private
          */
@@ -873,10 +876,10 @@ var clog = function () {
             var $i = $img_with_class_map_object_image_bg;
 
             // проведём калькуляцию [zoomove-calc]
-            var left = $i.data("left")*self.scale;
-            var top = $i.data("top")*self.scale;
-            var width = $i.data("width")*self.scale;
-            var height = $i.data("height")*self.scale;
+            var left = $i.data("left")*self.scale_during_animation;
+            var top = $i.data("top")*self.scale_during_animation;
+            var width = $i.data("width")*self.scale_during_animation;
+            var height = $i.data("height")*self.scale_during_animation;
 
             // впишем в DOM стили
             var style = 'top:';
@@ -1107,12 +1110,6 @@ var clog = function () {
             self.x = x;
             self.y = y;
 
-            // [zoomove]
-            $('.map_object_image_bg').each(function () {
-                // рассчитаем и применим стиль
-                self.__compose_css_style_for_map_object_image($( this ));
-            });
-
             if (self.tooltip) self.tooltip.position();
 
             __afterMovingCorrectSvgLayersPositions();
@@ -1127,6 +1124,32 @@ var clog = function () {
         /*var __moveToAnimate = function () {
 
         };*/
+
+        /**
+         * Рассчитывает scale_during_animation и корректирует местонах. оверлейных картинок.
+         * Вызывается каждый шаг анимации moveto.
+         * @private
+         */
+        var __moveToStep = function () {
+
+            //var x = self.map.css('left').split('px').join('');
+            //var y = self.map.css('top').split('px').join('');
+            var w = self.map.css('width').split('px').join('');
+            //var h = self.map.css('height').split('px').join('');
+
+            //var image_width = MAP_WIDTH * scale;
+
+            // рассчитаем мгновенное значение scale
+            self.scale_during_animation = w / MAP_WIDTH;
+
+            // [zoomove] пробежимся по всем оверлейным картинкам и позиционируем их
+            $('.map_object_image_bg').each(function () {
+                // рассчитаем и применим стиль
+                self.__compose_css_style_for_map_object_image($( this ));
+            });
+
+            //console.log("<__moveToStep> x = " + x + "; y = " + y + "; w = " + w + "; h = " + h + "; scale = " + scale_during_animation);
+        };
 
         // x,y - экранные координаты
         // сюда подаётся scale, который нужно присвоить map после анимации
@@ -1155,7 +1178,7 @@ var clog = function () {
                         'height': self.contentHeight * scale
                     },
                     {
-                        //'step': __moveToStep,
+                        'step': __moveToStep,
                         'complete': function () {
                             __moveToComplete(x,y,scale);
                         }

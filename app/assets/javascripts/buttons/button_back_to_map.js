@@ -24,7 +24,7 @@ function BackToMapButton() {
         }
 
         _map.svgRemoveAllNodes();
-        _map.draw_childs(_map.data["childs"]);
+        _map.draw_childs(_map.data["buildings"]);
 
         if (_map.initial_map_position != null) {
             /* TODO:: необходимо удостовериться, что параметр scale используется и используется правильно*/

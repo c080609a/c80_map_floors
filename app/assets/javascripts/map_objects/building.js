@@ -107,13 +107,22 @@ function Building() {
             //_image_overlay = _map.draw_child_bg_image(the_floor["img_overlay"]["url"], 'building', true);
         }
         if (the_floor["img_bg"]["url"] != "null") {
+
+            // картинку этажа рисуем не по bounding box здания, а по значениям из базы
+            var tmp = _options["coords_img"].split(",");
+            var xx = tmp[0];
+            var yy = tmp[1];
+
             // просим карту нарисовать картинку с данными характеристиками
             _image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
-                x: _bbox.xmin,
-                y: _bbox.ymin,
+                //x: _bbox.xmin,
+                //y: _bbox.ymin,
+                x: xx,
+                y: yy,
                 width: the_floor["img_bg_width"],
                 height: the_floor["img_bg_height"]
             }/*, 'building'*/);
+
         }
 
         // просим карту нарисовать площади
@@ -257,6 +266,8 @@ function Building() {
         //console.log("<Building._calcBBox> " +
             //xmin + "," + ymin + "; " + xmax + "," + ymax +
         //"; center logical: " + _cx + "," + _cy + ", center screen: " + _map.rightX(_cx) + ", " + _map.rightY(_cy));
+
+        console.log('<Building._calcBBox> ' + xmin + ', ' + ymin);
     };
 
     // при редактировании здания (т.е. изменении полигонов и holer-ов площадей)

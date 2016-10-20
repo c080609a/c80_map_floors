@@ -6,6 +6,7 @@ ActiveAdmin.register C80MapFloors::MapBuilding, as: 'MapBuilding' do
 
   permit_params :img, 
                 :coords, 
+                :coords_img,
                 :tag,
                 :title
 
@@ -18,6 +19,10 @@ ActiveAdmin.register C80MapFloors::MapBuilding, as: 'MapBuilding' do
     column :coords do |mp|
       d = mp.coords
       "<div style='width:100px;overflow:hidden;'>#{d}</div>".html_safe
+    end
+    column :coords_img do |mp|
+      d = mp.coords_img
+      "<div style='width:70px;overflow:hidden;'>#{d}</div>".html_safe
     end
     column :created_at
     column :updated_at
@@ -34,6 +39,7 @@ ActiveAdmin.register C80MapFloors::MapBuilding, as: 'MapBuilding' do
       f.input :tag
       f.input :title
       f.input :coords
+      f.input :coords_img
       # f.input :img, :hint => "#{image_tag(f.object.img.thumb.url) if f.object.img.present?}".html_safe
     end
 

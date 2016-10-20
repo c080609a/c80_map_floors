@@ -52,6 +52,9 @@ function Area() {
 
         _map = pself;
         _this._options = options;
+        if (typeof _this._options["coords"] == "string") { /* когда нажимаем ENTER в редакторе и завершаем рисование полигона - приходит массив */
+            _this._options["coords"] = _this._options["coords"].split(',');
+        }
         _this.id = options["id"];
 
         // [4ddl5df]
@@ -59,7 +62,7 @@ function Area() {
             _this._options["id"] = Math.ceil((Math.random()*100000));
         }
 
-        // [56dfaw1]
+        // [NOTE::56dfaw1: парсим координаты объекта на карте, поданные в виде строки]
         for (var i=0; i<_this._options.coords.length; i++) {
             _this._options.coords[i] = Number(_this._options.coords[i]);
         }
@@ -112,15 +115,26 @@ function Area() {
         var scaleX = _map.calcScale(_bbox.xmin, _bbox.xmax, _map.X1S, _map.X2S);
         var scaleY = _map.calcScale(_bbox.ymin, _bbox.ymax, _map.Y1S, _map.Y2S);
         var scale = (scaleX < scaleY) ? scaleX : scaleY;
-        _map.scale = scale;
+
+        //_map.scale = scale;
 
         // совмещаем точку на экране, в которую надо центрировать дома, с центром дома с учётом рассчитанного масштаба
-        _map.x = _map.normalizeX(_map.CX - _map.scale * _cx - _map.container.offset().left);
-        _map.y = _map.normalizeY(_map.CY - _map.scale * _cy - _map.container.offset().top);
+        //_map.x = _map.normalizeX(_map.CX - _map.scale * _cx - _map.container.offset().left);
+        //_map.y = _map.normalizeY(_map.CY - _map.scale * _cy - _map.container.offset().top);
+
+        var x = _map.normalizeX({
+            x: _map.CX - scale * _cx - _map.container.offset().left,
+            scale: scale
+        });
+
+        var y = _map.normalizeY({
+            y: _map.CY - scale * _cy - _map.container.offset().top,
+            scale: scale
+        });
 
         //clog("<Area.enter> [qq] moveTo: " + _map.x + ", " + _map.y);
         //clog("<Area.enter> Call moveTo.");
-        _map.moveTo(_map.x, _map.y, _map.scale, 400, 'easeInOutCubic');
+        _map.moveTo(x, y, scale, 400, 'easeInOutCubic');
 
         setTimeout(timeoutEnter, 400);
 

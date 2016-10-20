@@ -34,7 +34,7 @@ function Building() {
         //var selfX = _map.calcCoord(scale, _map.X1, _bbox.xmin);
         //var selfY = _map.calcCoord(scale, _map.Y1, _bbox.ymin);
 
-        _map.scale = scale;
+        //_map.scale = scale;
         //_map.x = selfX;
         //_map.y = selfY;
 
@@ -54,157 +54,116 @@ function Building() {
 
         // совмещаем точку на экране, в которую надо центрировать дома, с центром дома с учётом рассчитанного масштаба
         // или, другими словами, перегоняем логические координаты в систему координат экрана
-        _map.x = _map.normalizeX(_map.CX - _map.scale * _cx - _map.container.offset().left);
-        _map.y = _map.normalizeY(_map.CY - _map.scale * _cy - _map.container.offset().top);
+        //_map.x = _map.normalizeX(_map.CX - scale * _cx - _map.container.offset().left);
+        //_map.y = _map.normalizeY(_map.CY - scale * _cy - _map.container.offset().top);
+
+        var x = _map.normalizeX({
+            x: _map.CX - scale * _cx - _map.container.offset().left,
+            scale: scale
+        });
+
+        var y = _map.normalizeY({
+            y: _map.CY - scale * _cy - _map.container.offset().top,
+            scale: scale
+        });
 
         //console.log("<Building.enter> [qq] moveTo: " + _map.x + ", " + _map.y);
-        _map.moveTo(_map.x, _map.y, _map.scale, 400, 'easeInOutCubic');
+        _map.moveTo(x, y, scale, 400, 'easeInOutCubic');
+    };
+
+    // the_floor - это as_json модели C80MapFloors::Floor
+    /*{
+        "map_building_id": 7,
+        "img_bg": {
+            "url": "/uploads/map/floors/floor_e7dc.gif",
+            "thumb": {"url": "/uploads/map/floors/thumb_floor_e7dc.gif"}
+        },
+        "img_overlay": {
+            "url": null,
+            "thumb": {"url": null}
+        },
+        "id": 2,
+        "title": "Первый этаж",
+        "tag": "first_test_floor",
+        "ord": 1,
+        "coords": "",
+        "class_name": "C80MapFloors::Floor",
+        "areas": [
+        {
+            "floor_id": 2,
+            "id": 2,
+            "tag": "test_area",
+            "coords": "10,12,110,112",
+            "area_representator_id": null,
+            "class_name": "C80MapFloors::Area"
+        }
+    ]
+    }*/
+    var _draw_floor = function (the_floor) {
+        console.log('<Building._draw_floor>');
+
+        // это тот самый код, который остался без изменений с версии c80_map (прошлой версии)
+        if (the_floor["img_overlay"]["url"] != "null") {
+            //_image_overlay = _map.draw_child_bg_image(the_floor["img_overlay"]["url"], 'building', true);
+        }
+        if (the_floor["img_bg"]["url"] != "null") {
+
+            // картинку этажа рисуем не по bounding box здания, а по значениям из базы
+            var tmp = _options["coords_img"].split(",");
+            var xx = tmp[0];
+            var yy = tmp[1];
+
+            // просим карту нарисовать картинку с данными характеристиками
+            _image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
+                //x: _bbox.xmin,
+                //y: _bbox.ymin,
+                x: xx,
+                y: yy,
+                width: the_floor["img_bg_width"],
+                height: the_floor["img_bg_height"]
+            }/*, 'building'*/);
+
+        }
+
+        // просим карту нарисовать площади
+        _map.draw_childs(the_floor["areas"]/*, _options["rent_building_hash"]*/);
+
+    };
+
+    // options_floors - as_json массива этажей модели C80MapFloors::Floor
+    var _parse_floors = function (options_floors) {
+
+        // NOTE:: тестово возьмем 1й этаж
+        var the_first_floor = options_floors[0];
+
+        _draw_floor(the_first_floor);
+
+    };
+
+    var _proccess_floors_data = function () {
+
+        if (_options["floors"] != undefined && _options["floors"].length) {
+            _parse_floors(_options["floors"]);
+        } else {
+            alert('У здания нет этажей, а должны быть.');
+        }
+
     };
 
     _this.init = function (options, link_to_map) {
 
-        if (options['coords'] != undefined) {
+        if (options['coords'] != undefined && options['coords'].length) {
             console.log("<Building.init>");
-
-        //console.log(options);
-        /*
-                {
-                    "object_type": "building",
-                    "rent_building_hash": {
-                    "id": 2,
-                        "title": "Здание 2",
-                        "props": {
-                        "square": "1234 кв.м.",
-                            "square_free": "124 кв. м",
-                            "floor_height": "6 кв. м",
-                            "column_step": "2 м",
-                            "gate_type": "распашные",
-                            "communications": "Интернет, электричество, водоснабжение",
-                            "price": "от 155 руб/кв.м в месяц"
-                    }
-                },
-                    "img": {
-                    "bg": {"src": "/assets/sample_bg-e36f4b42acde72d4ff05376498e5834423165d43e73650dd24a342ecb20779b9.gif"},
-                    "overlay": {
-                        "type": "overlay",
-                            "src": "/assets/sample_overlay-f99419a8904207a6ac74288bccac16c76b388b7162bf2629a2a8dd825746f49b.gif"
-                    }
-                },
-                    "coords": [
-                    986.2441809823903,1696.3649485107717,986.2441809823903,1696.3649485107717,1607.2441809823904,1459.3649485107717,1649.2441809823904,1510.3649485107717,1692.2441809823904,1597.3649485107717,1682.2441809823904,1602.3649485107717,1684.2441809823904,1617.3649485107717,1067.2441809823904,1863.3649485107717,1063.2441809823904,1844.3649485107717,1053.2441809823904,1852.3649485107717,1016.2441809823903,1755.3649485107717
-                ],
-                    "props": {},
-                    "childs": [
-                    {
-                        "id": 1,
-                        "object_type": "area",
-                        "area_hash": {
-                            "id": 2,
-                            "title": "Площадь 2.12",
-                            "is_free": false,
-                            "props": {
-                                "square": "100 кв.м.",
-                                "floor_height": "6 кв. м",
-                                "column_step": "2 м",
-                                "gate_type": "распашные",
-                                "communications": "Интернет, электричество, водоснабжение",
-                                "price": "от 155 руб/кв.м в месяц"
-                            }
-                        },
-                        "coords": [
-                            998.8649298732183,1717.326608643258,998.8649298732183,1717.326608643258,1230.8649298732184,1631.326608643258,1254.8649298732184,1663.326608643258,1160.8649298732184,1695.326608643258,1214.8649298732184,1803.326608643258,1066.8649298732184,1862.326608643258
-                        ]
-                    },
-                    {
-                        "id": 2,
-                        "object_type": "area",
-                        "area_hash": {
-                            "id": 2,
-                            "title": "Площадь 2.13",
-                            "is_free": true,
-                            "props": {
-                                "square": "102 кв.м.",
-                                "floor_height": "6 кв. м",
-                                "column_step": "2 м",
-                                "gate_type": "распашные",
-                                "communications": "Интернет, электричество, водоснабжение",
-                                "price": "от 155 руб/кв.м в месяц"
-                            }
-                        },
-                        "coords": [
-                            1174.8649298732184,1726.326608643258,1160.8649298732184,1695.326608643258,1253.8649298732184,1664.326608643258,1290.8649298732184,1724.326608643258,1385.8649298732184,1683.326608643258,1408.8649298732184,1725.326608643258,1215.8649298732184,1804.326608643258
-                        ]
-                    },
-                    {
-                        "id": 3,
-                        "object_type": "area",
-                        "area_hash": {
-                            "id": 2,
-                            "title": "Площадь 2.15",
-                            "is_free": true,
-                            "props": {
-                                "square": "150 кв.м.",
-                                "floor_height": "6 кв. м",
-                                "column_step": "2 м",
-                                "gate_type": "распашные",
-                                "communications": "Интернет, электричество, водоснабжение",
-                                "price": "от 155 руб/кв.м в месяц"
-                            }
-                        },
-                        "coords": [
-                            1319.8649298732184,1597.326608643258,1230.8649298732184,1633.326608643258,1292.8649298732184,1723.326608643258,1384.8649298732184,1683.326608643258,1408.8649298732184,1726.326608643258,1510.8649298732184,1686.326608643258,1414.8649298732184,1561.326608643258
-                        ]
-                    },
-                    {
-                        "id": 4,
-                        "object_type": "area",
-                        "area_hash": {
-                            "id": 2,
-                            "title": "Площадь 2.12",
-                            "is_free": true,
-                            "props": {
-                                "square": "124 кв.м.",
-                                "floor_height": "6 кв. м",
-                                "column_step": "2 м",
-                                "gate_type": "распашные",
-                                "communications": "Интернет, электричество, водоснабжение",
-                                "price": "от 155 руб/кв.м в месяц"
-                            }
-                        },
-                        "coords": [
-                            1420.8649298732184,1558.326608643258,1415.8649298732184,1561.326608643258,1510.8649298732184,1686.326608643258,1570.8649298732184,1661.326608643258,1476.8649298732184,1537.326608643258
-                        ]
-                    },
-                    {
-                        "id": 4,
-                        "object_type": "area",
-                        "area_hash": {
-                            "id": 2,
-                            "title": "Площадь 2.12",
-                            "is_free": true,
-                            "props": {
-                                "square": "124 кв.м.",
-                                "floor_height": "6 кв. м",
-                                "column_step": "2 м",
-                                "gate_type": "распашные",
-                                "communications": "Интернет, электричество, водоснабжение",
-                                "price": "от 155 руб/кв.м в месяц"
-                            }
-                        },
-                        "coords": [
-                            1484.8649298732184,1533.326608643258,1476.8649298732184,1536.326608643258,1570.8649298732184,1661.326608643258,1681.8649298732184,1616.326608643258,1601.8649298732184,1486.326608643258
-                        ]
-                    }
-                ],
-                    "floors": []
-                }*/
 
             _map = link_to_map;
             _options = options;
             _this.options = options;
+            if (typeof _this.options["coords"] == 'string') { /* когда нажимаем ENTER в редакторе и завершаем рисование полигона - приходит массив */
+                _this.options["coords"] = _this.options["coords"].split(',');
+            }
             _this.id = options["id"];
 
-            // [56dfaw1]
+            // [NOTE::56dfaw1: парсим координаты объекта на карте, поданные в виде строки]
             for (var i=0; i<_this.options.coords.length; i++) {
                 _this.options.coords[i] = Number(_this.options.coords[i]);
             }
@@ -233,11 +192,16 @@ function Building() {
 
 
         setTimeout(function () {
-            _image_overlay = _map.draw_child_bg_image(_options.img.overlay.src, 'building', true);
-            _image_bg = _map.draw_child_bg_image(_options.img.bg.src, 'building');
+
+            // попросим изменить состояние окружающей среды
             _map.setMode('view_building');
-            _map.showBuildingInfo(_options["rent_building_hash"]);
-            _map.draw_childs(_options.childs, _options["rent_building_hash"]);
+
+            // попросим показать информацию о Rent::Building здании (привязанному к данному C80MapFloors::MapBuilding)
+            //_map.showBuildingInfo(_options["rent_building_hash"]);
+
+            // запустим внутренний механизм парсинга этажей и их отрисовки
+            _proccess_floors_data();
+
         }, 400);
 
         _map.svgRemoveAllNodes();
@@ -250,7 +214,9 @@ function Building() {
 
     _this.exit = function () {
         _image_bg.remove();
-        _image_overlay.remove();
+        if (_image_overlay != null) {
+            _image_overlay.remove();
+        }
         _image_bg = null;
         _image_overlay = null;
         //_zoomToMe();
@@ -300,6 +266,8 @@ function Building() {
         //console.log("<Building._calcBBox> " +
             //xmin + "," + ymin + "; " + xmax + "," + ymax +
         //"; center logical: " + _cx + "," + _cy + ", center screen: " + _map.rightX(_cx) + ", " + _map.rightY(_cy));
+
+        console.log('<Building._calcBBox> ' + xmin + ', ' + ymin);
     };
 
     // при редактировании здания (т.е. изменении полигонов и holer-ов площадей)
@@ -307,10 +275,14 @@ function Building() {
     // добраться до слоя с svg
     // эти методы для этого имплементированы
     _this.changeOverlayZindex = function () {
-        _image_overlay.css('z-index','1');
+        if (_image_overlay != null) {
+            _image_overlay.css('z-index', '1');
+        }
     };
     _this.resetOverlayZindex = function () {
-        _image_overlay.css('z-index','3');
+        if (_image_overlay != null) {
+            _image_overlay.css('z-index', '3');
+        }
     };
 
     _this.to_json = function () {

@@ -1,17 +1,6 @@
 <div class="building_info">
-  <h2></h2>
-  <ul> <%# idишники элементов списка - имена полей таблицы Rent::Building %>
-    <li id="square">Общая площадь: <span></span> м кв.</li>
-    <li id="free_square">Свободная площадь: <span></span> м кв.</li>
-    <li id="floor_height">Высота потолка: <span></span></li>
-    <li id="column_step">Шаг колонн: <span></span></li>
-    <li id="gate_type">Тип ворот: <span></span></li>
-    <li id="communications">Коммуникации: <span></span></li>
-  </ul>
-  <h5 id="price"><span></span></h5>
-  <%= link_to "Оставить заявку",
-              "#",
-              :class => 'ebutton c80_order_invoking_btn',
-              :data => { :comment_text => "этот будет заменён ajax Ответом, заполняющим инфо о площади", :subj_id => 'Это число будет подставлено ajax Ответом' },
-              :id => 'area_order_button' %>
+    <div class="tabs_js">
+      <div class="tab_buttons clearfix"></div>
+      <div class="tab_content clearfix"></div>
+    </div>
 </div>

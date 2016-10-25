@@ -7,7 +7,7 @@ function CancelCreatingButton() {
     _this.el = null;
 
     this.onClick = function (e) {
-        console.log("<CancelCreatingButton.onClick>");
+        //console.log("<CancelCreatingButton.onClick>");
         e.preventDefault();
         _map.setMode("editing");
     };

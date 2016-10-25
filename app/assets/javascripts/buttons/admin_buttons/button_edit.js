@@ -19,7 +19,7 @@ function EditButton() {
         if (mark_change_only_inner_state == undefined) {
             mark_change_only_inner_state = false;
         }
-        console.log("<EditButton.setState> state = " + state);
+        //console.log("<EditButton.setState> state = " + state);
 
         // этот код коррелирует с [x9cs7]
         _this.state = state;

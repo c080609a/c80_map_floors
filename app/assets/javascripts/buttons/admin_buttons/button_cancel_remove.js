@@ -10,7 +10,7 @@ function CancelRemoveButton() {
         if (_this.el.hasClass('disabled')) return;
         e.preventDefault();
 
-        console.log("<CancelRemoveButton.onClick> Выходим из режима удаления полигона.");
+        //console.log("<CancelRemoveButton.onClick> Выходим из режима удаления полигона.");
         _map.setMode('editing');
 
     };

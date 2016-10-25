@@ -32,7 +32,7 @@ function NewButton() {
         if (_this.state == 'creating') {
             _this.setState('editing');
         } else {
-            console.log("<NewButton.onClick> Переходим в режим создания полигона.");
+            //console.log("<NewButton.onClick> Переходим в режим создания полигона.");
             _this.setState('creating');
         }
     };

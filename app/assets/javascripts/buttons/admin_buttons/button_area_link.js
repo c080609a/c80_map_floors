@@ -59,7 +59,7 @@ function AreaLinkButton() {
         if (_this.el.hasClass('disabled')) return;
         e.preventDefault();
 
-        console.log("<AreaLinkButton.click>");
+        //console.log("<AreaLinkButton.click>");
 
         _map.save_preloader_klass.show();
 
@@ -84,7 +84,7 @@ function AreaLinkButton() {
     };
 
     _this.show = function () {
-        console.log("<AreaLinkButton.show>");
+        //console.log("<AreaLinkButton.show>");
         _this.el.css('display','block');
     };
 

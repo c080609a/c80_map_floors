@@ -7,7 +7,7 @@ function CompleteCreatingButton() {
     _this.el = null;
 
     _this.onClick = function (e) {
-        console.log("<CompleteCreatingButton.onClick>");
+        //console.log("<CompleteCreatingButton.onClick>");
         if (e != null) e.preventDefault();
         _map.onDrawStop();
     };

@@ -5,7 +5,7 @@
 function BuildingInfo(options) {
 
     // текуще отображаемое здание
-    var _cur_map_building = null;
+    var _cur_map_building_json = null;
 
     // настраиваемые параметры
     var _options = null;
@@ -24,7 +24,7 @@ function BuildingInfo(options) {
         //console.log('<BuildingInfo.setData>');
         //console.log(map_building_json);
 
-        _cur_map_building = map_building_json;
+        _cur_map_building_json = map_building_json;
 
         this._removeAll();
         this._parseData();
@@ -59,9 +59,9 @@ function BuildingInfo(options) {
         console.log('<BuildingInfo._parseData>');
 
         // обойдём этажи, построим вкладки
-        for (var i = 0; i < _cur_map_building['floors'].length; i++) {
+        for (var i = 0; i < _cur_map_building_json['floors'].length; i++) {
 
-            var ifloor_data = _cur_map_building['floors'][i];
+            var ifloor_data = _cur_map_building_json['floors'][i];
             var ifloor_id = ifloor_data["id"]; // NOTE:fidfid
             //console.log(ifloor_data); // => see C80MapFloors::Floor.as_json
 

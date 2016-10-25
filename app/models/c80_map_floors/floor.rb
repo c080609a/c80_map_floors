@@ -16,13 +16,21 @@ module C80MapFloors
     # NOTE:: Т.к. для этажей используются картинки в два раза детальнее (в два раза больше, чем оригинал карты), то делим попалам
     # размеры картинки уйдут в js - они помогут её css-абсолютно правильно масштабировать и позиционировать
     def img_bg_width
-      img = MiniMagick::Image.open(img_bg.path)
-      img["width"]/2
+      res = nil
+      if img_bg.present?
+        img = MiniMagick::Image.open(img_bg.path)
+        res = img["width"]/2
+      end
+      res
     end
 
     def img_bg_height
-      img = MiniMagick::Image.open(img_bg.path)
-      img["height"]/2
+      res = nil
+      if img_bg.present?
+        img = MiniMagick::Image.open(img_bg.path)
+        res = img["height"]/2
+      end
+      res
     end
 
     # private

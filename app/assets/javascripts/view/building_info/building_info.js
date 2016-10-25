@@ -34,9 +34,15 @@ function BuildingInfo(options) {
 
  //------------------------------------------------------------------------------------------------------------------------
 
-    // слушает клики по табам, отправляет команды на перерисовку картинки этажа
-    this._onTabClick = function (clicked_tab_id) {
+    /**
+     * слушает клики по табам, отправляет команды на перерисовку картинки этажа.
+     *
+     * @param clicked_tab_id - это floor id NOTE:fidfid
+     * @private
+     */
+    this._onTabShow = function (clicked_tab_id) {
         console.log('<_onTabClick> clicked_tab_id = ' + clicked_tab_id);
+
     };
 
  //------------------------------------------------------------------------------------------------------------------------
@@ -56,11 +62,11 @@ function BuildingInfo(options) {
         for (var i = 0; i < _cur_map_building['floors'].length; i++) {
 
             var ifloor_data = _cur_map_building['floors'][i];
-            var ifloor_id = ifloor_data["id"];
+            var ifloor_id = ifloor_data["id"]; // NOTE:fidfid
             //console.log(ifloor_data); // => see C80MapFloors::Floor.as_json
 
             // создадим вкладку
-            _tabs.addTab(ifloor_data["title"], ifloor_id, this._onTabClick);
+            _tabs.addTab(ifloor_data["title"], ifloor_id, this._onTabShow);
 
             // свяжем её по id с даными
             _tabs_floors_data[ifloor_id] = {

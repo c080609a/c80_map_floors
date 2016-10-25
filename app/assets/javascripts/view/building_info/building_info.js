@@ -40,8 +40,8 @@ function BuildingInfo(options) {
      * @param clicked_tab_id - это floor id NOTE:fidfid
      * @private
      */
-    this._onTabShow = function (clicked_tab_id) {
-        console.log('<_onTabClick> clicked_tab_id = ' + clicked_tab_id);
+    this._onTabShow = function (shown_tab_id) {
+        console.log('<_onTabShow> shown_tab_id = ' + shown_tab_id);
 
     };
 

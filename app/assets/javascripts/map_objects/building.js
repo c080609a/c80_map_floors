@@ -100,7 +100,7 @@ function Building() {
     ]
     }*/
     var _draw_floor = function (the_floor) {
-        console.log('<Building._draw_floor>');
+        //console.log('<Building._draw_floor>');
 
         // это тот самый код, который остался без изменений с версии c80_map (прошлой версии)
         if (the_floor["img_overlay"]["url"] != "null") {
@@ -188,16 +188,15 @@ function Building() {
         //console.log("<Building.enter>");
         //console.log(_options);
 
-        _zoomToMe();
+        // отдадим информацию о C80MapFloors::MapBuilding в панель
+        _map.building_info_klass.setData(_options);
 
+        _zoomToMe();
 
         setTimeout(function () {
 
             // попросим изменить состояние окружающей среды
             _map.setMode('view_building');
-
-            // попросим показать информацию о Rent::Building здании (привязанному к данному C80MapFloors::MapBuilding)
-            //_map.showBuildingInfo(_options["rent_building_hash"]);
 
             // запустим внутренний механизм парсинга этажей и их отрисовки
             _proccess_floors_data();
@@ -267,7 +266,7 @@ function Building() {
             //xmin + "," + ymin + "; " + xmax + "," + ymax +
         //"; center logical: " + _cx + "," + _cy + ", center screen: " + _map.rightX(_cx) + ", " + _map.rightY(_cy));
 
-        console.log('<Building._calcBBox> ' + xmin + ', ' + ymin);
+        //console.log('<Building._calcBBox> ' + xmin + ', ' + ymin);
     };
 
     // при редактировании здания (т.е. изменении полигонов и holer-ов площадей)

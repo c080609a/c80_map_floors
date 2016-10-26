@@ -125,6 +125,8 @@ function Building() {
                 height: the_floor["img_bg_height"]
             }/*, 'building'*/);
 
+        } else {
+            alert('[ERROR] У этажа нет картинки.');
         }
 
         // просим карту нарисовать площади

@@ -105,13 +105,16 @@ function Tabs(options) {
         //console.log(e);
         e.preventDefault();
 
+        // фиксируем кнопку
+        var $clicked_button = $(e.target);
+
         // зафиксируем id нажатой кнопки
-        var clicked_id = $(e.target).data('id');
-        console.log('<_onTabButtonClick> clicked_id: ' + clicked_id);
+        var clicked_id = $clicked_button.data('id');
+        //console.log('<_onTabButtonClick> clicked_id: ' + clicked_id);
 
         // зафиксируем index нажатой кнопки
-        var clicked_index = $(e.target).data('index');
-        console.log('<_onTabButtonClick> clicked_index: ' + clicked_index);
+        var clicked_index = $clicked_button.data('index');
+        //console.log('<_onTabButtonClick> clicked_index: ' + clicked_index);
 
         // сравним с курсором, колбэк вызовем, только если есть изменения
         if (_current_tab_id != clicked_id) {
@@ -125,6 +128,14 @@ function Tabs(options) {
             }
 
         }
+
+        // сделаем эту кнопку активной
+        _$div_tab_buttons
+            .find('a')
+            .removeClass('active');
+        _$div_tab_buttons
+            .find('a[data-index='+clicked_index+']')
+            .addClass('active');
 
     };
 

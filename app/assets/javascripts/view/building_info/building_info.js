@@ -12,6 +12,9 @@ function BuildingInfo(options) {
         onFloorTabChange: undefined
     };
 
+    // заголовок - название здания
+    var _$title;
+
     // компонент "вкладки"
     var _tabs = null;
 
@@ -69,10 +72,16 @@ function BuildingInfo(options) {
         // создаём компонент "вкладки"
         _tabs = new Tabs();
 
+        // находим заголовок
+        _$title = $('.building_info').find('h3');
+
     };
 
     this._parseData = function () {
         console.log('<BuildingInfo._parseData>');
+
+        // установим заголовок окна
+        _$title.text(_cur_map_building_json["title"]);
 
         // обойдём этажи, построим вкладки
         for (var i = 0; i < _cur_map_building_json['floors'].length; i++) {
@@ -98,6 +107,7 @@ function BuildingInfo(options) {
     // очистим данные и вью
     this._removeAll = function () {
 
+        _$title.text('');
         _tabs_floors_data = {};
         _tabs.removeAll();
     };

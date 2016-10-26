@@ -59,7 +59,7 @@ function BuildingLinkButton() {
         if (_this.el.hasClass('disabled')) return;
         e.preventDefault();
 
-        console.log("<BuildingLinkButton.click>");
+        //console.log("<BuildingLinkButton.click>");
 
         _map.save_preloader_klass.show();
 
@@ -84,7 +84,7 @@ function BuildingLinkButton() {
     };
 
     _this.show = function () {
-        console.log("<BuildingLinkButton.show>");
+        //console.log("<BuildingLinkButton.show>");
         _this.el.css('display','block');
     };
 

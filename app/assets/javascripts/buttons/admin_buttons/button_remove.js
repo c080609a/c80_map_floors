@@ -10,7 +10,7 @@ function RemoveButton() {
         if (_this.el.hasClass('disabled')) return;
         e.preventDefault();
 
-        console.log("<RemoveButton.onClick> Переходим в режим удаления полигона.");
+        //console.log("<RemoveButton.onClick> Переходим в режим удаления полигона.");
         _map.setMode('removing');
 
     };

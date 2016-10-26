@@ -13,8 +13,9 @@
 
 #= require_directory ./events
 #= require_directory ./map_objects
-#= require_directory ./view
+#= require_tree ./view
 #= require_tree ./buttons
+#= require_tree ./ui
 
 #= require ./src/utils/utils.js
 #= require ./src/utils/opacity_buttons_utils.js

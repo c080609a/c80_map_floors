@@ -107,7 +107,7 @@ function Area() {
     };
 
     _this.enter = function () {
-        console.log("<Area.enter>");
+        //console.log("<Area.enter>");
         //clog(_this._options);
 
         /* рассчитаем масштаб, при котором можно вписать прямоугольник дома в прямоугольник рабочей области */
@@ -159,7 +159,7 @@ function Area() {
     };
 
     _this.exit = function () {
-        console.log('<Area.exit>');
+        //console.log('<Area.exit>');
     };
 
     this.invalidateAnimationMask = function () {

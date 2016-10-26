@@ -1,7 +1,7 @@
 
 /* AppEvent constructor */
 function AppEvent(target, eventType, func) {
-    console.log("<AppEvent.new> target = " + target);
+    //console.log("<AppEvent.new> target = " + target);
 
     this.target = target;
     this.eventType = eventType;

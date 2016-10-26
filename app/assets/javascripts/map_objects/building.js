@@ -7,6 +7,8 @@ function Building() {
     var _options = null;
     var _polygon = null;
 
+    // хэш с данными об этажах
+    var _data_floors = {};
 
     // экранные координаты левой верхней точки, куда надо вписать полигон здания
     //var _left_page_x = 342;
@@ -100,7 +102,7 @@ function Building() {
     ]
     }*/
     var _draw_floor = function (the_floor) {
-        console.log('<Building._draw_floor>');
+        //console.log('<Building._draw_floor>');
 
         // это тот самый код, который остался без изменений с версии c80_map (прошлой версии)
         if (the_floor["img_overlay"]["url"] != "null") {
@@ -108,21 +110,37 @@ function Building() {
         }
         if (the_floor["img_bg"]["url"] != "null") {
 
-            // картинку этажа рисуем не по bounding box здания, а по значениям из базы
+            // NOTE::картинку этажа рисуем не по bounding box здания, а по значениям из базы
+
+            // сначала возьём координаты coords_img здания
             var tmp = _options["coords_img"].split(",");
-            var xx = tmp[0];
-            var yy = tmp[1];
+            var xx = parseFloat(tmp[0]);
+            var yy = parseFloat(tmp[1]);
+
+            // и сложим их с корректирующими координатами coords этажа
+            var xx2 = 0;
+            var yy2 = 0;
+            if (the_floor["coords"].length) {
+                var tmp2 = the_floor["coords"].split(',');
+                xx2 = parseInt(tmp2[0]);
+                yy2 = parseInt(tmp2[1]);
+            }
+
+            // сначала попросим карту очистить слой с img_bg картинками
+            _map.clear_all_map_object_image_bg();
 
             // просим карту нарисовать картинку с данными характеристиками
             _image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
                 //x: _bbox.xmin,
                 //y: _bbox.ymin,
-                x: xx,
-                y: yy,
+                x: xx + xx2,
+                y: yy + yy2,
                 width: the_floor["img_bg_width"],
                 height: the_floor["img_bg_height"]
             }/*, 'building'*/);
 
+        } else {
+            alert('[ERROR] У этажа нет картинки.');
         }
 
         // просим карту нарисовать площади
@@ -133,10 +151,13 @@ function Building() {
     // options_floors - as_json массива этажей модели C80MapFloors::Floor
     var _parse_floors = function (options_floors) {
 
-        // NOTE:: тестово возьмем 1й этаж
-        var the_first_floor = options_floors[0];
-
-        _draw_floor(the_first_floor);
+        // соберём в удобный хэш
+        var i, ifloor_json, ifloor_id;
+        for (i = 0; i < options_floors.length; i++) {
+            ifloor_json = options_floors[i];
+            ifloor_id = ifloor_json["id"];
+            _data_floors[ ifloor_id ] = ifloor_json;
+        }
 
     };
 
@@ -188,32 +209,50 @@ function Building() {
         //console.log("<Building.enter>");
         //console.log(_options);
 
+        // отдадим информацию о C80MapFloors::MapBuilding в панель
+        _map.building_info_klass.setData(_options);
+
         _zoomToMe();
 
-
-        setTimeout(function () {
+        //setTimeout(function () {
 
             // попросим изменить состояние окружающей среды
             _map.setMode('view_building');
 
-            // попросим показать информацию о Rent::Building здании (привязанному к данному C80MapFloors::MapBuilding)
-            //_map.showBuildingInfo(_options["rent_building_hash"]);
-
             // запустим внутренний механизм парсинга этажей и их отрисовки
             _proccess_floors_data();
 
-        }, 400);
+        //}, 400);
 
         _map.svgRemoveAllNodes();
 
-        _map.current_building = _this;
         //console.log("<Building.enter> id: " + _this.id);
         _map.mark_virgin = false;
 
+        //
+        _map.building_info_klass.setSelectedFloor(0);
+
     };
 
+    /**
+     * Войти на этаж здания.
+     * @param floor_id
+     */
+    _this.enterFloor = function (floor_id) {
+        console.log('<Building.enterFloor> floor_id: ' + floor_id);
+
+        var flr = _data_floors[floor_id];
+        if (flr != undefined) {
+            _draw_floor(flr);
+        } else {
+            alert('[Buidling.EnterFloor] error: Нет данных об этаже floor_id='+floor_id+'.');
+        }
+
+
+    }
+
     _this.exit = function () {
-        _image_bg.remove();
+        if (_image_bg != null) _image_bg.remove();
         if (_image_overlay != null) {
             _image_overlay.remove();
         }
@@ -267,7 +306,7 @@ function Building() {
             //xmin + "," + ymin + "; " + xmax + "," + ymax +
         //"; center logical: " + _cx + "," + _cy + ", center screen: " + _map.rightX(_cx) + ", " + _map.rightY(_cy));
 
-        console.log('<Building._calcBBox> ' + xmin + ', ' + ymin);
+        //console.log('<Building._calcBBox> ' + xmin + ', ' + ymin);
     };
 
     // при редактировании здания (т.е. изменении полигонов и holer-ов площадей)

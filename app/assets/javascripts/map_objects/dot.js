@@ -6,7 +6,7 @@ function Dot() {
     var _polygon = null;
 
     _this.init = function (options,pself) {
-        console.log('<Dot.init>');
+        //console.log('<Dot.init>');
         _options = options;
         _polygon = Polygon.createFromSaved(options, false, pself);
     }

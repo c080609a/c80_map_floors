@@ -2,7 +2,7 @@ var MapUtils = {
 
     svgOverlayHideAllExcept: function ($g) {
         if ($g != null) {
-            console.log("<MapUtils.svgOverlayHideAllExcept>");
+            //console.log("<MapUtils.svgOverlayHideAllExcept>");
 
             // убираем у всех g из svg_overlay класс viewing_area
             $g.parent().find('g').css('display','none');
@@ -15,7 +15,7 @@ var MapUtils = {
 
     svgOverlayRestore: function ($g) {
         if ($g != null) {
-            console.log("<MapUtils.svgOverlayRestore>");
+            //console.log("<MapUtils.svgOverlayRestore>");
             $g.parent().find('g').css('display','block');
         }
     }

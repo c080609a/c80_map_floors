@@ -90,6 +90,7 @@ var clog = function () {
         self.save_preloader_klass = null;
         self.last_clicked_g = null; // начали просматривать area\building (запустили сессию), и здесь храним ссылку на последний кликнутый полигон из svg_overlay в течение сессии
         self.dnd_enable = null; // если да, то можно карту dnd мышкой
+        self.building_info_klass = null; // класс, занимающися отображением данных об этаже\здании\площади
 
         // во время анимации каждый шаг рассчитывается мгновенный scale
         self.scale_during_animation = null;
@@ -264,14 +265,23 @@ var clog = function () {
 
             });
 
-            // Controls
+            // драг энд дроп и прочая мышь
             initAddControls();
 
+            // NOTE:: запускаем данные в карту
             self.draw_childs(data["buildings"]);
 
+            // проверим, всё ли уместилось
             self.ivalidateViewArea();
 
-            // Browser resize
+            // инициализиуем класс, занимающийся отображением данных о здании\этаже\площади
+            self.building_info_klass = new BuildingInfo({
+                onFloorTabChange: function (floor_id) {
+                    self.current_building.enterFloor(floor_id);
+                }
+            });
+
+            // начнём слушать окно браузера
             $(window).resize(function () {
 
                 // Mobile
@@ -363,6 +373,7 @@ var clog = function () {
 
         };
 
+        // драг энд дроп и прочая мышь
         var initAddControls = function () {
             var map = self.map,
                 mapbody = $('.mmap-image', self.map);
@@ -511,6 +522,7 @@ var clog = function () {
                                 if (p.obj && p.obj.building) {
                                     var building = p.obj.building;
                                     clog("<mouseup> Входим в здание.");
+                                    self.current_building = building;
                                     building.enter();
                                 }
 
@@ -829,7 +841,7 @@ var clog = function () {
          *
          */
         self.draw_map_object_image_bg = function (img_src, params) {
-            console.log('<draw_map_object_image_bg>');
+            //console.log('<draw_map_object_image_bg>');
 
             // породим DOM
             var $div_map_object_image_bg = $('<div></div>')
@@ -857,6 +869,10 @@ var clog = function () {
 
             return $div_map_object_image_bg;
 
+        };
+
+        self.clear_all_map_object_image_bg = function () {
+            $('.map_object_image_bg').parent().remove();
         };
 
         /**
@@ -891,7 +907,7 @@ var clog = function () {
             style += "height:";
             style += height + 'px;';
 
-            console.log("> scale: " + self.scale + "; style: " + style);
+            //console.log("> scale: " + self.scale + "; style: " + style);
             $i.attr('style',style);
 
         };
@@ -1102,7 +1118,7 @@ var clog = function () {
          * @private
          */
         var __moveToComplete = function (x,y,scale) {
-            console.log("<__moveToComplete> x = " + x + "; y = " + y + "; scale = " + scale);
+            //console.log("<__moveToComplete> x = " + x + "; y = " + y + "; scale = " + scale);
 
             /* NOTE:: CORE */
 
@@ -1217,8 +1233,8 @@ var clog = function () {
         };
 
         // показать инфо о здании
-        self.showBuildingInfo = function (rent_building_hash) {
-            console.log("<main.showBuildingInfo> Показать информацию о Rent-здании с id = " + rent_building_hash.id);
+        self.showBuildingInfo_old = function (rent_building_hash) {
+            //console.log("<main.showBuildingInfo> Показать информацию о Rent-здании с id = " + rent_building_hash.id);
 
             //"rent_building_hash": {
             //    "id": 2,
@@ -1329,7 +1345,7 @@ var clog = function () {
             // извлекаем значения
             var rent_area_id = $s.val();
             var map_area_id = self.current_area.id;
-            console.log("<Map.link_area> rent_area_id = " + rent_area_id + "; map_area_id = " + map_area_id);
+            //console.log("<Map.link_area> rent_area_id = " + rent_area_id + "; map_area_id = " + map_area_id);
 
             // нажимаем кнопку "закрыть"
             $b.click();
@@ -1357,7 +1373,7 @@ var clog = function () {
         // взять C80MapFloors::current_building и назначить ему Rent::building.id,
         // выбранный в окне _modal_window.html.erb
         self.link_building = function () {
-            console.log('<Map.link_building> ');
+            //console.log('<Map.link_building> ');
 
             // фиксируем компоненты модального окна
             var $m = $('#modal_window');
@@ -1367,7 +1383,7 @@ var clog = function () {
             // извлекаем значения
             var rent_building_id = $s.val();
             var map_building_id = self.current_building.id;
-            console.log("<Map.link_area> rent_building_id = " + rent_building_id + "; map_building_id = " + map_building_id);
+            //console.log("<Map.link_area> rent_building_id = " + rent_building_id + "; map_building_id = " + map_building_id);
 
             // нажимаем кнопку "закрыть"
             $b.click();

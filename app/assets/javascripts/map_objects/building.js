@@ -126,6 +126,9 @@ function Building() {
                 yy2 = parseInt(tmp2[1]);
             }
 
+            // сначала попросим карту очистить слой с img_bg картинками
+            _map.clear_all_map_object_image_bg();
+
             // просим карту нарисовать картинку с данными характеристиками
             _image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
                 //x: _bbox.xmin,

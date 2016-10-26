@@ -871,6 +871,10 @@ var clog = function () {
 
         };
 
+        self.clear_all_map_object_image_bg = function () {
+            $('.map_object_image_bg').parent().remove();
+        };
+
         /**
          * Задача этой служебной функции:
          *      - рассчёт актуальных (для данного масштаба) размеров и координат местонах указанного объекта (вместо объекта подаётся хэш описывающий его, с x,y,width,height)

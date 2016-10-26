@@ -139,7 +139,7 @@ function StateController() {
                 if (_this.building_info.data("init") == undefined) {
                     _this.building_info.data('init', _this.building_info.css("top"));
                 }
-                _this.building_info.css("top", -300);
+                _this.building_info.css("top", -400);
                 _this.building_info.css("display", "block");
 
                 // скроем кнопку "забронировать площадь"

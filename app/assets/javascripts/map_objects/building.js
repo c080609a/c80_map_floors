@@ -252,7 +252,7 @@ function Building() {
     }
 
     _this.exit = function () {
-        _image_bg.remove();
+        if (_image_bg != null) _image_bg.remove();
         if (_image_overlay != null) {
             _image_overlay.remove();
         }

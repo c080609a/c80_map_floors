@@ -5,16 +5,20 @@
 function BuildingInfo(options) {
 
     // текуще отображаемое здание
-    var _cur_map_building_json = null;
+    var _cur_map_building_json;
 
     // настраиваемые параметры
-    var _options = null;
+    var _options = {
+        onFloorTabChange: undefined
+    };
 
     // компонент "вкладки"
     var _tabs = null;
 
     // привязка данных об этажах здания ко вкладкам в этом удобном хэше
     var _tabs_floors_data = {};
+
+    //-[ public ]-----------------------------------------------------------------------------------------------------------------------
 
     /** Получить данные для отображения.
      *
@@ -32,23 +36,35 @@ function BuildingInfo(options) {
 
     };
 
+    /**
+     * П
+     * @param floor_index
+     */
+    this.setSelectedFloor = function (floor_index) {
+        _tabs.setSelectedIndex(floor_index);
+    };
+
  //------------------------------------------------------------------------------------------------------------------------
 
     /**
-     * слушает клики по табам, отправляет команды на перерисовку картинки этажа.
+     * слушает клики по табам, отправляет команды выше.
      *
-     * @param clicked_tab_id - это floor id NOTE:fidfid
+     * @param shown_tab_id - айди текуще отображённой вкладки, это floor id NOTE:fidfid
      * @private
      */
     this._onTabShow = function (shown_tab_id) {
         console.log('<_onTabShow> shown_tab_id = ' + shown_tab_id);
 
+        if (_options['onFloorTabChange'] != undefined) {
+            _options['onFloorTabChange'](shown_tab_id);
+        }
     };
 
- //------------------------------------------------------------------------------------------------------------------------
+    //---[ dsd ]---------------------------------------------------------------------------------------------------------------------
 
     this._fInit = function (options) {
         // TODO:: _options extend options
+        _options = $.extend(_options, options);
 
         // создаём компонент "вкладки"
         _tabs = new Tabs();

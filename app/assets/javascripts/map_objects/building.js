@@ -7,6 +7,8 @@ function Building() {
     var _options = null;
     var _polygon = null;
 
+    // хэш с данными об этажах
+    var _data_floors = {};
 
     // экранные координаты левой верхней точки, куда надо вписать полигон здания
     //var _left_page_x = 342;
@@ -133,10 +135,13 @@ function Building() {
     // options_floors - as_json массива этажей модели C80MapFloors::Floor
     var _parse_floors = function (options_floors) {
 
-        // NOTE:: тестово возьмем 1й этаж
-        var the_first_floor = options_floors[0];
-
-        _draw_floor(the_first_floor);
+        // соберём в удобный хэш
+        var i, ifloor_json, ifloor_id;
+        for (i = 0; i < options_floors.length; i++) {
+            ifloor_json = options_floors[i];
+            ifloor_id = ifloor_json["id"];
+            _data_floors[ ifloor_id ] = ifloor_json;
+        }
 
     };
 
@@ -193,7 +198,7 @@ function Building() {
 
         _zoomToMe();
 
-        setTimeout(function () {
+        //setTimeout(function () {
 
             // попросим изменить состояние окружающей среды
             _map.setMode('view_building');
@@ -201,15 +206,34 @@ function Building() {
             // запустим внутренний механизм парсинга этажей и их отрисовки
             _proccess_floors_data();
 
-        }, 400);
+        //}, 400);
 
         _map.svgRemoveAllNodes();
 
-        _map.current_building = _this;
         //console.log("<Building.enter> id: " + _this.id);
         _map.mark_virgin = false;
 
+        //
+        _map.building_info_klass.setSelectedFloor(0);
+
     };
+
+    /**
+     * Войти на этаж здания.
+     * @param floor_id
+     */
+    _this.enterFloor = function (floor_id) {
+        console.log('<Building.enterFloor> floor_id: ' + floor_id);
+
+        var flr = _data_floors[floor_id];
+        if (flr != undefined) {
+            _draw_floor(flr);
+        } else {
+            alert('[Buidling.EnterFloor] error: Нет данных об этаже floor_id='+floor_id+'.');
+        }
+
+
+    }
 
     _this.exit = function () {
         _image_bg.remove();

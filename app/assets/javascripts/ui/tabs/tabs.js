@@ -31,6 +31,9 @@ function Tabs(options) {
     // айди текущей просматриваемой вкладки
     var _current_tab_id = -1;
 
+    // zero-based индекс текущей просматриваемой вкладки
+    var _selected_index = -1;
+
     // структура данных, которая описывает текущее содержимое копонента: кнопки и контент
     var _data = {};
 
@@ -85,9 +88,14 @@ function Tabs(options) {
         };
 
         // поместим в массивы
-        _tab_buttons.push(btn);
         //_tab_contents.push(cnt);
 
+    };
+
+    this.setSelectedIndex = function (index) {
+        console.log('<setSelectedIndex> index: ' + index);
+        _$div_tab_buttons.find('a[data-index='+index+']')
+            .click();
     };
 
     //--[ controller ]----------------------------------------------------------------------------------------------------------------------
@@ -99,12 +107,17 @@ function Tabs(options) {
 
         // зафиксируем id нажатой кнопки
         var clicked_id = $(e.target).data('id');
-        console.log('<clicked_id> ' + clicked_id);
+        console.log('<_onTabButtonClick> clicked_id: ' + clicked_id);
+
+        // зафиксируем index нажатой кнопки
+        var clicked_index = $(e.target).data('index');
+        console.log('<_onTabButtonClick> clicked_index: ' + clicked_index);
 
         // сравним с курсором, колбэк вызовем, только если есть изменения
         if (_current_tab_id != clicked_id) {
 
             _current_tab_id = clicked_id;
+            _selected_index = clicked_index;
 
             var fun = _callbacks[clicked_id];
             if (fun != undefined) {
@@ -121,14 +134,19 @@ function Tabs(options) {
         console.log('<_addTabButton> tab_button_title: ' + tab_button_title);
 
         // создадим кнопку
-        $('<a href="#"></a>')
+        var b = $('<a href="#"></a>')
             .text(tab_button_title)
-            .data('id', button_id)
+            .attr('data-id',button_id)
+            .attr('data-index', _tab_buttons.length)
+            //.data('id', button_id)
+            //.data('index', _tab_buttons.length)
             .appendTo(_$div_tab_buttons)
             .on('click', this._onTabButtonClick);
 
         // её колбэк поместим в отдельный массив
         _callbacks[button_id] = on_click_callback;
+
+        _tab_buttons.push(b);
 
     };
 

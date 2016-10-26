@@ -275,7 +275,11 @@ var clog = function () {
             self.ivalidateViewArea();
 
             // инициализиуем класс, занимающийся отображением данных о здании\этаже\площади
-            self.building_info_klass = new BuildingInfo();
+            self.building_info_klass = new BuildingInfo({
+                onFloorTabChange: function (floor_id) {
+                    self.current_building.enterFloor(floor_id);
+                }
+            });
 
             // начнём слушать окно браузера
             $(window).resize(function () {
@@ -518,6 +522,7 @@ var clog = function () {
                                 if (p.obj && p.obj.building) {
                                     var building = p.obj.building;
                                     clog("<mouseup> Входим в здание.");
+                                    self.current_building = building;
                                     building.enter();
                                 }
 

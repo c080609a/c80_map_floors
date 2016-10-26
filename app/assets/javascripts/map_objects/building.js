@@ -110,17 +110,28 @@ function Building() {
         }
         if (the_floor["img_bg"]["url"] != "null") {
 
-            // картинку этажа рисуем не по bounding box здания, а по значениям из базы
+            // NOTE::картинку этажа рисуем не по bounding box здания, а по значениям из базы
+
+            // сначала возьём координаты coords_img здания
             var tmp = _options["coords_img"].split(",");
-            var xx = tmp[0];
-            var yy = tmp[1];
+            var xx = parseFloat(tmp[0]);
+            var yy = parseFloat(tmp[1]);
+
+            // и сложим их с корректирующими координатами coords этажа
+            var xx2 = 0;
+            var yy2 = 0;
+            if (the_floor["coords"].length) {
+                var tmp2 = the_floor["coords"].split(',');
+                xx2 = parseInt(tmp2[0]);
+                yy2 = parseInt(tmp2[1]);
+            }
 
             // просим карту нарисовать картинку с данными характеристиками
             _image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
                 //x: _bbox.xmin,
                 //y: _bbox.ymin,
-                x: xx,
-                y: yy,
+                x: xx + xx2,
+                y: yy + yy2,
                 width: the_floor["img_bg_width"],
                 height: the_floor["img_bg_height"]
             }/*, 'building'*/);

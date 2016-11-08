@@ -89,7 +89,7 @@ var clog = function () {
         self.drawn_buildings = []; // если имеются нарисованные но несохранённые Здания - они хранятся тут
         self.save_preloader_klass = null;
         self.last_clicked_g = null; // начали просматривать area\building (запустили сессию), и здесь храним ссылку на последний кликнутый полигон из svg_overlay в течение сессии
-        self.dnd_enable = null; // если да, то можно карту dnd мышкой
+        //self.o.dnd_enable = null; // если да, то можно карту dnd мышкой
         self.building_info_klass = null; // класс, занимающися отображением данных об этаже\здании\площади
 
         // во время анимации каждый шаг рассчитывается мгновенный scale
@@ -107,6 +107,9 @@ var clog = function () {
         self.initial_map_position = null;
 
         self.init = function (el, params) {
+
+            console.log('<Map.init>');
+
             // extend options
             self.o = $.extend(self.o, params);
 
@@ -442,7 +445,7 @@ var clog = function () {
             // Drag & drop
             function onDragNdrop(event) {
                 //clog("<mousedown> edit_type = " + self.edit_type);
-                clog("<mousedown> mode = " + self.mode);
+                console.log("<mousedown> mode = " + self.mode + " dnd_enable = " + self.o.dnd_enable);
                 //clog(event);
 
                 // если в данный момент не редактируем фигуру (т.е. не двигаем вершину фигуры)
@@ -462,7 +465,7 @@ var clog = function () {
                     self.map.on('mousemove', function (event) {
                         self.dragging = true;
 
-                        if (self.dnd_enable) {
+                        if (self.o.dnd_enable) { // NOTE:: добавить возможность делать dnd находясь в режиме рисования (админа?)
                             var x = event.pageX - map.data('mouseX') + self.x;
                             var y = event.pageY - map.data('mouseY') + self.y;
 

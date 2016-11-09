@@ -6,32 +6,6 @@ function ImageLoader() {
 
     //--[ private ]----------------------------------------------------------------------------------------------------------------------
 
-    _this._draw_map_object_image_bg_onload = function (img_src, params) {
-        //console.log('<draw_map_object_image_bg>');
-
-        // сохраним начальные параметры в data
-        var left = params["x"];
-        var top = params["y"];
-        var width = params["width"];
-        var height = params["height"];
-
-        var $img = $('<img>')
-            .data('top', top)
-            .data('left', left)
-            .data('width', width)
-            .data('height', height)
-            .attr('src', img_src)
-            .addClass('map_object_image_bg') /* этот класс используем при [zoomove]*/
-            .appendTo($div_map_object_image_bg);
-
-        // рассчитаем позиционирующий стиль и применим его к созданной оверлейной картинке
-        self.__compose_css_style_for_map_object_image($img);
-
-        return $div_map_object_image_bg;
-
-    };
-
-
     /** Показать прелоадер в диве $target.
      *
      * @param $target
@@ -64,8 +38,12 @@ function ImageLoader() {
 
     };
 
-    _this._preloader_hide = function () {
-
+    _this._preloader_hide = function ($target) {
+        var $ilp = $target.find('.image_loader_preloader');
+        $ilp.removeClass('shown');
+        setTimeout(function () {
+            $ilp.remove();
+        }, 400);
     };
 
     //--[ public ]----------------------------------------------------------------------------------------------------------------------
@@ -81,8 +59,49 @@ function ImageLoader() {
      */
     _this.load = function (img_src, options) {
 
+        console.log('<ImageLoader.load> ' + img_src);
+
         // покажем прелоадер
         _this._preloader_show(options["$target"], options["params"]);
+
+        // создадим картинку
+        var img = new Image();
+        var $img = $(img);
+
+        // настроим картинку
+        $img.data('top', options['params']['y'])
+            .data('left', options['params']['x'])
+            .data('width', options['params']['width'])
+            .data('height', options['params']['height'])
+            .addClass('map_object_image_bg'); /* этот класс используем при [zoomove]*/
+
+        img.onload = function () {
+
+            // NOTE:: разделим вставку в DOM и отображение: в mozilla картинка отображается постепенно прорисовываясь сверху вниз, некрасиво
+
+            $img.appendTo(options["$target"]);
+
+            setTimeout(function () {
+
+                // спрячем прелоадер
+                _this._preloader_hide(options["$target"]);
+
+                // сделаем картинку видимой
+                $img.addClass('shown');
+
+                // вызовем колбэк
+                if (options['on_load'] != undefined) {
+                    options['on_load']( $img );
+                }
+
+            }, 300);
+
+        };
+
+        // отобразим картинку
+        img.src = img_src;
+
+        return $img;
 
     };
 

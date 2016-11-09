@@ -106,6 +106,9 @@ var clog = function () {
         // чтобы вернуть карту в исходное состояние после нажатия кнопки "назад на карту"
         self.initial_map_position = null;
 
+        // грузит и отображает картинки заранее известного размера (WxH px), показывает прелоадер
+        self._imageLoader = null;
+
         self.init = function (el, params) {
 
             console.log('<Map.init>');
@@ -221,6 +224,8 @@ var clog = function () {
             var sc = new StateController();
             sc.init(self);
             self.setMode = sc.setMode;
+
+            self._imageLoader = new ImageLoader();
 
             // Admin buttons
             $.ajax({
@@ -838,39 +843,27 @@ var clog = function () {
          *      <div class='map_object_image_bg'>        // style='background-image:url(#{img_src});'
          *          <img src=#{img_src} />
          *      </div>
-         *  и помещает его map_layers
+         *  и помещает его в map_layers
          *
          *  left и top - координаты bound box верхнего левого угла здания
          *
+         *  В новой версии используем предварительную загрузку картинки,
+         *  и показ прелоадера во время загрузки. Когда картинка загрузится,
+         *  она будет отображена на экране.
          */
         self.draw_map_object_image_bg = function (img_src, params) {
-            //console.log('<draw_map_object_image_bg>');
 
             // породим DOM
             var $div_map_object_image_bg = $('<div></div>')
                 .addClass('mlayer')
-                //.attr('style','background-image:url("'+img_src+'")')
-                .appendTo(self.map_layers); // .hide()
+                .appendTo(self.map_layers);
 
-            // сохраним начальные параметры в data
-            var left = params["x"];
-            var top = params["y"];
-            var width = params["width"];
-            var height = params["height"];
-
-            var $img = $('<img>')
-                .data('top', top)
-                .data('left', left)
-                .data('width', width)
-                .data('height', height)
-                .attr('src', img_src)
-                .addClass('map_object_image_bg') /* этот класс используем при [zoomove]*/
-                .appendTo($div_map_object_image_bg);
-
-            // рассчитаем позиционирующий стиль и применим его к созданной оверлейной картинке
-            self.__compose_css_style_for_map_object_image($img);
-
-            return $div_map_object_image_bg;
+            // загрузим в него картинку
+            return self._imageLoader.load(img_src, {
+                $target:   $div_map_object_image_bg,
+                 params:   params,
+                on_load:   self.__compose_css_style_for_map_object_image // рассчитаем позиционирующий стиль и применим его к созданной оверлейной картинке
+            });
 
         };
 
@@ -899,6 +892,8 @@ var clog = function () {
             var top = $i.data("top")*self.scale_during_animation;
             var width = $i.data("width")*self.scale_during_animation;
             var height = $i.data("height")*self.scale_during_animation;
+
+            console.log('<__compose_css_style_for_map_object_image>');
 
             // впишем в DOM стили
             var style = 'top:';

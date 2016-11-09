@@ -7,4 +7,11 @@ img.map_object_image_bg {
   -ms-user-select: none;
   user-select: none;
   width: auto;
+
+  opacity: 0;
+
+  &.shown {
+    opacity: 1;
+  }
+
 }

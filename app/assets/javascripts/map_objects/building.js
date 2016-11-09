@@ -21,7 +21,7 @@ function Building() {
     var _cx = null;
     var _cy = null;
 
-    var _image_bg = null;
+    var _$image_bg = null;
     var _image_overlay = null;
 
     var _zoomToMe = function () {
@@ -33,6 +33,7 @@ function Building() {
         //console.log("<Building.enter> scaleX = " + scaleX + ", scaleY = " + scaleY);
 
         var scale = (scaleX < scaleY) ? scaleX : scaleY;
+        scale = _map.normalizeScale(scale);
 
         var x = _map.normalizeX({
             x: _map.CX - scale * _cx - _map.container.offset().left,
@@ -105,7 +106,7 @@ function Building() {
             _map.clear_all_map_object_image_bg();
 
             // просим карту нарисовать картинку с данными характеристиками
-            _image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
+            _$image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
                 x: xx + xx2,
                 y: yy + yy2,
                 width: the_floor["img_bg_width"],
@@ -187,7 +188,7 @@ function Building() {
 
         _zoomToMe();
 
-        //setTimeout(function () {
+        setTimeout(function () {
 
             // попросим изменить состояние окружающей среды
             _map.setMode('view_building');
@@ -195,15 +196,14 @@ function Building() {
             // запустим внутренний механизм парсинга этажей и их отрисовки
             _proccess_floors_data();
 
-        //}, 400);
+            _map.building_info_klass.setSelectedFloor(0);
+
+        }, 400);
 
         _map.svgRemoveAllNodes();
 
         //console.log("<Building.enter> id: " + _this.id);
         _map.mark_virgin = false;
-
-        //
-        _map.building_info_klass.setSelectedFloor(0);
 
     };
 
@@ -225,11 +225,11 @@ function Building() {
     };
 
     _this.exit = function () {
-        if (_image_bg != null) _image_bg.remove();
+        if (_$image_bg != null) _$image_bg.remove();
         if (_image_overlay != null) {
             _image_overlay.remove();
         }
-        _image_bg = null;
+        _$image_bg = null;
         _image_overlay = null;
         //_zoomToMe();
     };

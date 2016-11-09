@@ -43,7 +43,7 @@ ActiveAdmin.register C80MapFloors::Floor, as: 'Floor' do
       f.input :title
       f.input :tag
       f.input :ord
-      f.input :coords
+      f.input :coords, :input_html => {:style => 'height:80px'}
       f.input :img_bg, :hint => "#{image_tag(f.object.img_bg.thumb.url)}".html_safe
       # f.input :img_overlay, :hint => "#{image_tag(f.object.img_overlay.thumb.url)}".html_safe
       f.input :map_building,

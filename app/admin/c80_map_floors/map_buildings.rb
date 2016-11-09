@@ -38,8 +38,8 @@ ActiveAdmin.register C80MapFloors::MapBuilding, as: 'MapBuilding' do
     f.inputs 'Свойства' do
       f.input :tag
       f.input :title
-      f.input :coords
-      f.input :coords_img
+      f.input :coords, :input_html => {:style => 'height:50px'}
+      f.input :coords_img, :input_html => {:style => 'height:50px'}
       # f.input :img, :hint => "#{image_tag(f.object.img.thumb.url) if f.object.img.present?}".html_safe
     end
 

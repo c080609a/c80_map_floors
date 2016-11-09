@@ -21,7 +21,7 @@ function Building() {
     var _cx = null;
     var _cy = null;
 
-    var _image_bg = null;
+    var _$image_bg = null;
     var _image_overlay = null;
 
     var _zoomToMe = function () {
@@ -33,31 +33,7 @@ function Building() {
         //console.log("<Building.enter> scaleX = " + scaleX + ", scaleY = " + scaleY);
 
         var scale = (scaleX < scaleY) ? scaleX : scaleY;
-        //var selfX = _map.calcCoord(scale, _map.X1, _bbox.xmin);
-        //var selfY = _map.calcCoord(scale, _map.Y1, _bbox.ymin);
-
-        //_map.scale = scale;
-        //_map.x = selfX;
-        //_map.y = selfY;
-
-        /* по-отдельности */
-
-        //var scaleX = _map.calcScale(_bbox.xmin, _bbox.xmax, _map.X1, _map.X2);
-        //console.log("<Building.enter> scaleX = " + scaleX);
-        //var selfX = _map.calcCoord(scaleX, _map.X1, _bbox.xmin);
-        //_map.scale = scaleX;
-        //_map.x = selfX;
-
-        //var scaleY = _map.calcScale(_bbox.ymin, _bbox.ymax, _map.Y1, _map.Y2);
-        //console.log("<Building.enter> scaleY = " + scaleY);
-        //var selfY = _map.calcCoord(scaleY, _map.Y1, _bbox.ymin);
-        //_map.scale = scaleY;
-        //_map.y = selfY;
-
-        // совмещаем точку на экране, в которую надо центрировать дома, с центром дома с учётом рассчитанного масштаба
-        // или, другими словами, перегоняем логические координаты в систему координат экрана
-        //_map.x = _map.normalizeX(_map.CX - scale * _cx - _map.container.offset().left);
-        //_map.y = _map.normalizeY(_map.CY - scale * _cy - _map.container.offset().top);
+        scale = _map.normalizeScale(scale);
 
         var x = _map.normalizeX({
             x: _map.CX - scale * _cx - _map.container.offset().left,
@@ -126,13 +102,11 @@ function Building() {
                 yy2 = parseInt(tmp2[1]);
             }
 
-            // сначала попросим карту очистить слой с img_bg картинками
-            _map.clear_all_map_object_image_bg();
+            // пока не загрузили картинку этажа - не будем удалять отображённые картинки этажей, отметим их "для удаления"
+            _map.mark_all_map_object_images_for_clean();
 
             // просим карту нарисовать картинку с данными характеристиками
-            _image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
-                //x: _bbox.xmin,
-                //y: _bbox.ymin,
+            _$image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
                 x: xx + xx2,
                 y: yy + yy2,
                 width: the_floor["img_bg_width"],
@@ -214,7 +188,7 @@ function Building() {
 
         _zoomToMe();
 
-        //setTimeout(function () {
+        setTimeout(function () {
 
             // попросим изменить состояние окружающей среды
             _map.setMode('view_building');
@@ -222,15 +196,15 @@ function Building() {
             // запустим внутренний механизм парсинга этажей и их отрисовки
             _proccess_floors_data();
 
-        //}, 400);
+            _map.building_info_klass.setSelectedFloor(0);
 
+        }, 400);
+
+        // при входе в здание удаляем все кликабельные полигоны зданий
         _map.svgRemoveAllNodes();
 
         //console.log("<Building.enter> id: " + _this.id);
         _map.mark_virgin = false;
-
-        //
-        _map.building_info_klass.setSelectedFloor(0);
 
     };
 
@@ -249,14 +223,14 @@ function Building() {
         }
 
 
-    }
+    };
 
     _this.exit = function () {
-        if (_image_bg != null) _image_bg.remove();
+        if (_$image_bg != null) _$image_bg.remove();
         if (_image_overlay != null) {
             _image_overlay.remove();
         }
-        _image_bg = null;
+        _$image_bg = null;
         _image_overlay = null;
         //_zoomToMe();
     };

@@ -89,7 +89,7 @@ var clog = function () {
         self.drawn_buildings = []; // если имеются нарисованные но несохранённые Здания - они хранятся тут
         self.save_preloader_klass = null;
         self.last_clicked_g = null; // начали просматривать area\building (запустили сессию), и здесь храним ссылку на последний кликнутый полигон из svg_overlay в течение сессии
-        self.dnd_enable = null; // если да, то можно карту dnd мышкой
+        //self.o.dnd_enable = null; // если да, то можно карту dnd мышкой
         self.building_info_klass = null; // класс, занимающися отображением данных об этаже\здании\площади
 
         // во время анимации каждый шаг рассчитывается мгновенный scale
@@ -106,7 +106,13 @@ var clog = function () {
         // чтобы вернуть карту в исходное состояние после нажатия кнопки "назад на карту"
         self.initial_map_position = null;
 
+        // грузит и отображает картинки заранее известного размера (WxH px), показывает прелоадер
+        self._imageLoader = null;
+
         self.init = function (el, params) {
+
+            console.log('<Map.init>');
+
             // extend options
             self.o = $.extend(self.o, params);
 
@@ -218,6 +224,8 @@ var clog = function () {
             var sc = new StateController();
             sc.init(self);
             self.setMode = sc.setMode;
+
+            self._imageLoader = new ImageLoader();
 
             // Admin buttons
             $.ajax({
@@ -442,7 +450,7 @@ var clog = function () {
             // Drag & drop
             function onDragNdrop(event) {
                 //clog("<mousedown> edit_type = " + self.edit_type);
-                clog("<mousedown> mode = " + self.mode);
+                console.log("<mousedown> mode = " + self.mode + " dnd_enable = " + self.o.dnd_enable);
                 //clog(event);
 
                 // если в данный момент не редактируем фигуру (т.е. не двигаем вершину фигуры)
@@ -462,7 +470,7 @@ var clog = function () {
                     self.map.on('mousemove', function (event) {
                         self.dragging = true;
 
-                        if (self.dnd_enable) {
+                        if (self.o.dnd_enable) { // NOTE:: добавить возможность делать dnd находясь в режиме рисования (админа?)
                             var x = event.pageX - map.data('mouseX') + self.x;
                             var y = event.pageY - map.data('mouseY') + self.y;
 
@@ -835,44 +843,45 @@ var clog = function () {
          *      <div class='map_object_image_bg'>        // style='background-image:url(#{img_src});'
          *          <img src=#{img_src} />
          *      </div>
-         *  и помещает его map_layers
+         *  и помещает его в map_layers
          *
          *  left и top - координаты bound box верхнего левого угла здания
          *
+         *  В новой версии используем предварительную загрузку картинки,
+         *  и показ прелоадера во время загрузки. Когда картинка загрузится,
+         *  она будет отображена на экране.
          */
         self.draw_map_object_image_bg = function (img_src, params) {
-            //console.log('<draw_map_object_image_bg>');
 
             // породим DOM
             var $div_map_object_image_bg = $('<div></div>')
                 .addClass('mlayer')
-                //.attr('style','background-image:url("'+img_src+'")')
-                .appendTo(self.map_layers); // .hide()
+                .appendTo(self.map_layers);
 
-            // сохраним начальные параметры в data
-            var left = params["x"];
-            var top = params["y"];
-            var width = params["width"];
-            var height = params["height"];
-
-            var $img = $('<img>')
-                .data('top', top)
-                .data('left', left)
-                .data('width', width)
-                .data('height', height)
-                .attr('src', img_src)
-                .addClass('map_object_image_bg') /* этот класс используем при [zoomove]*/
-                .appendTo($div_map_object_image_bg);
-
-            // рассчитаем позиционирующий стиль и применим его к созданной оверлейной картинке
-            self.__compose_css_style_for_map_object_image($img);
-
-            return $div_map_object_image_bg;
+            // загрузим в него картинку
+            return self._imageLoader.load(img_src, {
+                $target:   $div_map_object_image_bg,
+                 params:   params,
+                on_load:   self._draw_map_object_image_bg_onload
+            });
 
         };
 
+        self._draw_map_object_image_bg_onload = function ($image) {
+            self.clear_all_map_object_image_bg();
+            self.__compose_css_style_for_map_object_image($image); // рассчитаем позиционирующий стиль и применим его к созданной оверлейной картинке
+        };
+
+        self.mark_all_map_object_images_for_clean = function () {
+            $('.map_object_image_bg').addClass('for_clean');
+        };
+
         self.clear_all_map_object_image_bg = function () {
-            $('.map_object_image_bg').parent().remove();
+            var $cc = $('.map_object_image_bg.for_clean');
+            $cc.removeClass('shown');
+            setTimeout(function () {
+                $cc.parent().remove();
+            },400);
         };
 
         /**
@@ -896,6 +905,8 @@ var clog = function () {
             var top = $i.data("top")*self.scale_during_animation;
             var width = $i.data("width")*self.scale_during_animation;
             var height = $i.data("height")*self.scale_during_animation;
+
+            console.log('<__compose_css_style_for_map_object_image>');
 
             // впишем в DOM стили
             var style = 'top:';

@@ -102,8 +102,8 @@ function Building() {
                 yy2 = parseInt(tmp2[1]);
             }
 
-            // сначала попросим карту очистить слой с img_bg картинками
-            _map.clear_all_map_object_image_bg();
+            // пока не загрузили картинку этажа - не будем удалять отображённые картинки этажей, отметим их "для удаления"
+            _map.mark_all_map_object_images_for_clean();
 
             // просим карту нарисовать картинку с данными характеристиками
             _$image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
@@ -200,6 +200,7 @@ function Building() {
 
         }, 400);
 
+        // при входе в здание удаляем все кликабельные полигоны зданий
         _map.svgRemoveAllNodes();
 
         //console.log("<Building.enter> id: " + _this.id);

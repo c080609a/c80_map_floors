@@ -862,13 +862,26 @@ var clog = function () {
             return self._imageLoader.load(img_src, {
                 $target:   $div_map_object_image_bg,
                  params:   params,
-                on_load:   self.__compose_css_style_for_map_object_image // рассчитаем позиционирующий стиль и применим его к созданной оверлейной картинке
+                on_load:   self._draw_map_object_image_bg_onload
             });
 
         };
 
+        self._draw_map_object_image_bg_onload = function ($image) {
+            self.clear_all_map_object_image_bg();
+            self.__compose_css_style_for_map_object_image($image); // рассчитаем позиционирующий стиль и применим его к созданной оверлейной картинке
+        };
+
+        self.mark_all_map_object_images_for_clean = function () {
+            $('.map_object_image_bg').addClass('for_clean');
+        };
+
         self.clear_all_map_object_image_bg = function () {
-            $('.map_object_image_bg').parent().remove();
+            var $cc = $('.map_object_image_bg.for_clean');
+            $cc.removeClass('shown');
+            setTimeout(function () {
+                $cc.parent().remove();
+            },400);
         };
 
         /**

@@ -42,6 +42,7 @@ module C80MapFloors
 
     module InstanceMethods
 
+=begin
       def to_hash
 
         Rails.logger.debug "<BuildingRepresentator.to_hash> self.free_square = #{self.free_square}"
@@ -62,6 +63,13 @@ module C80MapFloors
             }
         }
         res
+      end
+=end
+
+      def as_json(options = nil)
+        super({
+                  :except => [:created_at, :updated_at]
+              })
       end
 
     end

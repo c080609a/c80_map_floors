@@ -42,6 +42,8 @@ module C80MapFloors
 
     module InstanceMethods
 
+=begin
+# legacy от с80_map
       def to_hash_a
         res = {
             id: id,
@@ -57,6 +59,13 @@ module C80MapFloors
             }
         }
         res
+      end
+=end
+
+      def as_json(options = nil)
+        super({
+                  :except => [:created_at, :updated_at]
+              })
       end
 
       # свободна ли площадь, привязанная к полигону на карте

@@ -17,7 +17,7 @@ module C80MapFloors
           after_save :update_json
           # after_destroy :update_json
           # validates :coords, uniqueness: true
-          validates_uniqueness_of :coords, :allow_nil => true, :allow_blank => true
+          validates_uniqueness_of :coords, :allow_nil => true, :allow_blank => true #-> глючит для Этажей - у них могут быть одинаковые coords
 
           def update_json
             MapJson.update_json

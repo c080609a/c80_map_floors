@@ -22,7 +22,7 @@ module C80MapFloors
     def as_json(options = nil)
 
       super({
-                :except => [:created_at,:updated_at,:building_representator_type],
+                :except => [:created_at,:updated_at,:building_representator_type, :building_representator_id],
                 :methods => :class_name,
                 :include => [
                     :floors => {
@@ -59,7 +59,7 @@ module C80MapFloors
 
         xmin = ix < xmin ? ix : xmin
         ymin = iy < ymin ? iy : ymin
-        
+
         xmax = ix > xmax ? ix : xmax
         ymax = iy > ymax ? iy : ymax
 

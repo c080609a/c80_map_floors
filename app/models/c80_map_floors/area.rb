@@ -7,6 +7,23 @@ module C80MapFloors
     belongs_to :area_representator, :polymorphic => true
     acts_as_base_map_object
 
+    def my_as_json
+
+      result = {
+          id:         self.id,
+          tag:        self.tag,
+          floor_id:   self.floor_id,
+          class_name: self.class_name,
+          coords:     self.coords,
+          data:       nil
+      }
+
+      if self.area_representator.present?
+        result[:data] = self.area_representator.my_as_json
+      end
+
+      result.as_json
+    end
 
   end
 end

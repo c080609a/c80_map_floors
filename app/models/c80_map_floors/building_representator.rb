@@ -42,6 +42,18 @@ module C80MapFloors
 
     module InstanceMethods
 
+      def my_as_json
+        result = {
+            id: self.id,
+            title: self.title,
+            square: self.square,
+            square_free: self.square_free,
+            desc: self.desc,
+            floor_height: self.floor_height
+        }
+        result.as_json
+      end
+
 =begin
       def to_hash
 

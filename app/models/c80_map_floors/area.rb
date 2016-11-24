@@ -5,16 +5,8 @@ module C80MapFloors
 
     belongs_to :floor
     belongs_to :area_representator, :polymorphic => true
-    # validates :coords, uniqueness: true
     acts_as_base_map_object
 
-    # after_save :update_json
-
-    # protected
-
-    # def update_json
-    #   MapJson.update_json
-    # end
 
   end
 end

@@ -19,6 +19,27 @@ module C80MapFloors
       C80MapFloors::Areas.joins(:c80_map_floors_floors).where(:building_id => self.if)
     end
 
+    def my_as_json
+
+      result = {
+          id: self.id,
+          title: self.title,
+          tag: self.tag,
+          class_name: self.class_name,
+          coords_img: self.coords_img,
+          coords: self.coords,
+          floors: [],
+          data: building_representator.my_as_json
+      }
+
+      self.floors.each do |floor|
+        result[:floors] << floor.my_as_json
+      end
+
+      result.as_json
+
+    end
+
     # ISSUE: rails as_json except not working
     # ANSWER: For those looking here for a quick work around, it's burried in the comments,
     # but basically, you can work around by:

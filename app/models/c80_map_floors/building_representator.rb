@@ -66,11 +66,13 @@ module C80MapFloors
       end
 =end
 
-      def as_json(options = nil)
+=begin
+      def serializable_hash(options = nil)
         super({
                   :except => [:created_at, :updated_at]
               })
       end
+=end
 
     end
 

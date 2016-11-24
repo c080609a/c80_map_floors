@@ -24,6 +24,7 @@ module C80MapFloors
     def link_area
       Rails.logger.debug "<AjaxController.link_area> params = #{params}"
 
+      # TODO:: т.к. ПОКА используем этот gem только в stroy101, то должно быть не Rent::Area
       rent_area = Rent::Area.find(params[:rent_area_id])
       map_area = C80Map::Area.find(params[:map_area_id])
       rent_area.map_areas.delete_all

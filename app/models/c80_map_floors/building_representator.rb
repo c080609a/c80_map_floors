@@ -26,7 +26,7 @@ module C80MapFloors
             res = []
             self.all.each do |building|
               # if building.map_buildings.count == 0
-                res << building
+              res << building
               # end
             end
             res
@@ -44,11 +44,11 @@ module C80MapFloors
 
       def my_as_json
         result = {
-            id: self.id,
-            title: self.title,
-            square: self.square,
-            square_free: self.square_free,
-            desc: self.desc,
+            id:           self.id,
+            title:        self.title,
+            square:       self.square,
+            square_free:  self.square_free,
+            desc:         self.desc,
             floor_height: self.floor_height
         }
         result.as_json

@@ -29,11 +29,15 @@ module C80MapFloors
           coords_img: self.coords_img,
           coords: self.coords,
           floors: [],
-          data: building_representator.my_as_json
+          data: nil
       }
 
       self.floors.each do |floor|
         result[:floors] << floor.my_as_json
+      end
+
+      if self.building_representator.present?
+        result[:data] = self.building_representator.my_as_json
       end
 
       result.as_json

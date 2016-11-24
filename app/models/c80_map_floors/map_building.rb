@@ -19,11 +19,17 @@ module C80MapFloors
       C80MapFloors::Areas.joins(:c80_map_floors_floors).where(:building_id => self.if)
     end
 
-    def as_json(options = nil)
+    # ISSUE: rails as_json except not working
+    # ANSWER: For those looking here for a quick work around, it's burried in the comments,
+    # but basically, you can work around by:
+    # renaming your custom as_json to serializable_hash
+    # github.com/rails/rails/pull/2200#issuecomment-3131652 – ChristopherJ Oct 16 '13 at 5:55
+=begin
+    def serializable_hash(options = nil)
 
       super({
                 :except => [:created_at,:updated_at,:building_representator_type, :building_representator_id],
-                :methods => :class_name,
+                :methods => [:class_name],
                 :include => [
                     :floors => {
                         :except => [:created_at,:updated_at],
@@ -38,6 +44,7 @@ module C80MapFloors
                 ]
             }.merge(options || {} ))
     end
+=end
 
     def calc_coords_img
 

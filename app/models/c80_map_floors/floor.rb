@@ -76,12 +76,17 @@ module C80MapFloors
           img_bg_width: img_bg_width,
           img_bg_height: img_bg_height,
           coords: self.coords,
-          areas: []
+          areas: [],
+          data: nil
       }
 
       self.areas.each do |area|
-        # result[:areas] << area.my_as_json
+        result[:areas] << area.my_as_json
       end
+
+      # if self.floor_representator.present?
+      #   result[:data] = self.floor_representator.my_as_json
+      # end
 
       result.as_json
 

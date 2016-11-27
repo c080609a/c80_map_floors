@@ -19,7 +19,7 @@ module C80MapFloors
       }
 
       if self.area_representator.present?
-        result[:data] = self.area_representator.my_as_json
+        result[:data] = self.area_representator.my_as_json2
       end
 
       result.as_json

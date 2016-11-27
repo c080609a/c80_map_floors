@@ -62,10 +62,10 @@ module C80MapFloors
       end
 =end
 
-      def my_as_json
+      def my_as_json2
         result = {
             id:             self.id,
-            title:          self.title,
+            title:          self.name,
             square:         self.square,
             square_free:    self.square_free,
             desc:           self.desc,

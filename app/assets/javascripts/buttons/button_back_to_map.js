@@ -44,6 +44,7 @@ function BackToMapButton() {
         _cnt = $('<div></div>').addClass('back_to_map_button');
         _cnt.appendTo($(parent_div_selector));
         _btn = $('<a href="#" id="BackToMapButton">Обратно на карту</a>');
+        //noinspection JSUnresolvedFunction
         _btn.on('click', _onClick);
         _cnt.append(_btn);
 

@@ -51,6 +51,7 @@ function StateController() {
 
     _this.checkMode = function () {
 
+        //<editor-fold desc="Предварительно проверим, все ли участники доступны">
         if (_this.new_button.length == 0) _this.new_button = $('.mapplic-new-button');
         if (_this.remove_button.length == 0) _this.remove_button = $('.mapplic-remove-button');
         if (_this.edit_button.length == 0) _this.edit_button = $('.mapplic-edit-button');
@@ -65,12 +66,14 @@ function StateController() {
         if (_this.building_info.length == 0) _this.building_info = $('.building_info');
         if (_this.area_order_button.length == 0) _this.area_order_button = $('.area_order_button');
         if (_this.masked.length == 0) _this.masked = $("#masked");
+        //</editor-fold>
 
         switch (_map.mode) {
 
             // перешли в состояние
             // редактирования карты
             case "editing":
+                //<editor-fold desc="...">
 
                 // спрячем надписи "цена за метр" и адрес с телефоном
                 _this.left_side.css("top", -300);
@@ -99,11 +102,13 @@ function StateController() {
                 // скроем подсказки - сколько свободных площадей где есть
                 _map.hide_free_areas_hint();
 
-                break;
+                //</editor-fold>
+            break;
 
             // перешли в состояние
             // просмотра карты, все здания с крышами
             case "viewing":
+                //<editor-fold desc="...">
                 //clog("_this.left_side.data('init') = " + _this.left_side.data('init'));
 
                 // покажем надписи "цена за метр" и адрес с телефоном
@@ -158,22 +163,24 @@ function StateController() {
 
                 // покажем подсказки - сколько свободных площадей где есть
                 _map.show_free_areas_hint();
-
-                break;
+                //</editor-fold>
+            break;
 
             // перешли в состояние рисования полигона
             case "creating":
+                //<editor-fold desc="...">
                 //_this.mzoom_buttons.css('opacity', '0');
                 _this.map_creating.css('display', 'block');
                 _this.map_editing.css('display', 'none');
                 _this.map_removing.css('display', 'none');
 
                 _this.main_map.css('opacity', '1');
-
+                //</editor-fold>
             break;
 
             // перешли в состояние удаления полигона
             case "removing":
+                //<editor-fold desc="...">
                 //_this.mzoom_buttons.css('opacity', '0');
                 _this.map_creating.css('display', 'none');
                 _this.map_editing.css('display', 'none');
@@ -187,12 +194,12 @@ function StateController() {
                 OpacityButtonsUtils.hide(_this.new_button);
                 OpacityButtonsUtils.hide(_this.remove_button);
                 OpacityButtonsUtils.hide(_this.edit_button);
-
+                //</editor-fold>
             break;
 
             // вошли в здание
             case "view_building":
-
+                //<editor-fold desc="...">
                 // покажем кнопку "обратно на карту"
                 _map.back_to_map_button_klass.show();
 
@@ -221,12 +228,12 @@ function StateController() {
 
                 // скроем подсказки - сколько свободных площадей где есть
                 _map.hide_free_areas_hint();
-
+                //</editor-fold>
             break;
 
             // редактируем, находясь в здании
             case "edit_building":
-
+                //<editor-fold desc="...">
                 // спрячем кнопку "обратно на карту"
                 _map.back_to_map_button_klass.hide();
 
@@ -264,11 +271,12 @@ function StateController() {
 
                 _map.save_button_klass.show();
                 _map.save_button_klass.check_and_enable();
-
+                //</editor-fold>
             break;
 
             // вошли в площадь
             case "view_area":
+                //<editor-fold desc="...">
                 _map.back_to_map_button_klass.show();
                 _this.masked.removeClass('hiddn');
                 var t = _this.building_info.height() + _this.building_info.offset().top;
@@ -288,12 +296,12 @@ function StateController() {
                 OpacityButtonsUtils.hide(_this.remove_button);
 
                 _this.mzoom_buttons.css('opacity', '1');
-
+                //</editor-fold>
             break;
 
             // начали редактировать площадь
             case 'edit_area':
-
+                //<editor-fold desc="...">
                 // спрячем кнопку "обратно на карту"
                 _map.back_to_map_button_klass.hide();
 
@@ -310,8 +318,8 @@ function StateController() {
                 OpacityButtonsUtils.show(_this.edit_button);
 
                 _map.edit_button_klass.setState('edit_area', true); // [a1x7]
-
-                break;
+                //</editor-fold>
+            break;
         }
     };
 

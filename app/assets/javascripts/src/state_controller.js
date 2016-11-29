@@ -70,8 +70,7 @@ function StateController() {
 
         switch (_map.mode) {
 
-            // перешли в состояние
-            // редактирования карты
+            // перешли в состояние редактирования карты
             case "editing":
                 //<editor-fold desc="...">
 
@@ -105,8 +104,7 @@ function StateController() {
                 //</editor-fold>
             break;
 
-            // перешли в состояние
-            // просмотра карты, все здания с крышами
+            // перешли в состояние просмотра карты, видны все здания с крышами
             case "viewing":
                 //<editor-fold desc="...">
                 //clog("_this.left_side.data('init') = " + _this.left_side.data('init'));

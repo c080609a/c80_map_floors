@@ -19,7 +19,7 @@ module C80MapFloors
       def acts_as_map_area_representator
         class_eval do
 
-          has_many :map_areas, :as => :area_representator, :class_name => 'C80MapFloors::Area', :dependent => :destroy
+          has_many :map_areas, :as => :area_representator, :class_name => 'C80MapFloors::Area', :dependent => :nullify
           after_save :update_json
 
           def self.unlinked_areas

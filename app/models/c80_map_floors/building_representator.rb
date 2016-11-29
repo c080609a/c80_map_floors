@@ -19,15 +19,15 @@ module C80MapFloors
       def acts_as_map_building_representator
         class_eval do
 
-          has_many :map_buildings, :as => :building_representator, :class_name => 'C80MapFloors::MapBuilding', :dependent => :destroy
+          has_one :map_building, :as => :building_representator, :class_name => 'C80MapFloors::MapBuilding', :dependent => :nullify
           after_save :update_json
 
           def self.unlinked_buildings
             res = []
             self.all.each do |building|
-              # if building.map_buildings.count == 0
-              res << building
-              # end
+              unless building.map_building.present?
+                res << building
+              end
             end
             res
           end

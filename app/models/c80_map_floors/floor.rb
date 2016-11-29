@@ -5,6 +5,7 @@ module C80MapFloors
 
     belongs_to :map_building
     has_many :areas, :class_name => 'C80MapFloors::Area', :dependent => :destroy
+    belongs_to :map_floor_representator, :polymorphic => true
     acts_as_base_map_object
 
     # validates :coords, uniqueness: true
@@ -84,9 +85,10 @@ module C80MapFloors
         result[:areas] << area.my_as_json
       end
 
-      # if self.floor_representator.present?
-      #   result[:data] = self.floor_representator.my_as_json
-      # end
+      # если имеются ДАННЫЕ - прицепим их к JSON
+      if self.map_floor_representator.present?
+        result[:data] = self.map_floor_representator.my_as_json3
+      end
 
       result.as_json
 

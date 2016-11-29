@@ -28,7 +28,7 @@ function BuildingInfo(options) {
      * @param map_building_json Это данные от C80MapFloors::MapBuilding
      */
     this.setData = function (map_building_json) {
-        //console.log('<BuildingInfo.setData>');
+        console.log('<BuildingInfo.setData> Получили данные для отображения.');
         //console.log(map_building_json);
 
         _cur_map_building_json = map_building_json;

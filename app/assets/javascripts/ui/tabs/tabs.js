@@ -15,6 +15,7 @@ function Tabs(options) {
     var _this = this;
 
     // параметры, по которым построен компонент
+    //noinspection JSUnusedLocalSymbols
     var _options;
 
     // view контейнеры, в которых живут кнопки и контент
@@ -26,6 +27,7 @@ function Tabs(options) {
     var _tab_buttons = [];
 
     // массив содержимого вкладок
+    //noinspection JSUnusedLocalSymbols
     var _tab_contents = [];
 
     // айди текущей просматриваемой вкладки
@@ -46,7 +48,7 @@ function Tabs(options) {
      * Удалить все элементы: кнопки, вкладки и данные
      */
     this.removeAll = function () {
-        console.log('<removeAll>');
+        console.log('<Tabs.removeAll> Начинаем удалять все элементы: кнопки, вкладки и данные.');
 
         // очистим данные
         _data = {};
@@ -58,11 +60,7 @@ function Tabs(options) {
         _current_tab_id = -1;
 
         // удалим все кнопки и слушатели
-        for (var i = 0; i < _tab_buttons.length; i++) {
-            var $ibuttn = _tab_buttons[i];
-            $ibuttn.remove();
-            $ibuttn.off('click', this._onTabButtonClick)
-        }
+        _this._buttonRemoveAll();
 
     };
 
@@ -141,10 +139,18 @@ function Tabs(options) {
 
     //--[ private ]----------------------------------------------------------------------------------------------------------------------
 
+    /** Добавить tab-кнопку.
+     *
+     * @param tab_button_title
+     * @param button_id
+     * @param on_click_callback
+     * @private
+     */
     this._buttonAdd = function (tab_button_title, button_id, on_click_callback) {
-        console.log('<_addTabButton> tab_button_title: ' + tab_button_title);
+        console.log('<Tabs._addTabButton> Добавляем одну кнопку: tab_button_title: ' + tab_button_title);
 
         // создадим кнопку
+        //noinspection JSUnresolvedFunction
         var b = $('<a href="#"></a>')
             .text(tab_button_title)
             .attr('data-id',button_id)
@@ -161,18 +167,41 @@ function Tabs(options) {
 
     };
 
-    this._contentAdd = function () {
+    //this._contentAdd = function () {
+    //
+    //};
 
+    // удалить все кнопки
+    this._buttonRemoveAll = function () {
+        console.log("<Tabs._buttonRemoveAll> Начинаем удалять все кнопки-вкладки:");
+
+        //var n = _tab_buttons.length;
+        //for (var i = 0; i < n; i++) {
+        //    var $ibuttn = _tab_buttons[i];
+        //    $ibuttn.remove();
+        //    $ibuttn.off('click', this._onTabButtonClick)
+        //}
+
+        var $ibuttn;
+        while (_tab_buttons.length) {
+            $ibuttn = _tab_buttons.pop();
+            _this._buttonRemove($ibuttn);
+        }
     };
 
+    // удалить одну кнопку
     this._buttonRemove = function ($a_button) {
-
+        console.log("<Tabs._buttonRemove> Удаляем одну кнопку: tab_button_title = " + $a_button.text());
+        $a_button.remove();
+        //noinspection JSUnresolvedFunction
+        $a_button.off('click', this._onTabButtonClick);
     };
 
-    this._contentRemove = function () {
+    //this._contentRemove = function () {
+    //
+    //};
 
-    };
-
+    //noinspection JSUnusedLocalSymbols
     this._fInit = function (options) {
 
         // найдем нужную DOM структуру

@@ -30,12 +30,13 @@ function StateController() {
             mode = _map.prev_mode;
         }
 
-        clog('<StateController.setMode> mode = ' + mode);
+        console.log('<StateController.setMode> Переводим карту в режим: mode = ' + mode);
 
         _map.prev_mode = _map.mode;
         _map.mode = mode;
 
-        // этот код коррелирует с [x9cs7]. Возможно, нужен рефакторинг.
+        //<editor-fold desc="Впишем режим в cssClass контейнера карты">
+        // NOTE: этот код коррелирует с [x9cs7]. Возможно, нужен рефакторинг
         _map.container.removeClass("viewing");
         _map.container.removeClass("editing");
         _map.container.removeClass("creating");
@@ -45,6 +46,7 @@ function StateController() {
         _map.container.removeClass("view_area");
         _map.container.removeClass("edit_area");
         _map.container.addClass(mode);
+        //</editor-fold>
 
         _this.checkMode();
     };

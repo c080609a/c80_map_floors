@@ -190,13 +190,25 @@ function Building() {
 
         setTimeout(function () {
 
-            // попросим изменить состояние окружающей среды
-            _map.setMode('view_building');
-
             // запустим внутренний механизм парсинга этажей и их отрисовки
             _proccess_floors_data();
 
-            _map.building_info_klass.setSelectedFloor(0);
+            // если у здания есть этажи - войдём на первый этаж
+            if (_data_floors.length) {
+
+                // клик по первой tab-кнопке заставит войти на 1й этаж
+                _map.building_info_klass.setSelectedFloor(0);
+
+                // попросим изменить состояние окружающей среды
+                _map.setMode('view_floor');
+
+            }
+            // если у здания нет этажей - перейдём в режим просмотра здания
+            else {
+                // попросим изменить состояние окружающей среды
+                _map.setMode('view_building');
+            }
+
 
         }, 400);
 

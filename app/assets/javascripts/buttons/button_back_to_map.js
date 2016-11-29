@@ -53,8 +53,8 @@ function BackToMapButton() {
 
     _this.show = function () {
 
-        // хардкод - подгоняем под длину анимации, прописанной в css
-        setTimeout(__show, 800);
+        // хардкод - подгоняем под длину анимации, прописанной в css (+200 ms на возможный лаг)
+        setTimeout(__show, 1000);
 
 
     };

@@ -1,15 +1,20 @@
+# noinspection RubyResolve
 require 'c80_map_floors/base_map_object'
 require 'integer'
 
 module C80MapFloors
+  # noinspection RubyResolve
   class MapBuilding < ActiveRecord::Base
+
+    include ActiveModel::Dirty
 
     has_many :floors, :class_name => 'C80MapFloors::Floor', :dependent => :destroy
     belongs_to :building_representator, :polymorphic => true
-    # validates :coords, uniqueness: true
-    # after_save :update_json
 
     after_create :calc_coords_img
+
+    after_create :auto_assign_floors_by_ord
+    after_update :auto_assign_floors_by_ord
 
     acts_as_base_map_object
 
@@ -113,11 +118,94 @@ module C80MapFloors
 
     end
 
-    # private
+    private
 
     # def update_json
     #   MapJson.update_json
     # end
+
+    # связать Полигоны этажей (принадлежащие этому Полигону здания),
+    # с ord-соответствующими этажами Здания (которое привязано к этому Полигону здания)
+    def auto_assign_floors_by_ord
+      Rails.logger.debug '[TRACE] <map_building.auto_assign_floors_by_ord> связать ПолигоныЭтажей с соответствующими ДаннымиЭтажей.'
+
+      # если у Полигона сменилось Здание
+      if self.building_representator_id_changed?
+        Rails.logger.debug '[TRACE] <map_building.auto_assign_floors_by_ord> У Полигона сменилось Здание.'
+
+        if self.building_representator_id_was.nil?
+          Rails.logger.debug '[TRACE] <map_building.auto_assign_floors_by_ord> У Полигона не было данных до этого.'
+        else
+          Rails.logger.debug '[TRACE] <map_building.auto_assign_floors_by_ord> У Полигона уже были какие-то данные до этого. TODO очистить привязки.'
+          # TODO:: если у ПолигонаЗдания БЫЛО Здание до этого - очистить привязки к данным у соответствующих ПолигоновЭтажей и ПолигоновПлощадей
+        end
+
+        # фиксируем текущие данные этого ПолигонаЗдания
+        bdata = self.building_representator
+
+        if bdata.present?
+          Rails.logger.debug "[TRACE] <map_building.auto_assign_floors_by_ord> Данные ПолигонаЗдания: {title=#{bdata.title}, id=#{bdata.id}}"
+          Rails.logger.debug '[TRACE] <map_building.auto_assign_floors_by_ord> Обходим ПолигоныЭтажей этого ПолигонаЗдания и назначаем им данныеЭтажей по ord.'
+
+          # теперь ПРЕДВАРИТЕЛЬНО проверим, есть ли у ПолигонаЗдания ПолигоныЭтажи
+          if self.floors.count > 0
+            Rails.logger.debug '[TRACE] <map_building.auto_assign_floors_by_ord> У ПолигонаЗдания имеются ПолигоныЭтажей.'
+
+            # еще ПРЕДВАРИТЕЛЬНО проверим, есть ли в ДанныхЗдания этажи
+            if bdata.sfloors.count > 0
+              Rails.logger.debug '[TRACE] <map_building.auto_assign_floors_by_ord> В Данных ПолигонаЗдания имеются данные об Этажах.'
+
+              # ПРОСТО проверим, совпадает ли количество ЭтажейПолигонов и ЭтажейДанных
+              if self.floors.count != bdata.sfloors.count
+                Rails.logger.debug "[TRACE] [WARNING] <map_building.auto_assign_floors_by_ord> количество ЭтажейПолигонов (count=#{self.floors.count}) и ЭтажейДанных (count=#{bdata.sfloors.count}) НЕ совпадает."
+              end
+
+              link_floor_sfloor(bdata)
+
+            else
+              Rails.logger.debug '[TRACE] [ERROR] <map_building.auto_assign_floors_by_ord> В ДанныхЗдания нет этажей.'
+            end
+
+          else
+            Rails.logger.debug '[TRACE] [ERROR] <map_building.auto_assign_floors_by_ord> У ПолигонаЗдания нет ПолигоновЭтажей.'
+          end
+
+        else
+          Rails.logger.debug '[TRACE] [WARNING] <map_building.auto_assign_floors_by_ord> У ПолигонаЗдания нет данных.'
+        end
+
+      end
+
+    end
+
+    def link_floor_sfloor(building_representator)
+      Rails.logger.debug "[TRACE] <map_building.link_floor_sfloor> СВЯЗЫВАЕМ ПОЛИГОНЫ-ЭТАЖЕЙ C ДАННЫМИ. MapBuilding.id=#{self.id}"
+
+      # обходим ПолигоныЭтажей этого ПолигонаЗдания и назначаем им данныеЭтажей по ord
+      Rails.logger.debug '[TRACE] <map_building.link_floor_sfloor> Перебираем ПолигоныЭтажей...'
+      self.floors.each do |floor|
+        Rails.logger.debug "[TRACE] <map_building.link_floor_sfloor> Фиксируем ПолигонЭтажа ord=#{floor.ord}."
+
+        # фиксируем ord-соответствующие данныеЭтажа  (dev.. но сначала добавим в данныеЗдания данныеЭтажей)
+        may_be_sfloors = building_representator.sfloors.where(:ord => floor.ord)
+        if may_be_sfloors.count > 0
+
+          # данныеЭтажа
+          sfloor = may_be_sfloors.first
+          Rails.logger.debug "[TRACE] <map_building.link_floor_sfloor> Фиксируем ДанныеЭтажа: #{sfloor.my_as_json3}."
+
+          #-> связываем
+          Rails.logger.debug '[TRACE] <map_building.link_floor_sfloor> Связываем..'
+          floor.map_floor_representator = sfloor
+          floor.save!
+          # SQL (0.5ms)  UPDATE `c80_map_floors_floors` SET `map_floor_representator_id` = 2, `map_floor_representator_type` = 'Sfloor', `updated_at` = '2016-11-28 16:54:43.700446' WHERE `c80_map_floors_floors`.`id` = 3
+
+        else
+          Rails.logger.debug '[TRACE] [ERROR] <map_building.auto_assign_floors_by_ord> В ДанныхЗдания нет соответствующего этажа.'
+        end
+
+      end
+    end
 
   end
 end

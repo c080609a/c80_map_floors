@@ -320,6 +320,56 @@ function StateController() {
                 _map.edit_button_klass.setState('edit_area', true); // [a1x7]
                 //</editor-fold>
             break;
+
+            // вошли на этаж
+            case "view_floor":
+                //<editor-fold desc="...">
+
+                // спрячем надписи "цена за метр" и адрес с телефоном
+                _this.left_side.css("top", -300);
+                _this.right_side.css("top", -300);
+
+                //_this.main_map.css('opacity','0.7');
+
+                // включим слой svg_overlay - а кто там живёт (запомятовал)?
+                _this.svg_overlay.css('display', 'block');
+
+                // выдвигаем инфо-панель
+                _this.building_info.css("top", _this.building_info.data("init"));
+
+                // покажем кнопку "обратно на карту"
+                _map.back_to_map_button_klass.show();
+
+                // прячем masked слой - а там что (запомятовал)?
+                _this.masked.addClass('hiddn');
+
+                // скроем кнопку "связать здание с полигоном"
+                _map.building_link_button_klass.hide();
+
+                // прячем кнопку "отправить заявку на аренду площади"
+                _this.area_order_button.css('display', 'none');
+
+                // кнопку "редактировать переводим в СООТВЕТСТВУЮЩЕЕ состояние
+                _map.edit_button_klass.setState('edit_button_view_floor', true); // [a1x7]
+
+                // сбросим z-index (пояснение "что это" см. в комментах к resetOverlayZindex)
+                //if (_map.current_building != undefined) _map.current_building.resetOverlayZindex();
+
+                // спрячем кнопку "сохранить"
+                _map.save_button_klass.hide();
+
+                // спрячем кнопки "добавить полигон" и "удалить полигон"
+                OpacityButtonsUtils.hide(_this.new_button);
+                OpacityButtonsUtils.hide(_this.remove_button);
+
+                // покажем zoom кнопки
+                _this.mzoom_buttons.css('opacity', '1');
+
+                // скроем подсказки - сколько свободных площадей где есть
+                _map.hide_free_areas_hint();
+                //</editor-fold>
+            break;
+
         }
     };
 

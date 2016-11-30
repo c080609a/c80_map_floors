@@ -226,7 +226,7 @@ function Building() {
     };
 
     /**
-     * Войти на этаж здания.
+     * Войти на этаж здания - т.е. НАРИСОВАТЬ картинку этажа.
      * @param floor_id
      */
     _this.enterFloor = function (floor_id) {

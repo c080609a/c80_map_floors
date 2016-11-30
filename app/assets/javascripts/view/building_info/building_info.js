@@ -19,7 +19,8 @@ function BuildingInfo(options) {
     var _tabs = null;
 
     // привязка данных об этажах здания ко вкладкам в этом удобном хэше
-    var _tabs_floors_data = {};
+    // NOTE:: но нахуя он был добавлен - пока загадка. В комменты его. Детективная история, главная улика - слово "удобный".
+    //var _tabs_floors_data = {};
 
     //-[ public ]-----------------------------------------------------------------------------------------------------------------------
 
@@ -94,9 +95,9 @@ function BuildingInfo(options) {
             _tabs.addTab(ifloor_data["title"], ifloor_id, this._onTabShow);
 
             // свяжем её по id с даными
-            _tabs_floors_data[ifloor_id] = {
-                tab_data: ifloor_data
-            }
+            //_tabs_floors_data[ifloor_id] = {
+            //    tab_data: ifloor_data
+            //}
         }
     };
 
@@ -108,7 +109,7 @@ function BuildingInfo(options) {
     this._removeAll = function () {
 
         _$title.text('');
-        _tabs_floors_data = {};
+        //_tabs_floors_data = {};
         _tabs.removeAll();
     };
 

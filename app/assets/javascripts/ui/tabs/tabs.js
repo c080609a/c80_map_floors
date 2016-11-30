@@ -64,7 +64,7 @@ function Tabs(options) {
      * Добавить именованную вкладку (вкладка = tab-button + tab-content).
      *
      * @param tab_title
-     * @param tab_id
+     * @param tab_id        ID вкладки равен ID Полигона Этажа // NOTE:fidfid
      * @param on_tab_show   Колбэк: сигнал наверх, когда по tab-кнопке кликнули
      * @param params        Опции: tab_data - данные для отображения в tab-content.
      *
@@ -83,7 +83,7 @@ function Tabs(options) {
         }
 
         // запишем это в структуру
-        _data[tab_id] = {
+        _data[tab_id] = { // tab_id это ID Полигона Этажа // NOTE:fidfid
             tab_button: btn,
             tab_content: cnt
         };
@@ -110,7 +110,7 @@ function Tabs(options) {
         var $clicked_button = $(e.target);
 
         // зафиксируем id нажатой кнопки
-        var clicked_id = $clicked_button.data('id');
+        var clicked_id = $clicked_button.data('id'); // Это ID Полигона Этажа // NOTE:fidfid
         //console.log('<_onTabButtonClick> clicked_id: ' + clicked_id);
 
         // зафиксируем index нажатой кнопки
@@ -140,7 +140,8 @@ function Tabs(options) {
             .addClass('active');
         //</editor-fold>
 
-        // Отобразить во вкладке соответствующие данные
+        // Отобразим во вкладке соответствующие данные
+        
 
     };
 
@@ -149,7 +150,7 @@ function Tabs(options) {
     /** Добавить tab-кнопку.
      *
      * @param tab_button_title
-     * @param button_id
+     * @param button_id             Это ID Полигона Этажа // NOTE:fidfid
      * @param on_click_callback
      * @private
      */
@@ -160,7 +161,7 @@ function Tabs(options) {
         //noinspection JSUnresolvedFunction
         var b = $('<a href="#"></a>')
             .text(tab_button_title)
-            .attr('data-id',button_id)
+            .attr('data-id',button_id) // Это ID Полигона Этажа // NOTE:fidfid
             .attr('data-index', _tab_buttons.length)
             //.data('id', button_id)
             //.data('index', _tab_buttons.length)

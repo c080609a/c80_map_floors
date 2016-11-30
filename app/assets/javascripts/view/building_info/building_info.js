@@ -29,7 +29,7 @@ function BuildingInfo(options) {
      * @param map_building_json Это данные от C80MapFloors::MapBuilding
      */
     this.setData = function (map_building_json) {
-        console.log('<BuildingInfo.setData> Получили данные для отображения.');
+        console.log('<BuildingInfo.setData> Получили данные для отображения - map_building_json.');
         //console.log(map_building_json);
 
         _cur_map_building_json = map_building_json;
@@ -79,7 +79,7 @@ function BuildingInfo(options) {
     };
 
     this._parseData = function () {
-        console.log('<BuildingInfo._parseData>');
+        console.log('<BuildingInfo._parseData> Парсим map_building_json, заполняем Tabs компонент:');
 
         // установим заголовок окна
         _$title.text(_cur_map_building_json["title"]);
@@ -92,7 +92,9 @@ function BuildingInfo(options) {
             //console.log(ifloor_data); // => see C80MapFloors::Floor.as_json
 
             // создадим вкладку
-            _tabs.addTab(ifloor_data["title"], ifloor_id, this._onTabShow);
+            _tabs.addTab(ifloor_data["title"], ifloor_id, this._onTabShow, {
+                tab_data: ifloor_data
+            });
 
             // свяжем её по id с даными
             //_tabs_floors_data[ifloor_id] = {

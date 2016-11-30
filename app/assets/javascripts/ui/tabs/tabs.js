@@ -26,10 +26,6 @@ function Tabs(options) {
     // массив кнопок
     var _tab_buttons = [];
 
-    // массив содержимого вкладок
-    //noinspection JSUnusedLocalSymbols
-    var _tab_contents = [];
-
     // айди текущей просматриваемой вкладки
     var _current_tab_id = -1;
 
@@ -65,28 +61,34 @@ function Tabs(options) {
     };
 
     /**
-     * Добавить именованную вкладку.
-     *
+     * Добавить именованную вкладку (вкладка = tab-button + tab-content).
      *
      * @param tab_title
      * @param tab_id
-     * @param on_tab_show
+     * @param on_tab_show   Колбэк: сигнал наверх, когда по tab-кнопке кликнули
+     * @param params        Опции: tab_data - данные для отображения в tab-content.
      *
      */
-    this.addTab = function (tab_title, tab_id, on_tab_show) {
+    this.addTab = function (tab_title, tab_id, on_tab_show, params) {
+        console.log("<Tabs.addTab> Добавить вкладку, title: " + tab_title);
 
         // создадим кнопку и контент
         var btn = this._buttonAdd(tab_title, tab_id, on_tab_show);
-        //var cnt = this._contentAdd();
+        var cnt;
+
+        if (params != undefined) {
+            if (params['tab_data'] != undefined) {
+                cnt = params['tab_data'];
+            }
+        }
 
         // запишем это в структуру
         _data[tab_id] = {
             tab_button: btn,
-            tab_content: null
+            tab_content: cnt
         };
 
-        // поместим в массивы
-        //_tab_contents.push(cnt);
+        //console.log('for breakpoint');
 
     };
 
@@ -138,6 +140,8 @@ function Tabs(options) {
             .addClass('active');
         //</editor-fold>
 
+        // Отобразить во вкладке соответствующие данные
+
     };
 
     //--[ private ]----------------------------------------------------------------------------------------------------------------------
@@ -167,6 +171,8 @@ function Tabs(options) {
         _callbacks[button_id] = on_click_callback;
 
         _tab_buttons.push(b);
+
+        return b;
 
     };
 

@@ -7,8 +7,8 @@ function Building() {
     var _options = null;
     var _polygon = null;
 
-    // хэш с данными об этажах
-    var _data_floors = {};
+    // хэш с этажами здания
+    var _map_floors_hash = {};
 
     // экранные координаты левой верхней точки, куда надо вписать полигон здания
     //var _left_page_x = 342;
@@ -130,7 +130,7 @@ function Building() {
         for (i = 0; i < options_floors.length; i++) {
             ifloor_json = options_floors[i];
             ifloor_id = ifloor_json["id"];
-            _data_floors[ ifloor_id ] = ifloor_json;
+            _map_floors_hash[ ifloor_id ] = ifloor_json;
         }
 
     };
@@ -190,13 +190,30 @@ function Building() {
 
         setTimeout(function () {
 
-            // попросим изменить состояние окружающей среды
-            _map.setMode('view_building');
-
             // запустим внутренний механизм парсинга этажей и их отрисовки
             _proccess_floors_data();
 
-            _map.building_info_klass.setSelectedFloor(0);
+            // если у ПолигонаЗдания есть ПолигоныЭтажей - войдем в 1й этаж
+            if (fCalcObjSize(_map_floors_hash) > 0) {
+                console.log("<Building.enter> У ПолигонаЗдания есть ПолигоныЭтажей  - войдём на 1й этаж.");
+
+                // клик по первой tab-кнопке заставит войти на 1й этаж
+                _map.building_info_klass.setSelectedFloor(0);
+
+                // попросим изменить состояние окружающей среды
+                _map.setMode('view_floor');
+
+            }
+            // если у здания нет этажей - перейдём в режим просмотра здания
+            else {
+                console.log("<Building.enter> У ПолигонаЗдания НЕТ ПолигоновЭтажей - просто войдём в Здание.");
+
+                // NOTE:: но кнопки этажей могут при этом быть отрисованы - т.к. кнопки строятся по ПолигонамЭтажей.
+
+                // попросим изменить состояние окружающей среды
+                _map.setMode('view_building');
+            }
+
 
         }, 400);
 
@@ -209,17 +226,17 @@ function Building() {
     };
 
     /**
-     * Войти на этаж здания.
+     * Войти на этаж здания - т.е. НАРИСОВАТЬ картинку этажа.
      * @param floor_id
      */
     _this.enterFloor = function (floor_id) {
         console.log('<Building.enterFloor> floor_id: ' + floor_id);
 
-        var flr = _data_floors[floor_id];
+        var flr = _map_floors_hash[floor_id];
         if (flr != undefined) {
             _draw_floor(flr);
         } else {
-            alert('[Buidling.EnterFloor] error: Нет данных об этаже floor_id='+floor_id+'.');
+            alert('[Building.EnterFloor] error: Нет данных об этаже [карты] floor_id='+floor_id+'.');
         }
 
 

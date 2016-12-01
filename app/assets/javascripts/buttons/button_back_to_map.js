@@ -44,6 +44,7 @@ function BackToMapButton() {
         _cnt = $('<div></div>').addClass('back_to_map_button');
         _cnt.appendTo($(parent_div_selector));
         _btn = $('<a href="#" id="BackToMapButton">Обратно на карту</a>');
+        //noinspection JSUnresolvedFunction
         _btn.on('click', _onClick);
         _cnt.append(_btn);
 
@@ -53,8 +54,8 @@ function BackToMapButton() {
 
     _this.show = function () {
 
-        // хардкод - подгоняем под длину анимации, прописанной в css
-        setTimeout(__show, 800);
+        // хардкод - подгоняем под длину анимации, прописанной в css (+200 ms на возможный лаг)
+        setTimeout(__show, 1000);
 
 
     };

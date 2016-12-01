@@ -24,25 +24,6 @@
     background-color: #54658E;
   }
 
-  ul {
-    list-style: none;
-    margin-left: 0;
-    padding-left: 0;
-    /*@include frankRegular(15px);*/
-
-    li {
-      overflow: hidden;
-
-      -webkit-transition: all 0.3s;
-      -moz-transition: all 0.3s;
-      transition: all 0.3s;
-
-      span {
-        color: #6f6f6f;
-      }
-    }
-  }
-
   h5 {
     border-top: 1px solid #14233C;
     color: #1f283e;

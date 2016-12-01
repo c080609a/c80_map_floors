@@ -73,7 +73,7 @@ function Tabs(options) {
         console.log("<Tabs.addTab> Добавить вкладку, title: " + tab_title);
 
         // создадим кнопку и контент
-        var btn = this._buttonAdd(tab_title, tab_id, on_tab_show);
+        var btn = _this._buttonAdd(tab_title, tab_id, on_tab_show);
         var cnt;
 
         if (params != undefined) {
@@ -141,7 +141,7 @@ function Tabs(options) {
         //</editor-fold>
 
         // Отобразим во вкладке соответствующие данные
-        
+        _this._displayContent(_data[clicked_id]['tab_content']);
 
     };
 
@@ -166,7 +166,7 @@ function Tabs(options) {
             //.data('id', button_id)
             //.data('index', _tab_buttons.length)
             .appendTo(_$div_tab_buttons)
-            .on('click', this._onTabButtonClick);
+            .on('click', _this._onTabButtonClick);
 
         // её колбэк поместим в отдельный массив
         _callbacks[button_id] = on_click_callback;
@@ -204,12 +204,25 @@ function Tabs(options) {
         console.log("<Tabs._buttonRemove> Удаляем одну кнопку: tab_button_title = " + $a_button.text());
         $a_button.remove();
         //noinspection JSUnresolvedFunction
-        $a_button.off('click', this._onTabButtonClick);
+        $a_button.off('click', _this._onTabButtonClick);
     };
 
     //this._contentRemove = function () {
     //
     //};
+
+    /** Отобразить во вкладке данные об Этаже/Здании/Площади.
+     *
+     * @param json
+     * @private
+     */
+    this._displayContent = function (json) {
+        console.log("<Tabs._displayContent> Отобразить во вкладке данные об Этаже/Здании/Площади, json: ");
+        console.log(json);
+
+
+
+    };
 
     //noinspection JSUnusedLocalSymbols
     this._fInit = function (options) {

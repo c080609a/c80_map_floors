@@ -22,6 +22,7 @@
 #= require ./src/utils/utils.js
 #= require ./src/utils/opacity_buttons_utils.js
 #= require ./src/utils/map_utils.js
+#= require ./src/utils/i18n.js
 #= require ./src/state_controller.js
 #= require ./src/image_loader.js
 #= require ./src/main.js

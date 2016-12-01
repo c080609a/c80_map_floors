@@ -42,13 +42,17 @@ module C80MapFloors
 
     module InstanceMethods
 
+      # noinspection RubyResolve
       def my_as_json3
         result = {
-            id:             self.id,
-            ord:             self.ord,
-            title:          self.title,
-            square:         self.square,
-            square_free:    self.square_free
+            id:               self.id,
+            ord:              self.ord,
+            title:            self.title,
+            square:           self.square,
+            square_free:      self.square_free,
+            areas_count:      self.areas.count,
+            areas_free_count: self.areas.free_areas.count,
+            price_string:     self.price_string
         }
         result.as_json
       end

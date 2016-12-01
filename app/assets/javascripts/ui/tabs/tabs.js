@@ -15,8 +15,9 @@ function Tabs(options) {
     var _this = this;
 
     // параметры, по которым построен компонент
-    //noinspection JSUnusedLocalSymbols
-    var _options;
+    var _options = {
+        info_helper: null // помогает преобразовывать json в человеческий текст
+    };
 
     // view контейнеры, в которых живут кнопки и контент
     var _$div_tabs;
@@ -57,6 +58,9 @@ function Tabs(options) {
 
         // удалим все кнопки и слушатели
         _this._buttonRemoveAll();
+
+        // очистим _$div_tab_content
+        _$div_tab_content.html('<i></i>');
 
     };
 
@@ -211,20 +215,44 @@ function Tabs(options) {
     //
     //};
 
-    /** Отобразить во вкладке данные об Этаже/Здании/Площади.
+    /** Отобразить во вкладке данные [об Этаже/Здании/Площади].
      *
-     * @param json
+     * @param json  Конкретный узел полигона Этажа/Здания/Площади
      * @private
      */
     this._displayContent = function (json) {
         console.log("<Tabs._displayContent> Отобразить во вкладке данные об Этаже/Здании/Площади, json: ");
         console.log(json);
 
+        // если будет true - значит будет показано сообщение об ошибке
+        var mark_error_occurs = false;
 
+        if (_options['info_helper'] != undefined) {
+            if (json != undefined && json['data'] != null) {
+                if (json['class_name'] != undefined) {
+
+                    var json_as_html_text = _options['info_helper'].makeHtmlText(json);
+                    _$div_tab_content.html(json_as_html_text);
+                }
+
+                else {
+                    mark_error_occurs = true;
+                }
+            } else {
+                mark_error_occurs = true;
+            }
+        } else {
+            alert('Error, refer log for details.');
+            console.log('<_displayContent> [ERROR] info_helper не определён.');
+        }
+
+        if (mark_error_occurs) {
+            alert('data error, refer log for details.');
+            console.log('<_displayContent> [ERROR] Что-то не то с данными.');
+        }
 
     };
 
-    //noinspection JSUnusedLocalSymbols
     this._fInit = function (options) {
 
         // найдем нужную DOM структуру
@@ -233,6 +261,9 @@ function Tabs(options) {
             _$div_tab_buttons = _$div_tabs.find('.tab_buttons');
             _$div_tab_content = _$div_tabs.find('.tab_content');
         }
+
+        //info_helper
+        _options = $.extend(_options, options);
 
     };
 

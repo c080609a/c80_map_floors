@@ -15,6 +15,9 @@ function BuildingInfo(options) {
     // заголовок - название здания
     var _$title;
 
+    // помощник в преобразовании JSON характеристик в human-читаемые текста
+    var _mobj_info_parser = null;
+
     // компонент "вкладки"
     var _tabs = null;
 
@@ -70,8 +73,13 @@ function BuildingInfo(options) {
         // TODO:: _options extend options
         _options = $.extend(_options, options);
 
+        // кастуем помощника
+        _mobj_info_parser = new MobjInfoParser();
+
         // создаём компонент "вкладки"
-        _tabs = new Tabs();
+        _tabs = new Tabs({
+            info_helper: _mobj_info_parser
+        });
 
         // находим заголовок
         _$title = $('.building_info').find('h3');

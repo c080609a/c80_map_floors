@@ -39,10 +39,6 @@ var InitMap = function (params) {
 
 };
 
-var clog = function () {
-    console.log(arguments[0]);
-};
-
 (function () {
 
     var Map = function () {
@@ -236,7 +232,7 @@ var clog = function () {
                     div_css_selector: '#container_buttons .mzoom_buttons'
                 }
             }).done(function () {
-                clog('<ajax.done>');
+                console.log('<ajax.done>');
 
                 self.edit_button_klass = new EditButton();
                 self.edit_button_klass.init('.mapplic-edit-button', self);
@@ -356,7 +352,7 @@ var clog = function () {
                         y: self.CY - self.scale * cy - self.container.offset().top,
                         scale: self.scale
                     });
-                    clog("<$(window).resize> call moveTo");
+                    console.log("<$(window).resize> call moveTo");
                     self.moveTo(self.x, self.y, self.scale, 100);
 
                     // если пользователь ещё не взаимодействовал с картой (т.е. она только загрузилась и готова к использованию)
@@ -391,14 +387,13 @@ var clog = function () {
             }; // IE drag fix
 
             function onSvgMousedown(e) {
-                clog("<onSvgMousedown> self.mode = " + self.mode);
 
                 if (self.mode === 'editing' || self.mode === "edit_building" || self.mode === 'edit_area') {
                     if (e.target.parentNode.tagName === 'g') {
-                        clog("<onSvgMousedown> e = ");
-                        //clog(e.pageX);
-                        //clog("<mouseDown> e.target.parentNode.tagName = " + e.target.parentNode.tagName);
-                        //clog(e.target);
+                        console.log("<onSvgMousedown> e = ");
+                        //console.log(e.pageX);
+                        //console.log("<mouseDown> e.target.parentNode.tagName = " + e.target.parentNode.tagName);
+                        //console.log(e.target);
                         //info.unload();
 
                         // запомним ссылку на "выбранную" область
@@ -418,8 +413,8 @@ var clog = function () {
                         // если взаимодействуем с вершиной
                         if (utils.hasClass(e.target, 'helper')) {
                             var helper = e.target;
-                            //clog("<mouseDown> helper.action = ");
-                            //clog(helper.action);
+                            //console.log("<mouseDown> helper.action = ");
+                            //console.log(helper.action);
                             self.edit_type = helper.action; // pointMove
 
                             if (helper.n >= 0) { // if typeof selected_area == polygon
@@ -449,9 +444,9 @@ var clog = function () {
 
             // Drag & drop
             function onDragNdrop(event) {
-                //clog("<mousedown> edit_type = " + self.edit_type);
+                //console.log("<mousedown> edit_type = " + self.edit_type);
                 console.log("<mousedown> mode = " + self.mode + " dnd_enable = " + self.o.dnd_enable);
-                //clog(event);
+                //console.log(event);
 
                 // если в данный момент не редактируем фигуру (т.е. не двигаем вершину фигуры)
                 if (self.edit_type == null) {
@@ -483,25 +478,26 @@ var clog = function () {
                                 scale: self.scale
                             });
 
-                            //clog("<Map.mousemove> x = " + x + "; y = " + y);
-                            //clog("<Map.mousemove> Call moveTo.");
+                            //console.log("<Map.mousemove> x = " + x + "; y = " + y);
+                            //console.log("<Map.mousemove> Call moveTo.");
                             self.moveTo(x, y); /* NOTE:: вызывается во время dnd */
                             map.data('lastX', x);
                             map.data('lastY', y);
                         }
                     });
 
+                    //noinspection JSUnresolvedFunction
                     $(document).on('mouseup', function (event) {
-                        //clog("<mouseup> dragging = " + self.dragging + ", mode = " + self.mode + "; is_draw = " + self.is_draw + "; scale = " + self.scale);
-                        //clog("<mouseup> event = ");
-                        //clog(event);
-                        //clog("<mouseup> event.target = ");
-                        //clog($(event.target).parent()[0].obj);
+                        //console.log("<mouseup> dragging = " + self.dragging + ", mode = " + self.mode + "; is_draw = " + self.is_draw + "; scale = " + self.scale);
+                        //console.log("<mouseup> event = ");
+                        //console.log(event);
+                        //console.log("<mouseup> event.target = ");
+                        //console.log($(event.target).parent()[0].obj);
 
-                        //clog("<mouseup> [qq] screen: " + event.pageX + ", " + event.pageY +
+                        //console.log("<mouseup> [qq] screen: " + event.pageX + ", " + event.pageY +
                         //"; logic: " + self.rightX(event.pageX) + ", " + self.rightY(event.pageY));
 
-                        clog("<mouseup> self.mode = " + self.mode);
+                        console.log("<mouseup> Отпустили мышь после клика, текущий режим карты: mode = " + self.mode);
 
                         // исключаем случайный dnd дрожащей рукой
                         var dx = map.data('startX') - map.data('lastX');
@@ -523,13 +519,13 @@ var clog = function () {
 
                             /* если находимся в режиме просмотра всей карты - входим в здание */
                             if (self.mode == 'viewing') {
-                                //clog($(event.target).parent()[0].obj.building);
+                                //console.log($(event.target).parent()[0].obj.building);
 
                                 // добираемся до объекта класса Здание, который обслуживает полигон
                                 p = $(event.target).parent()[0];
                                 if (p.obj && p.obj.building) {
                                     var building = p.obj.building;
-                                    clog("<mouseup> Входим в здание.");
+                                    console.log("<mouseup> Текущий mode карты 'viewing' => Входим в здание (а потом building сам решит, входить ли на 1й этаж).");
                                     self.current_building = building;
                                     building.enter();
                                 }
@@ -544,7 +540,7 @@ var clog = function () {
 
                                     var xx = self.rightX(event.pageX);
                                     var yy = self.rightY(event.pageY);
-                                    //clog("<mouseup> " + xx + "; " + yy);
+                                    //console.log("<mouseup> " + xx + "; " + yy);
 
                                     self.drawing_poligon = new Polygon(xx, yy, false, self);
 
@@ -595,7 +591,7 @@ var clog = function () {
 
                                 // добираемся до объекта класса Area, который обслуживает полигон
                                 p = $viewing_g_from_svg_overlay[0];
-                                //clog($(event.target).parent()[0].obj.area_hash);
+                                //console.log($(event.target).parent()[0].obj.area_hash);
 
                                 if (p.obj && p.obj.area) {
 
@@ -603,15 +599,18 @@ var clog = function () {
                                     self.last_clicked_g = $viewing_g_from_svg_overlay;
 
                                     var area = p.obj.area;
-                                    clog("<mouseup> Входим в площадь. self.last_clicked_g = ");
-                                    clog(self.last_clicked_g);
+                                    console.log("<mouseup> Входим в площадь. self.last_clicked_g = ");
+                                    console.log(self.last_clicked_g);
                                     area.enter();
                                 }
 
                             }
+
                         }
 
+                        //noinspection JSUnresolvedFunction
                         self.map.off('mousemove');
+                        //noinspection JSUnresolvedFunction
                         $(document).off('mouseup');
 
                         map.removeClass('mdragging');
@@ -619,7 +618,9 @@ var clog = function () {
                 }
             }
 
+            //noinspection JSUnresolvedFunction
             self.svg.on('mousedown', onDragNdrop);
+            //noinspection JSUnresolvedFunction
             self.svg_overlay.on('mousedown', onDragNdrop);
 
             self.el[0].addEventListener('mousemove', function (e) {
@@ -648,7 +649,7 @@ var clog = function () {
 
         // какой должен быть минимальный масштаб, чтобы вписать отрезок [min,max] в отрезок [p1,p2]
         self.calcScale = function (min, max, p1, p2) {
-            //clog("<calcScale> [" + min + "," + max + '] to [' + p1 + "," + p2 + "]");
+            //console.log("<calcScale> [" + min + "," + max + '] to [' + p1 + "," + p2 + "]");
             return (p2 - p1) / (max - min);
         };
 
@@ -667,7 +668,7 @@ var clog = function () {
         var _$address_p = $('#paddress'); // 20161003: после редизайна надо дополнительно позиционировать блок с адресом
 
         self.ivalidateViewArea = function () {
-            //clog('<init> _$b.offset().left = ' + _$b.offset().left);
+            //console.log('<init> _$b.offset().left = ' + _$b.offset().left);
 
             // рассчитаем "константы" - прямоугольник, в который надо вписывать картинки зданий при входе в них
             self.X1 = _$b.offset().left + 100;
@@ -786,7 +787,7 @@ var clog = function () {
          *           можно было отобразить характеристики Здания родителя C80Rent:Building.
          */
         self.draw_childs = function (childs, parent_hash) {
-            //clog("<Map.draw_childs>");
+            //console.log("<Map.draw_childs>");
 
             //var ip;
             var iobj;
@@ -925,14 +926,14 @@ var clog = function () {
 
         self.onEdit = function (e) {
 
-            //clog("<Polygon.prototype.onEdit> _s_f = " + _s_f);
-            //clog("<Polygon.prototype.onEdit> e = ");
-            //clog(_s_f);
-            //clog(e.pageX);
+            //console.log("<Polygon.prototype.onEdit> _s_f = " + _s_f);
+            //console.log("<Polygon.prototype.onEdit> e = ");
+            //console.log(_s_f);
+            //console.log(e.pageX);
 
             var selected_area = self.selected_area;
             var edit_type = self.edit_type;
-            //clog("<Polygon.prototype.onEdit> edit_type = " + edit_type);
+            //console.log("<Polygon.prototype.onEdit> edit_type = " + edit_type);
 
             selected_area.dynamicEdit(selected_area[edit_type](e.pageX - selected_area.delta.x, e.pageY - selected_area.delta.y));
             selected_area.delta.x = e.pageX;
@@ -940,7 +941,7 @@ var clog = function () {
         };
 
         self.onDrawStop = function (e) {
-            clog("<Map.onDrawStop>");
+            console.log("<Map.onDrawStop>");
 
             if (e != undefined) {
                 if (e.type == 'keydown' && e.keyCode == 13) {
@@ -984,7 +985,7 @@ var clog = function () {
         };
 
         self.onEditStop = function (e) {
-            //clog("<Polygon.prototype.onEditStop>");
+            //console.log("<Polygon.prototype.onEditStop>");
             var _s_f = self.selected_area,
                 edit_type = self.edit_type;
 
@@ -1055,7 +1056,7 @@ var clog = function () {
          * @returns {*}
          */
         self.normalizeScale = function (scale) {
-            clog('<self.normalizeScale>' + self.o.fitscale);
+            console.log('<self.normalizeScale>' + self.o.fitscale);
             if (scale < self.o.fitscale) scale = self.o.fitscale;
             else if (scale > self.o.maxscale) scale = self.o.maxscale;
 
@@ -1074,7 +1075,7 @@ var clog = function () {
             self.x = self.normalizeX(self.container.width() * 0.5 - self.scale * self.contentWidth * x);
             self.y = self.normalizeY(self.container.height() * ry - self.scale * self.contentHeight * y);
 
-            clog("<Map.zoomTo> Call moveTo.");
+            console.log("<Map.zoomTo> Call moveTo.");
             self.moveTo(self.x, self.y, self.scale, duration, easing);
         };*/
 
@@ -1095,7 +1096,7 @@ var clog = function () {
          *      Т.е. желателен рефакторинг и упрощение логики, но не сейчас.
          * */
         var __afterMovingCorrectSvgLayersPositions = function () {
-            //clog(self.map.attr('style'));
+            //console.log(self.map.attr('style'));
             // left: -69.9985px; top: -299.999px;
             // left: [-]{0,1}(\d+\.\d+px);
 
@@ -1109,7 +1110,7 @@ var clog = function () {
                 var x = -1 * Number(match_left[1]); // ["left: -69.9985px;", "69.9985"]
                 var y = -1 * Number(match_right[1]); // ["left: -69.9985px;", "69.9985"]
                 var att = x + " " + y + " " + self.contentWidth + " " + self.contentHeight;
-                //clog(x + "; y = " + y);
+                //console.log(x + "; y = " + y);
                 self.svg.attr('viewBox', att);
                 self.svg_overlay.attr('viewBox', att);
             }
@@ -1181,8 +1182,8 @@ var clog = function () {
         // x,y - экранные координаты
         // сюда подаётся scale, который нужно присвоить map после анимации
         self.moveTo = function (x, y, scale, d, easing) {
-            clog("<self.moveTo> x = " + x + "; y = " + y + "; scale = " + scale + "; delay = " + d);
-            //clog('<self.moveTo>');
+            console.log("<self.moveTo> x = " + x + "; y = " + y + "; scale = " + scale + "; delay = " + d);
+            //console.log('<self.moveTo>');
 
             // если подан аргумент scale(масштаб)
             // перемещаемся анимированно
@@ -1290,7 +1291,7 @@ var clog = function () {
 
         // показать инфо о просматриваемой площади
         self.showAreaInfo = function (area_hash, parent_building_hash) {
-            //clog(area_hash);
+            //console.log(area_hash);
 
             //"area_hash": {
             //        "id": 2,

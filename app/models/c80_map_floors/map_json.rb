@@ -11,8 +11,8 @@ module C80MapFloors
 
       # поместим в него детей - здания со всеми детьми и внуками
       buildings = []
-      C80MapFloors::MapBuilding.all.each do |building|
-        buildings << building.as_json
+      C80MapFloors::MapBuilding.all.each do |map_building|
+        buildings << map_building.my_as_json
       end
 
       locs_hash["buildings"] = buildings

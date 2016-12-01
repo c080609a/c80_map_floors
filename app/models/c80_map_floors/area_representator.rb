@@ -19,7 +19,7 @@ module C80MapFloors
       def acts_as_map_area_representator
         class_eval do
 
-          has_many :map_areas, :as => :area_representator, :class_name => 'C80MapFloors::Area', :dependent => :destroy
+          has_many :map_areas, :as => :area_representator, :class_name => 'C80MapFloors::Area', :dependent => :nullify
           after_save :update_json
 
           def self.unlinked_areas
@@ -33,7 +33,7 @@ module C80MapFloors
           end
 
           def update_json
-            MapJson.update_json
+            # MapJson.update_json # NOTE:: возможно, временно отключён
           end
 
         end
@@ -42,6 +42,8 @@ module C80MapFloors
 
     module InstanceMethods
 
+=begin
+# legacy от с80_map
       def to_hash_a
         res = {
             id: id,
@@ -57,6 +59,21 @@ module C80MapFloors
             }
         }
         res
+      end
+=end
+
+      def my_as_json2
+        result = {
+            id:             self.id,
+            title:          self.name,
+            square:         self.square,
+            square_free:    self.square_free,
+            desc:           self.desc,
+            floor_height:   self.floor_height,
+            price_string:   self.price_string,
+            communications: self.communications
+        }
+        result.as_json
       end
 
       # свободна ли площадь, привязанная к полигону на карте

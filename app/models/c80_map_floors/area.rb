@@ -5,16 +5,25 @@ module C80MapFloors
 
     belongs_to :floor
     belongs_to :area_representator, :polymorphic => true
-    # validates :coords, uniqueness: true
     acts_as_base_map_object
 
-    # after_save :update_json
+    def my_as_json
 
-    # protected
+      result = {
+          id:         self.id,
+          tag:        self.tag,
+          floor_id:   self.floor_id,
+          class_name: self.class_name,
+          coords:     self.coords,
+          data:       nil
+      }
 
-    # def update_json
-    #   MapJson.update_json
-    # end
+      if self.area_representator.present?
+        result[:data] = self.area_representator.my_as_json2
+      end
+
+      result.as_json
+    end
 
   end
 end

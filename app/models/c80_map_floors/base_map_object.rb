@@ -13,11 +13,16 @@ module C80MapFloors
       def acts_as_base_map_object
         class_eval do
 
-          # has_many :map_buildings, :as => :building_representator, :class_name => 'C80MapFloors::MapBuilding', :dependent => :destroy
-          after_save :update_json
+          # NOTE:: возможно, временно
+          # after_save :update_json
+
+          # TODO:: оставить в этом файле только InstanceMethods с class_name
+
+          # TODO?
           # after_destroy :update_json
+
           # validates :coords, uniqueness: true
-          validates_uniqueness_of :coords, :allow_nil => true, :allow_blank => true
+          validates_uniqueness_of :coords, :allow_nil => true, :allow_blank => true #-> глючит для Этажей - у них могут быть одинаковые coords
 
           def update_json
             MapJson.update_json

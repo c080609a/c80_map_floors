@@ -5,6 +5,7 @@ module C80MapFloors
 
     belongs_to :map_building
     has_many :areas, :class_name => 'C80MapFloors::Area', :dependent => :destroy
+    belongs_to :map_floor_representator, :polymorphic => true
     acts_as_base_map_object
 
     # validates :coords, uniqueness: true
@@ -32,6 +33,22 @@ module C80MapFloors
       end
       res
     end
+    
+    def img_bg_url
+      res = nil
+      if img_bg.present?
+        res = img_bg.url
+      end
+      res      
+    end
+    
+    def img_overlay_url
+      res = nil
+      if img_overlay.present?
+        res = img_overlay.url
+      end
+      res      
+    end
 
     # private
 
@@ -40,6 +57,41 @@ module C80MapFloors
     def update_json
       Rails.logger.debug "[TRACE] <update_json> nope"
       # MapJson.update_json
+    end
+
+    def my_as_json
+
+      result = {
+          ord: self.ord,
+          id: self.id,
+          title: self.title,
+          tag: self.tag,
+          class_name: self.class_name,
+          map_building_id: self.map_building_id,
+          img_bg: {
+              url: self.img_bg_url
+          },
+          img_overlay: {
+              url: self.img_overlay_url
+          },
+          img_bg_width: img_bg_width,
+          img_bg_height: img_bg_height,
+          coords: self.coords,
+          areas: [],
+          data: nil
+      }
+
+      self.areas.each do |area|
+        result[:areas] << area.my_as_json
+      end
+
+      # если имеются ДАННЫЕ - прицепим их к JSON
+      if self.map_floor_representator.present?
+        result[:data] = self.map_floor_representator.my_as_json3
+      end
+
+      result.as_json
+
     end
 
   end

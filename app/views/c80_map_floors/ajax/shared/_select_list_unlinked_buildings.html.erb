@@ -1,7 +1,7 @@
 <select id="unlinked_buildings" class="selectpicker" data-style="btn-default">
 <% buildings.each do |building| %>
       <% tt = building.title %>
-      <% if building.map_buildings.count > 0 %>
+      <% unless building.map_building.present? %>
         <% tt += ' (полигон назначен)' %>
       <% end %>
     <option value="<%= building.id%>"><%= tt %></option>

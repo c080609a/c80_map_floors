@@ -19,15 +19,15 @@ module C80MapFloors
       def acts_as_map_building_representator
         class_eval do
 
-          has_many :map_buildings, :as => :building_representator, :class_name => 'C80MapFloors::MapBuilding', :dependent => :destroy
+          has_one :map_building, :as => :building_representator, :class_name => 'C80MapFloors::MapBuilding', :dependent => :nullify
           after_save :update_json
 
           def self.unlinked_buildings
             res = []
             self.all.each do |building|
-              # if building.map_buildings.count == 0
+              unless building.map_building.present?
                 res << building
-              # end
+              end
             end
             res
           end
@@ -42,6 +42,21 @@ module C80MapFloors
 
     module InstanceMethods
 
+      def my_as_json
+        result = {
+            id:             self.id,
+            title:          self.title,
+            square:         self.square,
+            square_free:    self.square_free,
+            desc:           self.desc,
+            floor_height:   self.floor_height,
+            price_string:   self.price_string,
+            communications: self.communications
+        }
+        result.as_json
+      end
+
+=begin
       def to_hash
 
         Rails.logger.debug "<BuildingRepresentator.to_hash> self.free_square = #{self.free_square}"
@@ -63,6 +78,15 @@ module C80MapFloors
         }
         res
       end
+=end
+
+=begin
+      def serializable_hash(options = nil)
+        super({
+                  :except => [:created_at, :updated_at]
+              })
+      end
+=end
 
     end
 

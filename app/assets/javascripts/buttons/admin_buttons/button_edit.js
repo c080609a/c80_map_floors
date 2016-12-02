@@ -1,9 +1,11 @@
 "use strict";
 
-// именно эта кнопка контролирует переходы между состояниями:
+// именно эта кнопка контролирует переходы между состояниями приложения:
 // - viewing, editing;
 // - view_building, edit_building;
 // - view_area, edit_area;
+// - view_floor, edit_floor
+
 function EditButton() {
 
     var _map = null;

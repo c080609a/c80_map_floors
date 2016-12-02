@@ -349,7 +349,7 @@ function StateController() {
                 // прячем кнопку "отправить заявку на аренду площади"
                 _this.area_order_button.css('display', 'none');
 
-                // кнопку "редактировать переводим в СООТВЕТСТВУЮЩЕЕ состояние
+                // кнопку "редактировать" переводим в СООТВЕТСТВУЮЩЕЕ состояние
                 _map.edit_button_klass.setState('edit_button_view_floor', true); // [a1x7]
 
                 // сбросим z-index (пояснение "что это" см. в комментах к resetOverlayZindex)

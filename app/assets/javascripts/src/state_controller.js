@@ -333,7 +333,7 @@ function StateController() {
 
                 //_this.main_map.css('opacity','0.7');
 
-                // включим слой svg_overlay - а кто там живёт (запомятовал)?
+                // т.к. этот слой используется испключительно в помощь при рисовании обводки площадей и перехватывает клики при dnd, то тут он нам не нужен
                 _this.svg_overlay.css('display', 'block');
 
                 // выдвигаем инфо-панель
@@ -374,7 +374,45 @@ function StateController() {
 
             // начали редактировать этаж
             case 'edit_floor':
+                //<editor-fold desc="...">
 
+                // спрячем кнопку "обратно на карту"
+                _map.back_to_map_button_klass.hide();
+
+                // покажем кнопку "связать здание с полигоном"
+                //_map.building_link_button_klass.show();
+
+                // т.к. этот слой используется испключительно в помощь при рисовании обводки площадей и перехватывает клики при dnd, то тут он нам не нужен
+                _this.svg_overlay.css('display', 'none');
+
+                // заодно поменяем z-index слоёв с колоннами и слоя с svg полигонами площадей, чтобы можно было добраться мышкой до этих полигонов и редактировать их
+                if (_map.current_building != undefined) _map.current_building.changeOverlayZindex();
+
+                // покажем кнопку "добавить фигуру"
+                OpacityButtonsUtils.show(_this.new_button);
+                _map.new_button_klass.resetState();
+
+                // покажем кнопку "удалить фигуру"
+                OpacityButtonsUtils.show(_this.remove_button);
+
+                // покажем кнопку "ред"
+                OpacityButtonsUtils.show(_this.edit_button);
+
+                // спрячем инфу о здании
+                _this.building_info.css("top", -500);
+
+                // спрячем статус строки "вы создаёте полигон" и ...
+                _this.map_creating.css('display', 'none');
+                _this.map_removing.css('display', 'none');
+
+                // покажем, возможно спрятанные, zoom кнопки
+                _this.mzoom_buttons.css('opacity', '1');
+
+                // покажем кнопку "сохранить"
+                _map.save_button_klass.show();
+                _map.save_button_klass.check_and_enable();
+
+                //</editor-fold>
             break;
 
         }

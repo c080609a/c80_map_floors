@@ -52,7 +52,9 @@ module C80MapFloors
             square_free:      self.square_free,
             areas_count:      self.areas.count,
             areas_free_count: self.areas.free_areas.count,
-            price_string:     self.price_string
+            price_string:     self.price_string,
+            floor_height:     self.floor_height,
+            communications:   self.communications
         }
         result.as_json
       end

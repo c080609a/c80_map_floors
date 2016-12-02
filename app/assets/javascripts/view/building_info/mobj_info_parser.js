@@ -24,6 +24,7 @@ var MobjInfoParser = function () {
                 result += _this._row('square', json);
                 result += _this._row('square_free', json);
                 result += _this._row('floor_height', json);
+                result += _this._row('communications', json);
                 result += _this._row('areas_count', json);
                 result += _this._row('areas_free_count', json);
                 result += _this._row('price_string', json);
@@ -38,7 +39,7 @@ var MobjInfoParser = function () {
     this._row = function (key, json) {
         var s = '';
         if (key == 'price_string') {
-            s = "<li>" + json['data'][key] + "</li>";
+            s = "<li class='price'>" + json['data'][key] + "</li>";
         } else {
             s = "<li>" + _i18n.t(key) + ": " + "<span class='dd'>" + json['data'][key] + "</span>" + "</li>"
         }

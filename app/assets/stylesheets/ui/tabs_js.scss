@@ -22,8 +22,15 @@ div.tabs_js {
         transition: all 0.3s;
 
         span {
-          color: #6f6f6f;
+          color: #4271B5;
+          font-weight: bold;
         }
+
+        &.price {
+          padding-top: 15px;
+          font-size: 20px;
+        }
+
       }
     }
 

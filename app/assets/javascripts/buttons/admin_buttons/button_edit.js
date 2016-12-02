@@ -38,8 +38,8 @@ function EditButton() {
         _this.el.removeClass('edit_building');
         _this.el.removeClass('view_area');
         _this.el.removeClass('edit_area');
-        _this.el.removeClass('edit_button_view_floor');
-        _this.el.removeClass('edit_button_edit_floor');
+        _this.el.removeClass('eb_view_floor');
+        _this.el.removeClass('eb_edit_floor');
         _this.el.addClass(state);
         //</editor-fold>
 

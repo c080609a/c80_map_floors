@@ -45,6 +45,8 @@ function StateController() {
         _map.container.removeClass("edit_building");
         _map.container.removeClass("view_area");
         _map.container.removeClass("edit_area");
+        _map.container.removeClass("view_floor");
+        _map.container.removeClass("edit_floor");
         _map.container.addClass(mode);
         //</editor-fold>
 

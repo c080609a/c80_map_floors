@@ -13,17 +13,23 @@ function EditButton() {
     _this.state = 'init'; // editing / viewing
     _this.el = null;
 
+    // если true - значит кнопка имеется на странице и код в методах будет исполняться
+    var mark_button_present = false;
+
     // состояние этой кнопки извне меняет приложение,
     // когда входим в здание\площадь (вот тут [a1x7]),
     // и чтобы не происходило бесконечного зацикленного вызова,
     // вводится флаг mark_change_only_inner_state
     this.setState = function (state,mark_change_only_inner_state) {
+        if (!mark_button_present) return;
+
         if (mark_change_only_inner_state == undefined) {
             mark_change_only_inner_state = false;
         }
-        //console.log("<EditButton.setState> state = " + state);
+        console.log("<EditButton.setState> Кнопка EDIT перешла в состояние state = " + state);
 
-        // этот код коррелирует с [x9cs7]
+        //<editor-fold desc="//Впишем режим в cssClass кнопки">
+        // NOTE: этот код коррелирует с [x9cs7]. Возможно, нужен рефакторинг, но на него нет времени сейчас.
         _this.state = state;
         _this.el.removeClass('editing');
         _this.el.removeClass('viewing');
@@ -32,7 +38,10 @@ function EditButton() {
         _this.el.removeClass('edit_building');
         _this.el.removeClass('view_area');
         _this.el.removeClass('edit_area');
+        _this.el.removeClass('edit_button_view_floor');
+        _this.el.removeClass('edit_button_edit_floor');
         _this.el.addClass(state);
+        //</editor-fold>
 
         if (!mark_change_only_inner_state) {
             _map.setMode(state);
@@ -90,9 +99,15 @@ function EditButton() {
     this.init = function (button_css_selector, link_to_map) {
         _map = link_to_map;
         _this.el = $(button_css_selector);
-        _this.state = _map.mode;
-        _this.el.addClass(_map.mode);
-        _this.el.on('click', this.onClick);
+
+        if (_this.el.length) {
+            mark_button_present = true;
+            _this.state = _map.mode;
+            _this.el.addClass(_map.mode);
+            _this.el.on('click', this.onClick);
+        }
+
+        //console.log('button_edit.js: init: for breakpoint: ' + _this.el.length);
     };
 
 }

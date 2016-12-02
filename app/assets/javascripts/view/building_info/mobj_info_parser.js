@@ -39,7 +39,7 @@ var MobjInfoParser = function () {
     this._row = function (key, json) {
         var s = '';
         if (key == 'price_string') {
-            s = "<li>" + json['data'][key] + "</li>";
+            s = "<li class='price'>" + json['data'][key] + "</li>";
         } else {
             s = "<li>" + _i18n.t(key) + ": " + "<span class='dd'>" + json['data'][key] + "</span>" + "</li>"
         }

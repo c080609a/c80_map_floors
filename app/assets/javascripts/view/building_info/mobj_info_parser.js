@@ -24,6 +24,7 @@ var MobjInfoParser = function () {
                 result += _this._row('square', json);
                 result += _this._row('square_free', json);
                 result += _this._row('floor_height', json);
+                result += _this._row('communications', json);
                 result += _this._row('areas_count', json);
                 result += _this._row('areas_free_count', json);
                 result += _this._row('price_string', json);

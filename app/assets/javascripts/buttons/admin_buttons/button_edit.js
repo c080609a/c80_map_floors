@@ -1,9 +1,11 @@
 "use strict";
 
-// именно эта кнопка контролирует переходы между состояниями:
+// именно эта кнопка контролирует переходы между состояниями приложения:
 // - viewing, editing;
 // - view_building, edit_building;
 // - view_area, edit_area;
+// - view_floor, edit_floor
+
 function EditButton() {
 
     var _map = null;
@@ -11,17 +13,34 @@ function EditButton() {
     _this.state = 'init'; // editing / viewing
     _this.el = null;
 
-    // состояние этой кнопки извне меняет приложение,
-    // когда входим в здание\площадь (вот тут [a1x7]),
-    // и чтобы не происходило бесконечного зацикленного вызова,
-    // вводится флаг mark_change_only_inner_state
-    this.setState = function (state,mark_change_only_inner_state) {
+    // если true - значит кнопка имеется на странице и код в методах будет исполняться
+    var mark_button_present = false;
+
+    /** Изменить состояние кнопки.
+     *
+     * @param {string} state
+     * @param {boolean} [mark_change_only_inner_state]
+     *
+     * NOTE:: Клик по этой кнопке изменит состояние этой кнопки и поменяет режим приложения.
+     *
+     * Также: приложение меняет состояние этой кнопки,
+     * когда входим в здание\площадь (вот тут [a1x7]),
+     * и чтобы не происходило бесконечного зацикленного вызова,
+     * вводится флаг mark_change_only_inner_state.
+     *
+     * http://usejsdoc.org/tags-param.html
+     *
+     */
+    this.setState = function (state, mark_change_only_inner_state) {
+        if (!mark_button_present) return;
+
         if (mark_change_only_inner_state == undefined) {
             mark_change_only_inner_state = false;
         }
-        //console.log("<EditButton.setState> state = " + state);
+        console.log("<EditButton.setState> Кнопка EDIT перешла в состояние state = " + state);
 
-        // этот код коррелирует с [x9cs7]
+        //<editor-fold desc="//Впишем режим в cssClass кнопки">
+        // NOTE: этот код коррелирует с [x9cs7]. Возможно, нужен рефакторинг, но на него нет времени сейчас.
         _this.state = state;
         _this.el.removeClass('editing');
         _this.el.removeClass('viewing');
@@ -30,14 +49,20 @@ function EditButton() {
         _this.el.removeClass('edit_building');
         _this.el.removeClass('view_area');
         _this.el.removeClass('edit_area');
+        _this.el.removeClass('eb_view_floor');
+        _this.el.removeClass('eb_edit_floor');
         _this.el.addClass(state);
+        //</editor-fold>
 
+        // NOTE:: изменим режим приложения
         if (!mark_change_only_inner_state) {
-            _map.setMode(state);
+            var s = state.split('eb_').join('');
+            _map.setMode(s);
         }
 
     };
 
+    // слушаем клики по кнопке (внутренняя state машина)
     this.onClick = function (e) {
         e.preventDefault();
 
@@ -75,6 +100,15 @@ function EditButton() {
                 mark_restore_svg_overlay = true;
                 break;
 
+            case 'eb_view_floor':
+                _this.setState('eb_edit_floor');
+                mark_restore_svg_overlay = true;
+                break;
+
+            case 'eb_edit_floor':
+                _this.setState('eb_view_floor');
+                break;
+
         }
 
         // покажем для клика мышкой все полигоны из svg_overlay
@@ -88,9 +122,15 @@ function EditButton() {
     this.init = function (button_css_selector, link_to_map) {
         _map = link_to_map;
         _this.el = $(button_css_selector);
-        _this.state = _map.mode;
-        _this.el.addClass(_map.mode);
-        _this.el.on('click', this.onClick);
+
+        if (_this.el.length) {
+            mark_button_present = true;
+            _this.state = _map.mode;
+            _this.el.addClass(_map.mode);
+            _this.el.on('click', this.onClick);
+        }
+
+        //console.log('button_edit.js: init: for breakpoint: ' + _this.el.length);
     };
 
 }

@@ -16,11 +16,22 @@ function EditButton() {
     // если true - значит кнопка имеется на странице и код в методах будет исполняться
     var mark_button_present = false;
 
-    // состояние этой кнопки извне меняет приложение,
-    // когда входим в здание\площадь (вот тут [a1x7]),
-    // и чтобы не происходило бесконечного зацикленного вызова,
-    // вводится флаг mark_change_only_inner_state
-    this.setState = function (state,mark_change_only_inner_state) {
+    /** Изменить состояние кнопки.
+     *
+     * @param {string} state
+     * @param {boolean} [mark_change_only_inner_state]
+     *
+     * NOTE:: Клик по этой кнопке изменит состояние этой кнопки и поменяет режим приложения.
+     *
+     * Также: приложение меняет состояние этой кнопки,
+     * когда входим в здание\площадь (вот тут [a1x7]),
+     * и чтобы не происходило бесконечного зацикленного вызова,
+     * вводится флаг mark_change_only_inner_state.
+     *
+     * http://usejsdoc.org/tags-param.html
+     *
+     */
+    this.setState = function (state, mark_change_only_inner_state) {
         if (!mark_button_present) return;
 
         if (mark_change_only_inner_state == undefined) {
@@ -43,12 +54,15 @@ function EditButton() {
         _this.el.addClass(state);
         //</editor-fold>
 
+        // NOTE:: изменим режим приложения
         if (!mark_change_only_inner_state) {
-            _map.setMode(state);
+            var s = state.split('eb_').join('');
+            _map.setMode(s);
         }
 
     };
 
+    // слушаем клики по кнопке (внутренняя state машина)
     this.onClick = function (e) {
         e.preventDefault();
 
@@ -84,6 +98,15 @@ function EditButton() {
             case 'edit_area':
                 _this.setState('view_area');
                 mark_restore_svg_overlay = true;
+                break;
+
+            case 'eb_view_floor':
+                _this.setState('eb_edit_floor');
+                mark_restore_svg_overlay = true;
+                break;
+
+            case 'eb_edit_floor':
+                _this.setState('eb_view_floor');
                 break;
 
         }

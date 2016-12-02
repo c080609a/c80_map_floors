@@ -372,6 +372,11 @@ function StateController() {
                 //</editor-fold>
             break;
 
+            // начали редактировать этаж
+            case 'edit_floor':
+
+            break;
+
         }
     };
 

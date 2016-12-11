@@ -52,7 +52,7 @@ function Building() {
         _map.moveTo(x, y, scale, 400, 'easeInOutCubic');
     };
 
-    // the_floor - это as_json модели C80MapFloors::Floor
+    // map_floor_as_json - это as_json модели C80MapFloors::Floor
     /*{
         "map_building_id": 7,
         "img_bg": {
@@ -80,14 +80,14 @@ function Building() {
         }
     ]
     }*/
-    var _draw_floor = function (the_floor) {
+    var _draw_floor = function (map_floor_as_json) {
         //console.log('<Building._draw_floor>');
 
         // это тот самый код, который остался без изменений с версии c80_map (прошлой версии)
-        if (the_floor["img_overlay"]["url"] != "null") {
-            //_image_overlay = _map.draw_child_bg_image(the_floor["img_overlay"]["url"], 'building', true);
+        if (map_floor_as_json["img_overlay"]["url"] != "null") {
+            //_image_overlay = _map.draw_child_bg_image(map_floor_as_json["img_overlay"]["url"], 'building', true);
         }
-        if (the_floor["img_bg"]["url"] != "null") {
+        if (map_floor_as_json["img_bg"]["url"] != "null") {
 
             // NOTE::картинку этажа рисуем не по bounding box здания, а по значениям из базы
 
@@ -99,8 +99,8 @@ function Building() {
             // и сложим их с корректирующими координатами coords этажа
             var xx2 = 0;
             var yy2 = 0;
-            if (the_floor["coords"].length) {
-                var tmp2 = the_floor["coords"].split(',');
+            if (map_floor_as_json["coords"].length) {
+                var tmp2 = map_floor_as_json["coords"].split(',');
                 xx2 = parseInt(tmp2[0]);
                 yy2 = parseInt(tmp2[1]);
             }
@@ -109,11 +109,11 @@ function Building() {
             _map.mark_all_map_object_images_for_clean();
 
             // просим карту нарисовать картинку с данными характеристиками
-            _$image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
+            _$image_bg = _map.draw_map_object_image_bg(map_floor_as_json["img_bg"]["url"], {
                 x: xx + xx2,
                 y: yy + yy2,
-                width: the_floor["img_bg_width"],
-                height: the_floor["img_bg_height"]
+                width: map_floor_as_json["img_bg_width"],
+                height: map_floor_as_json["img_bg_height"]
             }/*, 'building'*/);
 
         } else {
@@ -121,7 +121,7 @@ function Building() {
         }
 
         // просим карту нарисовать полигоны площадей
-        _map.draw_childs(the_floor["areas"]/*, _options["rent_building_hash"]*/);
+        _map.draw_childs(map_floor_as_json["areas"], map_floor_as_json);
 
     };
 

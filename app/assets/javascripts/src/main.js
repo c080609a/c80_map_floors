@@ -1300,7 +1300,7 @@ var InitMap = function (params) {
         };
 
         // показать инфо о просматриваемой площади
-        self.showAreaInfo = function (area_hash, parent_floor_json) {
+        self.showAreaInfo = function (area_json, parent_floor_json) {
             //console.log(area_hash);
 
             // так было в c80_map
@@ -1331,20 +1331,24 @@ var InitMap = function (params) {
             //            "price": "от 155 руб/кв.м в месяц"
             //    }
 
-            $building_info.find("h2").html("</span>" + area_hash["title"] + "<span style='color:#D0B2B2;'> / " + parent_floor_json["title"]);
+            if (area_json == null || area_json == undefined) {
+                alert('[ERROR] У полигона нет привязки к Площади. Привяжите полигон площади.');
+            } else {
+                $building_info.find("h2").html("</span>" + area_json["title"] + "<span style='color:#D0B2B2;'> / " + parent_floor_json["title"]);
 
-            var v;
-            for (var p in area_hash["props"]) {
-                v = area_hash["props"][p];
-                $building_info.find("#" + p).find('span').text(v);
+                var v;
+                for (var p in area_json["props"]) {
+                    v = area_json["props"][p];
+                    $building_info.find("#" + p).find('span').text(v);
+                }
+
+                $building_info.find("#square_free").css('height', '0');
+
+                // заполняем данными ссылку 'Оставить заявку'
+                var $a_make_order = $building_info.find('.c80_order_invoking_btn');
+                $a_make_order.data('comment-text', 'Здравствуйте, оставляю заявку на площадь: ' + area_json["title"]);
+                $a_make_order.data('subj-id', area_json["id"]);
             }
-
-            $building_info.find("#square_free").css('height', '0');
-
-            // заполняем данными ссылку 'Оставить заявку'
-            var $a_make_order = $building_info.find('.c80_order_invoking_btn');
-            $a_make_order.data('comment-text', 'Здравствуйте, оставляю заявку на площадь: ' + area_hash["title"]);
-            $a_make_order.data('subj-id', area_hash["id"]);
 
         };
 

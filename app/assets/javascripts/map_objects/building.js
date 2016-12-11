@@ -120,7 +120,7 @@ function Building() {
             alert('[ERROR] У этажа нет картинки.');
         }
 
-        // просим карту нарисовать площади
+        // просим карту нарисовать полигоны площадей
         _map.draw_childs(the_floor["areas"]/*, _options["rent_building_hash"]*/);
 
     };
@@ -234,9 +234,12 @@ function Building() {
      */
     _this.enterFloor = function (floor_id) {
 
+        // при входе в этаж - удаляем все кликабельные полигоны с карты
+        _map.svgRemoveAllNodes();
+
         var flr = _map_floors_hash[floor_id];
         if (flr != undefined) {
-            // рисуем картинку этажа
+            // рисуем картинку этажа (там же будет заказ на отрисовку полигонов площадей)
             _draw_floor(flr);
             // фиксируем текущий этаж
             _json_current_floor = flr;

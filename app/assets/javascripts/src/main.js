@@ -788,7 +788,7 @@ var InitMap = function (params) {
          *           можно было отобразить характеристики Здания родителя C80Rent:Building.
          */
         self.draw_childs = function (childs, parent_hash) {
-            //console.log("<Map.draw_childs>");
+            console.log("<Map.draw_childs>");
 
             //var ip;
             var iobj;

@@ -25,12 +25,37 @@ function Area() {
     // нарисован и ждёт сохранения на сервере
     //_this.is_new = false;
 
-    _this.init = function (options, parent_building_hash, pself) {
-        console.log("<Area.init>");
-        //console.log(parent_building_hash); // => see building.js init comment
+    _this.init = function (options, parent_floor_json, pself) {
 
-        //console.log(options);
-        /*{
+        console.log("<Area.init> options: ");
+        console.log(options);
+
+        // нарисовали полигон площади, находясь на этаже:
+        // => Object { coords: Array[8] }
+
+        // полигон площади уже был нарисован, просто вошли на этаж:
+        // => Object { id: 2, tag: "test_area", floor_id: 2, class_name: "C80MapFloors::Area", coords: "10,12,110,112", data: null }
+
+        console.log("<Area.init> parent_floor_json: ");
+        console.log(parent_floor_json);
+
+        /*
+         Object {
+            ord: 1,
+            id: 2,
+            title: "Первый этаж",
+            tag: "21.1",
+            class_name: "C80MapFloors::Floor",
+            map_building_id: 7,
+            img_bg: Object,
+            img_overlay: Object,
+            img_bg_width: 387,
+            img_bg_height: 225,
+                3 more…
+            }
+         */
+
+        /*{ // так было в c80_map
             "id": 1,
             "object_type": "area",
             "area_hash": {
@@ -67,13 +92,11 @@ function Area() {
             _this._options.coords[i] = Number(_this._options.coords[i]);
         }
 
-        _this._options.parent_building_hash = parent_building_hash;
-        //console.log(_this._options.parent_building_hash);
-
+        _this._options["parent_floor_json"] = parent_floor_json;
 
         _this._polygon = Polygon.createFromSaved(options, false, _map);
         _this._polygon.area = _this;
-        _this._polygon.parent_building_hash = parent_building_hash;
+        _this._polygon["parent_floor_json"] = parent_floor_json;
         _this._polygon = $(_this._polygon.polygon);
 
         // подпись над полигоном показываем только админам
@@ -102,7 +125,7 @@ function Area() {
 
     // optimisation
     var timeoutEnter = function () {
-        _map.showAreaInfo(_this._options.area_hash, _this._options.parent_building_hash);
+        _map.showAreaInfo(_this._options.area_hash, _this._options["parent_floor_json"]);
         _map.setMode('view_area');
     };
 
@@ -245,7 +268,7 @@ function Area() {
         return {
             id:                 _this._options["id"],
             coords:             _this._options["coords"],
-            parent_building_id: _this._options.parent_building_hash["id"]
+            parent_floor_id:    _this._options["parent_floor_json"]["id"]
         }
     }
 }

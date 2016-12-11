@@ -78,6 +78,8 @@ function StateController() {
             case "editing":
                 //<editor-fold desc="...">
 
+                console.log("<StateController.setMode> <ожидается рисование полигонов Зданий>.");
+
                 // спрячем надписи "цена за метр" и адрес с телефоном
                 _this.left_side.css("top", -300);
                 _this.right_side.css("top", -300);
@@ -375,6 +377,8 @@ function StateController() {
             // начали редактировать этаж
             case 'edit_floor':
                 //<editor-fold desc="...">
+
+                console.log("<StateController.setMode> <Ожидается рисование полигонов Площадей>.");
 
                 // спрячем кнопку "обратно на карту"
                 _map.back_to_map_button_klass.hide();

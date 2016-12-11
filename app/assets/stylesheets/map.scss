@@ -442,7 +442,7 @@
           font-size: 14px;
         }
 
-        &.editing, &.edit_area, &.edit_building {
+        &.editing, &.edit_area, &.edit_floor {
           background-color: #a10000;
         }
       }
@@ -1346,7 +1346,7 @@ div#map_wrapper {
 
     &.editing,
     &.edit_area,
-    &.edit_building {
+    &.edit_floor {
       #svg {
 
         rect.helper {

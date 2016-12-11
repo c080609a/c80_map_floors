@@ -24,6 +24,9 @@ function Building() {
     var _$image_bg = null;
     var _image_overlay = null;
 
+    // если вошли в какой-то этаж - эта переменная будет хранить ссылку на объект с данными полигона Этажа из locations.json
+    var _json_current_floor = null;
+
     var _zoomToMe = function () {
 
         /* рассчитаем масштаб, при котором можно вписать прямоугольник дома в прямоугольник рабочей области */
@@ -230,11 +233,15 @@ function Building() {
      * @param floor_id
      */
     _this.enterFloor = function (floor_id) {
-        console.log('<Building.enterFloor> floor_id: ' + floor_id);
 
         var flr = _map_floors_hash[floor_id];
         if (flr != undefined) {
+            // рисуем картинку этажа
             _draw_floor(flr);
+            // фиксируем текущий этаж
+            _json_current_floor = flr;
+            console.log('<Building.enterFloor> Вошли на этаж floor_id: ' + floor_id + "; данные полигона этажа: ");
+            console.log(_json_current_floor);
         } else {
             alert('[Building.EnterFloor] error: Нет данных об этаже [карты] floor_id='+floor_id+'.');
         }
@@ -250,6 +257,15 @@ function Building() {
         _$image_bg = null;
         _image_overlay = null;
         //_zoomToMe();
+
+        // чистим переменную "текущий этаж"
+        _json_current_floor = null;
+
+    };
+
+    // выдать данные текущего полигона этажа
+    _this.json_current_floor = function () {
+        return _json_current_floor;
     };
 
     // выдать центр дома в логических координатах

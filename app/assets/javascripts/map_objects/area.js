@@ -268,7 +268,7 @@ function Area() {
         return {
             id:                 _this._options["id"],
             coords:             _this._options["coords"],
-            parent_building_id: _this._options["parent_floor_json"]["id"]
+            parent_floor_id:    _this._options["parent_floor_json"]["id"]
         }
     }
 }

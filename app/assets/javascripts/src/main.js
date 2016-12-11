@@ -580,9 +580,9 @@ var InitMap = function (params) {
                                 }
                             }
 
-                            /* если находимся в режиме просмотра здания - входим в площадь */
+                            /* если находимся в режиме просмотра здания - входим в площадь (так было в c80_map) */
                             /* если находится в режиме просмотра площади - переключаемся на другую площадь */
-                            else if (self.mode == 'view_building' || self.mode == 'view_area') {
+                            else if (self.mode == 'view_floor' || self.mode == 'view_area') { // self.mode == 'view_building' (так было в c80_map)
 
                                 //console.log($(event.target).parent());
                                 // => g, который живёт в #svg_overlay, или, другими словами,
@@ -603,6 +603,8 @@ var InitMap = function (params) {
                                     console.log("<mouseup> Входим в площадь. self.last_clicked_g = ");
                                     console.log(self.last_clicked_g);
                                     area.enter();
+                                } else {
+                                    console.log('<mouseup> [ERROR] у полигона нет объекта Area.js класса.');
                                 }
 
                             }

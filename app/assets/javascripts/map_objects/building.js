@@ -77,6 +77,16 @@ function Building() {
             "coords": "10,12,110,112",
             "area_representator_id": null,
             "class_name": "C80MapFloors::Area"
+        },
+        "data": {
+            "id": 1,
+            "title": "test building",
+            "square": null,
+            "square_free": null,
+            "desc": null,
+            "floor_height": "2.3м - 4.2м",
+            "price_string": "От 300 руб/м.кв.",
+            "communications": "Интернет, Вода, Свет"
         }
     ]
     }*/
@@ -159,6 +169,8 @@ function Building() {
             if (typeof _this.options["coords"] == 'string') { /* когда нажимаем ENTER в редакторе и завершаем рисование полигона - приходит массив */
                 _this.options["coords"] = _this.options["coords"].split(',');
             }
+
+            //#-> [iddqd] ВАЖНО: это id  полигона здания
             _this.id = options["id"];
 
             // [NOTE::56dfaw1: парсим координаты объекта на карте, поданные в виде строки]
@@ -167,6 +179,7 @@ function Building() {
             }
 
             // [4ddl5df]: в случае, если это только что отрисованное Здание - генерим временный случайный id
+            //#-> [iddqd] А как же тогда _this.id ? Он будет undefined? Страшно ли это?
             if (_this.options["id"] == undefined) {
                 _this.options["id"] = Math.ceil((Math.random()*100000));
             }
@@ -336,8 +349,20 @@ function Building() {
 
     _this.to_json = function () {
         return {
-            id:     _this.options["id"],
+            id:     _this.options["id"], //#-> [iddqd] А здесь не используется _this.id (т.е. в случае, когда полигон был только что нарисован, to_json вернёт актуальное, правильное значение
             coords: _this.options["coords"]
         }
-    }
+    };
+
+    // выдать id привязанного к полигону Здания
+    this.get_bid = function () {
+      var result = null;
+      if (_options != null) {
+          if (_options["data"] != null && _options["data"] != undefined) {
+              result = _options["data"]["id"];
+          }
+      }
+      return result;
+    };
+
 }

@@ -5,7 +5,6 @@ module C80MapFloors
       # Rails.logger.debug "<MapAjaxController.save_map_data> params = #{params}"
 
       #{ "buildings"=>{"0"=>{"coords"=>["2496.5894495412845",...]}} }
-      #{ "areas"=>{"0"=>{"coords"=>["2496.5894495412845",...]}} }
 
       # ЗДАНИЯ
       # в случае успеха - вернём id созданного здания,
@@ -13,6 +12,18 @@ module C80MapFloors
       # в случае неудачи - вернём описание ошибки
       # завершаем всё обновленным locations.json, который Map возьмёт
       # и положит в data
+
+      # ПЛОЩАДИ
+      #
+      # как было:
+      # {"areas"=>{"0"=>{"id"=>"61319", "coords"=>[..], "parent_building_id"=>"2"}}}
+      # как стало:
+      # {"areas"=>{"0"=>{"id"=>"61319", "coords"=>[..], "parent_floor_id"=>"2"}}}
+      # ...
+      # INSERT INTO `c80_map_floors_areas` (`coords`, `floor_id`, `created_at`, `updated_at`) VALUES ('...', 2, '2016-12-11 05:48:33.629883', '2016-12-11 05:48:33.629883')
+      #
+      #
+
 
       result = {
           areas: [],
@@ -37,7 +48,7 @@ module C80MapFloors
         end
       end
 
-      # затем создадим области
+      # затем создадим площади
       if params[:areas].present?
         params[:areas].each_key do |key|
           new_area_options = params[:areas][key]
@@ -45,7 +56,7 @@ module C80MapFloors
           # puts "<MapAjaxController.save_map_data> new_area_options[:coords] = #{new_area_options[:coords]}"
           a = C80MapFloors::Area.new({
                            coords: new_area_options[:coords].join(','),
-                           map_building_id: new_area_options[:parent_building_id]
+                           floor_id: new_area_options[:parent_floor_id]
                        })
 
           if a.valid?

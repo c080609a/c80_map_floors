@@ -78,6 +78,8 @@ function StateController() {
             case "editing":
                 //<editor-fold desc="...">
 
+                console.log("<StateController.setMode> <ожидается рисование полигонов Зданий>.");
+
                 // спрячем надписи "цена за метр" и адрес с телефоном
                 _this.left_side.css("top", -300);
                 _this.right_side.css("top", -300);
@@ -345,8 +347,8 @@ function StateController() {
                 // прячем masked слой - а там что (запомятовал)?
                 _this.masked.addClass('hiddn');
 
-                // скроем кнопку "связать здание с полигоном"
-                _map.building_link_button_klass.hide();
+                // скроем кнопку "связать этаж с полигоном" (которая видна при выходе из режима редактирования этажа)
+                _map.floor_link_button_klass.hide();
 
                 // прячем кнопку "отправить заявку на аренду площади"
                 _this.area_order_button.css('display', 'none');
@@ -376,11 +378,13 @@ function StateController() {
             case 'edit_floor':
                 //<editor-fold desc="...">
 
+                console.log("<StateController.setMode> <Ожидается рисование полигонов Площадей>.");
+
                 // спрячем кнопку "обратно на карту"
                 _map.back_to_map_button_klass.hide();
 
-                // покажем кнопку "связать здание с полигоном"
-                //_map.building_link_button_klass.show();
+                // покажем кнопку "связать Этаж с полигоном"
+                _map.floor_link_button_klass.show();
 
                 // т.к. этот слой используется испключительно в помощь при рисовании обводки площадей и перехватывает клики при dnd, то тут он нам не нужен
                 _this.svg_overlay.css('display', 'none');

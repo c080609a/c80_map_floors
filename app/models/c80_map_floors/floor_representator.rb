@@ -22,13 +22,15 @@ module C80MapFloors
           has_one :floor, :as => :map_floor_representator, :class_name => 'C80MapFloors::Floor', :dependent => :nullify
           # after_save :update_json # NOTE:: возможно, временно
 
-          def self.unlinked_floors
+          # выдать список несвязанных с полигонами Этажей (указанного здания building_id)
+          def self.unlinked_floors(building_id)
             res = []
             self.all.each do |sfloor|
               unless sfloor.floor.present?
                 res << sfloor
               end
             end
+            Rails.logger.debug "[TRACE] <floor_representator.unlinked_floors> Кол-во несвязанных Этажей: #{res.count}."
             res
           end
 

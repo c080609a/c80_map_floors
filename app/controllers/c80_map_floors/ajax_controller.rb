@@ -12,6 +12,15 @@ module C80MapFloors
 
     end
 
+    # js-кнопка "связать полигон с этажом" запрашивает список несвязанных с полигонами Этажи (указанного здания)
+    def fetch_unlinked_floors
+      Rails.logger.debug "[TRACE] <AjaxController.fetch_unlinked_floors> params = #{params}"
+      # [TRACE] <AjaxController.fetch_unlinked_floors> params = {"building_id"=>"1", "controller"=>"c80_map_floors/ajax", "action"=>"fetch_unlinked_floors"}
+
+      @unlinked_floors = Sfloor.unlinked_floors(params[:building_id]) # Sfloor - Этаж из host app, который еще и floor_representator
+
+    end
+
     def fetch_unlinked_buildings
       # Rails.logger.debug "<AjaxController.fetch_unlinked_buildings> params = #{params}"
 

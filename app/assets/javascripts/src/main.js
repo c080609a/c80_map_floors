@@ -81,6 +81,8 @@ var InitMap = function (params) {
         self.is_draw = false;
         self.save_button_klass = null;
         self.area_link_button_klass = null;
+        self.building_link_button_klass = null;
+        self.floor_link_button_klass = null;
         self.drawn_areas = []; // если имеются нарисованные но несохранённые Площади - они хранятся тут
         self.drawn_buildings = []; // если имеются нарисованные но несохранённые Здания - они хранятся тут
         self.save_preloader_klass = null;
@@ -261,6 +263,10 @@ var InitMap = function (params) {
                 self.area_link_button_klass = new AreaLinkButton();
                 self.area_link_button_klass.init('.mapplic-area-link-button', self);
 
+                // при клике на эту кнопку произойдет показ модального окна "связать полигон этажа с Этажом"
+                self.floor_link_button_klass = new FloorLinkButton();
+                self.floor_link_button_klass.init('.mapplic-floor-link-button', self);
+
                 // при клике на эту кнопку произойдет показ модального окна, в котором можно будет указать здание, соответствующее полигону
                 self.building_link_button_klass = new BuildingLinkButton();
                 self.building_link_button_klass.init('.mapplic-building-link-button', self);
@@ -281,7 +287,7 @@ var InitMap = function (params) {
             // инициализиуем класс, занимающийся отображением данных о здании\этаже\площади
             self.building_info_klass = new BuildingInfo({
                 onFloorTabChange: function (floor_id) {
-                    self.current_building.enterFloor(floor_id);
+                    self.current_building.enterFloor(floor_id); //#-> только с помощью клика по табам можно войти на Этаж
                 }
             });
 
@@ -388,7 +394,8 @@ var InitMap = function (params) {
 
             function onSvgMousedown(e) {
 
-                if (self.mode === 'editing' || self.mode === "edit_building" || self.mode === 'edit_area') {
+                //#-> Убрал 'edit_building', т.к. мы не можем ничего нарисовать в этом режиме - картинки этажей добавляются через админку
+                if (self.mode === 'editing' || self.mode === 'edit_area' || self.mode === 'edit_floor') { // || self.mode === "edit_building"
                     if (e.target.parentNode.tagName === 'g') {
                         console.log("<onSvgMousedown> e = ");
                         //console.log(e.pageX);
@@ -579,9 +586,9 @@ var InitMap = function (params) {
                                 }
                             }
 
-                            /* если находимся в режиме просмотра здания - входим в площадь */
+                            /* если находимся в режиме просмотра здания - входим в площадь (так было в c80_map) */
                             /* если находится в режиме просмотра площади - переключаемся на другую площадь */
-                            else if (self.mode == 'view_building' || self.mode == 'view_area') {
+                            else if (self.mode == 'view_floor' || self.mode == 'view_area') { // self.mode == 'view_building' (так было в c80_map)
 
                                 //console.log($(event.target).parent());
                                 // => g, который живёт в #svg_overlay, или, другими словами,
@@ -602,6 +609,8 @@ var InitMap = function (params) {
                                     console.log("<mouseup> Входим в площадь. self.last_clicked_g = ");
                                     console.log(self.last_clicked_g);
                                     area.enter();
+                                } else {
+                                    console.log('<mouseup> [ERROR] у полигона нет объекта Area.js класса.');
                                 }
 
                             }
@@ -702,7 +711,7 @@ var InitMap = function (params) {
                     var style = "display:block;position:absolute;background-color:#00ff00;opacity:0.4;";
                     var style_x = style + "width:1px;height:800px;top:0;left:{X}px;";
                     var style_y = style + "width:3000px;height:1px;left:0;top:{Y}px;";
-                    var style_dot = style + 'width:4px;height:4px;left:{X}px;top:{Y}px;';
+                    //var style_dot = style + 'width:4px;height:4px;left:{X}px;top:{Y}px;';
 
                     var to_draw = [
                         {x: self.X10},
@@ -710,11 +719,11 @@ var InitMap = function (params) {
                         {y: self.Y10},
                         {y: self.Y20},
                         {x: self.CX},
-                        {y: self.CY},
+                        {y: self.CY}
                     ];
 
 
-                    var i, istyle, xx, yy, ip;
+                    var i, istyle, ip;
                     for (i = 0; i < to_draw.length; i++) {
                         ip = to_draw[i];
 
@@ -787,7 +796,7 @@ var InitMap = function (params) {
          *           можно было отобразить характеристики Здания родителя C80Rent:Building.
          */
         self.draw_childs = function (childs, parent_hash) {
-            //console.log("<Map.draw_childs>");
+            console.log("<Map.draw_childs>");
 
             //var ip;
             var iobj;
@@ -941,7 +950,7 @@ var InitMap = function (params) {
         };
 
         self.onDrawStop = function (e) {
-            console.log("<Map.onDrawStop>");
+            console.log("<Map.onDrawStop> Закончили рисовать.");
 
             if (e != undefined) {
                 if (e.type == 'keydown' && e.keyCode == 13) {
@@ -959,22 +968,31 @@ var InitMap = function (params) {
                 _n_f.setCoords(_n_f.params).deselect();
                 delete(_n_f.polyline);
 
-                // в зависимости от предыдущего состояния, создадим либо Здание, либо Площадь
-                if (self.prev_mode == "edit_building") {
+                //#-> создадим либо полигон Здания, либо полигон Площади
+
+                if (self.prev_mode == "edit_floor") {
+                    console.log("<Map.onDrawStop> Создаём Area.");
+
                     var bo = self.current_building.options;
+                    var fo = self.current_building.json_current_floor();
                     var a = new Area();
-                    a.init({ coords:_n_f.params }, bo, self);
+                    a.init({ coords:_n_f.params }, fo, self);
                     //a.is_new = true;
                     _n_f.remove(); // удаляем нарисованный полигон, т.к. его уже заменили полигоном Area
                     self.registerJustDrownArea(a);
                 }
                 else if (self.prev_mode == 'editing') {
+                    console.log("<Map.onDrawStop> Создаём Building.");
                     var b = new Building();
                     b.init({ coords:_n_f.params }, self);
                     //b.is_new = true;
                     _n_f.remove(); // удаляем нарисованный полигон, т.к. его уже заменили полигоном Building
                     self.registerJustDrownBuilding(b);
                 }
+                //else if (self.prev_mode == 'edit_building') {
+                    // todo: new Floor (?)
+                    //#-> нет, мы не можем нарисовать полигонЭтажа. Этаж - это картинка, которая просто видна при входе в Этаж, создаётся через админку
+                //}
 
                 self.removeAllEvents();
                 self.drawing_poligon = null;
@@ -1006,8 +1024,7 @@ var InitMap = function (params) {
          * Зная ширину контейнера и контента,
          * используя указанные параметры,
          * рассчитать нормальный X
-         * @param x
-         * @param scale
+         * @param params
          * @returns {*}
          */
         self.normalizeX = function (params) {
@@ -1030,8 +1047,7 @@ var InitMap = function (params) {
          * Зная высоту контейнера и контента,
          * используя указанные параметры,
          * рассчитать нормальный Y
-         * @param y
-         * @param scale
+         * @param params
          * @returns {*}
          */
         self.normalizeY = function (params) {
@@ -1086,7 +1102,7 @@ var InitMap = function (params) {
          *      - по регулярке извлекать left и top
          *      - трансформировать эти значения
          *      - изменить атрибут viewBox обоих svg слоёв
-         *      
+         *
          *      Изначально была задумка каждый шаг анимации вызывать эту функцию.
          *      Но затем во время оптимизации слои с svg стали видны только тогда,
          *      когда анимация не проходит. По-этому этот код был поставлен на setTimeout
@@ -1143,7 +1159,7 @@ var InitMap = function (params) {
             __afterMovingCorrectSvgLayersPositions();
 
         };
-        
+
         var __moveToTimeout = function () {
             if (self.mode === 'edit_area'|| self.mode === 'view_area') {
                 $("#masked").removeClass('hiddn');
@@ -1290,9 +1306,10 @@ var InitMap = function (params) {
         };
 
         // показать инфо о просматриваемой площади
-        self.showAreaInfo = function (area_hash, parent_building_hash) {
+        self.showAreaInfo = function (area_json, parent_floor_json) {
             //console.log(area_hash);
 
+            // так было в c80_map
             //"area_hash": {
             //        "id": 2,
             //        "title": "Площадь 2.12",
@@ -1306,6 +1323,7 @@ var InitMap = function (params) {
             //            "price": "от 155 руб/кв.м в месяц"
             //    }
 
+            // так было в c80_map
             //"rent_building_hash": {
             //        "id": 2,
             //        "title": "Здание 2",
@@ -1319,20 +1337,24 @@ var InitMap = function (params) {
             //            "price": "от 155 руб/кв.м в месяц"
             //    }
 
-            $building_info.find("h2").html("</span>" + area_hash["title"] + "<span style='color:#D0B2B2;'> / " + parent_building_hash["title"]);
+            if (area_json == null || area_json == undefined) {
+                alert('[ERROR] У полигона нет привязки к Площади. Привяжите полигон площади.');
+            } else {
+                $building_info.find("h2").html("</span>" + area_json["title"] + "<span style='color:#D0B2B2;'> / " + parent_floor_json["title"]);
 
-            var v;
-            for (var p in area_hash["props"]) {
-                v = area_hash["props"][p];
-                $building_info.find("#" + p).find('span').text(v);
+                var v;
+                for (var p in area_json["props"]) {
+                    v = area_json["props"][p];
+                    $building_info.find("#" + p).find('span').text(v);
+                }
+
+                $building_info.find("#square_free").css('height', '0');
+
+                // заполняем данными ссылку 'Оставить заявку'
+                var $a_make_order = $building_info.find('.c80_order_invoking_btn');
+                $a_make_order.data('comment-text', 'Здравствуйте, оставляю заявку на площадь: ' + area_json["title"]);
+                $a_make_order.data('subj-id', area_json["id"]);
             }
-
-            $building_info.find("#square_free").css('height', '0');
-
-            // заполняем данными ссылку 'Оставить заявку'
-            var $a_make_order = $building_info.find('.c80_order_invoking_btn');
-            $a_make_order.data('comment-text', 'Здравствуйте, оставляю заявку на площадь: ' + area_hash["title"]);
-            $a_make_order.data('subj-id', area_hash["id"]);
 
         };
 
@@ -1382,6 +1404,11 @@ var InitMap = function (params) {
 
         };
 
+        // взять C80MapFloors::current_floor и назначить ему sfloor.id выбранный в окне _modal_window.html.erb
+        self.link_floor = function () {
+            console.log('<link_floor> Связать Этаж sfloor.id=' + sfloor.id + ' с полигоном current_floor=' + current_floor + '.');
+        };
+
         // взять C80MapFloors::current_building и назначить ему Rent::building.id,
         // выбранный в окне _modal_window.html.erb
         self.link_building = function () {
@@ -1394,7 +1421,7 @@ var InitMap = function (params) {
 
             // извлекаем значения
             var rent_building_id = $s.val();
-            var map_building_id = self.current_building.id;
+            var map_building_id = self.current_building.id; //#-> [iddqd]
             //console.log("<Map.link_area> rent_building_id = " + rent_building_id + "; map_building_id = " + map_building_id);
 
             // нажимаем кнопку "закрыть"

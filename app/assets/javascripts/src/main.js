@@ -81,6 +81,8 @@ var InitMap = function (params) {
         self.is_draw = false;
         self.save_button_klass = null;
         self.area_link_button_klass = null;
+        self.building_link_button_klass = null;
+        self.floor_link_button_klass = null;
         self.drawn_areas = []; // если имеются нарисованные но несохранённые Площади - они хранятся тут
         self.drawn_buildings = []; // если имеются нарисованные но несохранённые Здания - они хранятся тут
         self.save_preloader_klass = null;
@@ -260,6 +262,10 @@ var InitMap = function (params) {
                 // при клике на эту кнопку произойдет показ модального окна
                 self.area_link_button_klass = new AreaLinkButton();
                 self.area_link_button_klass.init('.mapplic-area-link-button', self);
+
+                // при клике на эту кнопку произойдет показ модального окна "связать полигон этажа с Этажом"
+                self.floor_link_button_klass = new FloorLinkButton();
+                self.floor_link_button_klass.init('.mapplic-floor-link-button', self);
 
                 // при клике на эту кнопку произойдет показ модального окна, в котором можно будет указать здание, соответствующее полигону
                 self.building_link_button_klass = new BuildingLinkButton();
@@ -1398,6 +1404,11 @@ var InitMap = function (params) {
 
         };
 
+        // взять C80MapFloors::current_floor и назначить ему sfloor.id выбранный в окне _modal_window.html.erb
+        self.link_floor = function () {
+            console.log('<link_floor> Связать Этаж sfloor.id=' + sfloor.id + ' с полигоном current_floor=' + current_floor + '.');
+        };
+
         // взять C80MapFloors::current_building и назначить ему Rent::building.id,
         // выбранный в окне _modal_window.html.erb
         self.link_building = function () {
@@ -1410,7 +1421,7 @@ var InitMap = function (params) {
 
             // извлекаем значения
             var rent_building_id = $s.val();
-            var map_building_id = self.current_building.id;
+            var map_building_id = self.current_building.id; //#-> [iddqd]
             //console.log("<Map.link_area> rent_building_id = " + rent_building_id + "; map_building_id = " + map_building_id);
 
             // нажимаем кнопку "закрыть"

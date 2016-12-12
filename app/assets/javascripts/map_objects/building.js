@@ -52,7 +52,7 @@ function Building() {
         _map.moveTo(x, y, scale, 400, 'easeInOutCubic');
     };
 
-    // the_floor - это as_json модели C80MapFloors::Floor
+    // map_floor_as_json - это as_json модели C80MapFloors::Floor
     /*{
         "map_building_id": 7,
         "img_bg": {
@@ -77,17 +77,27 @@ function Building() {
             "coords": "10,12,110,112",
             "area_representator_id": null,
             "class_name": "C80MapFloors::Area"
+        },
+        "data": {
+            "id": 1,
+            "title": "test building",
+            "square": null,
+            "square_free": null,
+            "desc": null,
+            "floor_height": "2.3м - 4.2м",
+            "price_string": "От 300 руб/м.кв.",
+            "communications": "Интернет, Вода, Свет"
         }
     ]
     }*/
-    var _draw_floor = function (the_floor) {
+    var _draw_floor = function (map_floor_as_json) {
         //console.log('<Building._draw_floor>');
 
         // это тот самый код, который остался без изменений с версии c80_map (прошлой версии)
-        if (the_floor["img_overlay"]["url"] != "null") {
-            //_image_overlay = _map.draw_child_bg_image(the_floor["img_overlay"]["url"], 'building', true);
+        if (map_floor_as_json["img_overlay"]["url"] != "null") {
+            //_image_overlay = _map.draw_child_bg_image(map_floor_as_json["img_overlay"]["url"], 'building', true);
         }
-        if (the_floor["img_bg"]["url"] != "null") {
+        if (map_floor_as_json["img_bg"]["url"] != "null") {
 
             // NOTE::картинку этажа рисуем не по bounding box здания, а по значениям из базы
 
@@ -99,8 +109,8 @@ function Building() {
             // и сложим их с корректирующими координатами coords этажа
             var xx2 = 0;
             var yy2 = 0;
-            if (the_floor["coords"].length) {
-                var tmp2 = the_floor["coords"].split(',');
+            if (map_floor_as_json["coords"].length) {
+                var tmp2 = map_floor_as_json["coords"].split(',');
                 xx2 = parseInt(tmp2[0]);
                 yy2 = parseInt(tmp2[1]);
             }
@@ -109,19 +119,19 @@ function Building() {
             _map.mark_all_map_object_images_for_clean();
 
             // просим карту нарисовать картинку с данными характеристиками
-            _$image_bg = _map.draw_map_object_image_bg(the_floor["img_bg"]["url"], {
+            _$image_bg = _map.draw_map_object_image_bg(map_floor_as_json["img_bg"]["url"], {
                 x: xx + xx2,
                 y: yy + yy2,
-                width: the_floor["img_bg_width"],
-                height: the_floor["img_bg_height"]
+                width: map_floor_as_json["img_bg_width"],
+                height: map_floor_as_json["img_bg_height"]
             }/*, 'building'*/);
 
         } else {
             alert('[ERROR] У этажа нет картинки.');
         }
 
-        // просим карту нарисовать площади
-        _map.draw_childs(the_floor["areas"]/*, _options["rent_building_hash"]*/);
+        // просим карту нарисовать полигоны площадей
+        _map.draw_childs(map_floor_as_json["areas"], map_floor_as_json);
 
     };
 
@@ -159,6 +169,8 @@ function Building() {
             if (typeof _this.options["coords"] == 'string') { /* когда нажимаем ENTER в редакторе и завершаем рисование полигона - приходит массив */
                 _this.options["coords"] = _this.options["coords"].split(',');
             }
+
+            //#-> [iddqd] ВАЖНО: это id  полигона здания
             _this.id = options["id"];
 
             // [NOTE::56dfaw1: парсим координаты объекта на карте, поданные в виде строки]
@@ -167,6 +179,7 @@ function Building() {
             }
 
             // [4ddl5df]: в случае, если это только что отрисованное Здание - генерим временный случайный id
+            //#-> [iddqd] А как же тогда _this.id ? Он будет undefined? Страшно ли это?
             if (_this.options["id"] == undefined) {
                 _this.options["id"] = Math.ceil((Math.random()*100000));
             }
@@ -234,9 +247,12 @@ function Building() {
      */
     _this.enterFloor = function (floor_id) {
 
+        // при входе в этаж - удаляем все кликабельные полигоны с карты
+        _map.svgRemoveAllNodes();
+
         var flr = _map_floors_hash[floor_id];
         if (flr != undefined) {
-            // рисуем картинку этажа
+            // рисуем картинку этажа (там же будет заказ на отрисовку полигонов площадей)
             _draw_floor(flr);
             // фиксируем текущий этаж
             _json_current_floor = flr;
@@ -333,8 +349,20 @@ function Building() {
 
     _this.to_json = function () {
         return {
-            id:     _this.options["id"],
+            id:     _this.options["id"], //#-> [iddqd] А здесь не используется _this.id (т.е. в случае, когда полигон был только что нарисован, to_json вернёт актуальное, правильное значение
             coords: _this.options["coords"]
         }
-    }
+    };
+
+    // выдать id привязанного к полигону Здания
+    this.get_bid = function () {
+      var result = null;
+      if (_options != null) {
+          if (_options["data"] != null && _options["data"] != undefined) {
+              result = _options["data"]["id"];
+          }
+      }
+      return result;
+    };
+
 }

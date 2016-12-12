@@ -125,7 +125,7 @@ function Area() {
 
     // optimisation
     var timeoutEnter = function () {
-        _map.showAreaInfo(_this._options.area_hash, _this._options["parent_floor_json"]);
+        _map.showAreaInfo(_this._options["data"], _this._options["parent_floor_json"]);
         _map.setMode('view_area');
     };
 

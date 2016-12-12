@@ -81,6 +81,8 @@ var InitMap = function (params) {
         self.is_draw = false;
         self.save_button_klass = null;
         self.area_link_button_klass = null;
+        self.building_link_button_klass = null;
+        self.floor_link_button_klass = null;
         self.drawn_areas = []; // если имеются нарисованные но несохранённые Площади - они хранятся тут
         self.drawn_buildings = []; // если имеются нарисованные но несохранённые Здания - они хранятся тут
         self.save_preloader_klass = null;
@@ -260,6 +262,10 @@ var InitMap = function (params) {
                 // при клике на эту кнопку произойдет показ модального окна
                 self.area_link_button_klass = new AreaLinkButton();
                 self.area_link_button_klass.init('.mapplic-area-link-button', self);
+
+                // при клике на эту кнопку произойдет показ модального окна "связать полигон этажа с Этажом"
+                self.floor_link_button_klass = new FloorLinkButton();
+                self.floor_link_button_klass.init('.mapplic-floor-link-button', self);
 
                 // при клике на эту кнопку произойдет показ модального окна, в котором можно будет указать здание, соответствующее полигону
                 self.building_link_button_klass = new BuildingLinkButton();
@@ -580,9 +586,9 @@ var InitMap = function (params) {
                                 }
                             }
 
-                            /* если находимся в режиме просмотра здания - входим в площадь */
+                            /* если находимся в режиме просмотра здания - входим в площадь (так было в c80_map) */
                             /* если находится в режиме просмотра площади - переключаемся на другую площадь */
-                            else if (self.mode == 'view_building' || self.mode == 'view_area') {
+                            else if (self.mode == 'view_floor' || self.mode == 'view_area') { // self.mode == 'view_building' (так было в c80_map)
 
                                 //console.log($(event.target).parent());
                                 // => g, который живёт в #svg_overlay, или, другими словами,
@@ -603,6 +609,8 @@ var InitMap = function (params) {
                                     console.log("<mouseup> Входим в площадь. self.last_clicked_g = ");
                                     console.log(self.last_clicked_g);
                                     area.enter();
+                                } else {
+                                    console.log('<mouseup> [ERROR] у полигона нет объекта Area.js класса.');
                                 }
 
                             }
@@ -788,7 +796,7 @@ var InitMap = function (params) {
          *           можно было отобразить характеристики Здания родителя C80Rent:Building.
          */
         self.draw_childs = function (childs, parent_hash) {
-            //console.log("<Map.draw_childs>");
+            console.log("<Map.draw_childs>");
 
             //var ip;
             var iobj;
@@ -1298,7 +1306,7 @@ var InitMap = function (params) {
         };
 
         // показать инфо о просматриваемой площади
-        self.showAreaInfo = function (area_hash, parent_floor_json) {
+        self.showAreaInfo = function (area_json, parent_floor_json) {
             //console.log(area_hash);
 
             // так было в c80_map
@@ -1329,20 +1337,24 @@ var InitMap = function (params) {
             //            "price": "от 155 руб/кв.м в месяц"
             //    }
 
-            $building_info.find("h2").html("</span>" + area_hash["title"] + "<span style='color:#D0B2B2;'> / " + parent_floor_json["title"]);
+            if (area_json == null || area_json == undefined) {
+                alert('[ERROR] У полигона нет привязки к Площади. Привяжите полигон площади.');
+            } else {
+                $building_info.find("h2").html("</span>" + area_json["title"] + "<span style='color:#D0B2B2;'> / " + parent_floor_json["title"]);
 
-            var v;
-            for (var p in area_hash["props"]) {
-                v = area_hash["props"][p];
-                $building_info.find("#" + p).find('span').text(v);
+                var v;
+                for (var p in area_json["props"]) {
+                    v = area_json["props"][p];
+                    $building_info.find("#" + p).find('span').text(v);
+                }
+
+                $building_info.find("#square_free").css('height', '0');
+
+                // заполняем данными ссылку 'Оставить заявку'
+                var $a_make_order = $building_info.find('.c80_order_invoking_btn');
+                $a_make_order.data('comment-text', 'Здравствуйте, оставляю заявку на площадь: ' + area_json["title"]);
+                $a_make_order.data('subj-id', area_json["id"]);
             }
-
-            $building_info.find("#square_free").css('height', '0');
-
-            // заполняем данными ссылку 'Оставить заявку'
-            var $a_make_order = $building_info.find('.c80_order_invoking_btn');
-            $a_make_order.data('comment-text', 'Здравствуйте, оставляю заявку на площадь: ' + area_hash["title"]);
-            $a_make_order.data('subj-id', area_hash["id"]);
 
         };
 
@@ -1392,6 +1404,11 @@ var InitMap = function (params) {
 
         };
 
+        // взять C80MapFloors::current_floor и назначить ему sfloor.id выбранный в окне _modal_window.html.erb
+        self.link_floor = function () {
+            console.log('<link_floor> Связать Этаж sfloor.id=' + sfloor.id + ' с полигоном current_floor=' + current_floor + '.');
+        };
+
         // взять C80MapFloors::current_building и назначить ему Rent::building.id,
         // выбранный в окне _modal_window.html.erb
         self.link_building = function () {
@@ -1404,7 +1421,7 @@ var InitMap = function (params) {
 
             // извлекаем значения
             var rent_building_id = $s.val();
-            var map_building_id = self.current_building.id;
+            var map_building_id = self.current_building.id; //#-> [iddqd]
             //console.log("<Map.link_area> rent_building_id = " + rent_building_id + "; map_building_id = " + map_building_id);
 
             // нажимаем кнопку "закрыть"

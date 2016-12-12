@@ -1,6 +1,6 @@
 #= require history_jquery
 #= require bootstrap/transition
-#= require bootstrap/modal
+# require bootstrap/modal # Bootstrap Modal immediately disappearing: http://stackoverflow.com/a/13670437 # т.к. 101км это первый проект и там уже много нахуеверчено, в том числе: bootstrap.min.js лежит в папке lib/, то эту строку комментируем (только для 101km)
 #= require bootstrap/tooltip
 #= require bootstrap/alert
 #= require bootstrap/dropdown

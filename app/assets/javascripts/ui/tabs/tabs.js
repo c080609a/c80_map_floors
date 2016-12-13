@@ -247,7 +247,7 @@ function Tabs(options) {
         }
 
         if (mark_error_occurs) {
-            alert('data error, refer log for details.');
+            //alert('data error, refer log for details.');
             console.log('<_displayContent> [ERROR] Что-то не то с данными.');
         }
 

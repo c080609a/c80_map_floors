@@ -15,4 +15,9 @@ div#modal_window {
     background-color: transparent;
   }
 
+  /* выправляем выравнивание в bootstrap-select-picker */
+  span.filter-option {
+    text-align: left !important;
+  }
+
 }

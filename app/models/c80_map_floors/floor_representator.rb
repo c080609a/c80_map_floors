@@ -20,22 +20,32 @@ module C80MapFloors
         class_eval do
 
           has_one :floor, :as => :map_floor_representator, :class_name => 'C80MapFloors::Floor', :dependent => :nullify
+
           # after_save :update_json # NOTE:: возможно, временно
 
           # выдать список несвязанных с полигонами Этажей (указанного здания building_id)
-          def self.unlinked_floors(building_id)
-            res = []
-            self.all.each do |sfloor|
-              unless sfloor.floor.present?
-                res << sfloor
-              end
-            end
-            Rails.logger.debug "[TRACE] <floor_representator.unlinked_floors> Кол-во несвязанных Этажей: #{res.count}."
-            res
-          end
+          # def self.unlinked_floors(building_id) # building_id - не используется, надо дописать код, чтобы использовался
+          #   res = []
+          #   self.all.each do |sfloor|
+          #     unless sfloor.floor.present?
+          #       res << sfloor
+          #     end
+          #   end
+          #   Rails.logger.debug "[TRACE] <floor_representator.unlinked_floors> Кол-во несвязанных Этажей: #{res.count}."
+          #   res
+          # end
 
           def update_json
             MapJson.update_json
+          end
+
+          # выдать название привязанного к Этажу полигона (но у Этажа вместо полигона выступает картинка)
+          def fpolygon_title
+            res = '-'
+            if self.floor.present?
+              res = "'#{self.floor.title}'"
+            end
+            res
           end
 
         end

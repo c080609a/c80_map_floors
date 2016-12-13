@@ -17,7 +17,12 @@ module C80MapFloors
       Rails.logger.debug "[TRACE] <AjaxController.fetch_unlinked_floors> params = #{params}"
       # [TRACE] <AjaxController.fetch_unlinked_floors> params = {"building_id"=>"1", "controller"=>"c80_map_floors/ajax", "action"=>"fetch_unlinked_floors"}
 
-      @unlinked_floors = Sfloor.unlinked_floors(params[:building_id]) # Sfloor - Этаж из host app, который еще и floor_representator
+      # меняем логику - делаем менее строгой, теперь присылаются ВСЕ этажи указанного Здания
+      # @unlinked_floors = Sfloor.unlinked_floors(params[:building_id]) # Sfloor - Этаж из host app, который еще и floor_representator
+
+      # Building - принадлежит моделям host-проекта (в частности, stroy101km)
+      # noinspection RubyResolve
+      @building_sfloors = Building.find(params[:building_id].to_i).sfloors
 
     end
 

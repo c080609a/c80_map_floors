@@ -1,5 +1,9 @@
-@import "bootstrap-sprockets";
-@import "bootstrap";
+
+//#-> Уехали в host app (в частности: s101km)
+//@import "bootstrap-sprockets";
+//@import "bootstrap";
+//@import 'bootstrap-select';
+
 @import "map";
 @import "ui/**/*";
 @import "view/**/*";

@@ -76,5 +76,29 @@ module C80MapFloors
 
     end
 
+    # связать Этаж и Картинку Этажа (обновится JSON карты)
+    def link_floor
+      Rails.logger.debug "<AjaxController.link_floor> params = #{params}"
+      # <AjaxController.link_floor> params = {"sfloor_id"=>"3", "floor_id"=>"2", "controller"=>"c80_map_floors/ajax", "action"=>"link_floor"}
+
+      # фиксируем участников
+      sfloor = Sfloor.find(params[:sfloor_id])
+      floor = C80MapFloors::Floor.find(params[:floor_id])
+
+      # sfloor has_one floor
+      sfloor.floor.delete_all if sfloor.floor.present?
+      sfloor.floor = floor
+      sfloor.save
+
+      result = {
+          updated_locations_json: C80MapFloors::MapJson.fetch_json
+      }
+
+      respond_to do |format|
+        format.json { render json: result }
+      end
+
+    end
+
   end
 end

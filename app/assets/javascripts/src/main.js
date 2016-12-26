@@ -1377,9 +1377,9 @@ var InitMap = function (params) {
             var $s = $m.find('select');
 
             // извлекаем значения
-            var rent_area_id = $s.val();
-            var map_area_id = self.current_area.id;
-            //console.log("<Map.link_area> rent_area_id = " + rent_area_id + "; map_area_id = " + map_area_id);
+            var area_id = $s.val();
+            var apolygon_id = self.current_area.id;
+            console.log("<Map.link_area> Связать Площадь area_id = " + area_id + " c полигоном apolygon_id = " + apolygon_id);
 
             // нажимаем кнопку "закрыть"
             $b.click();
@@ -1393,8 +1393,8 @@ var InitMap = function (params) {
                 url:'/ajax/link_area',
                 type:'POST',
                 data: {
-                    rent_area_id: rent_area_id,
-                    map_area_id: map_area_id
+                    area_id: area_id,
+                    apolygon_id: apolygon_id
                 },
                 dataType:"json"
             }).done(function (data, result) {

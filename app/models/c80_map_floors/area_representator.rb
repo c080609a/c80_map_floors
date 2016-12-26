@@ -38,13 +38,13 @@ module C80MapFloors
           def apolygon_title
             res = '-'
             if self.area.present?
-              res = "'#{self.area.title}'"
+              res = "id=#{self.area.id}"
             end
             res
           end
 
           def update_json
-            # MapJson.update_json # NOTE:: возможно, временно отключён
+            MapJson.update_json # NOTE:: возможно, временно отключён
           end
 
         end

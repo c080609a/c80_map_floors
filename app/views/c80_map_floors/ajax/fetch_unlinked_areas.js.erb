@@ -1,7 +1,9 @@
+//noinspection JSUnusedGlobalSymbols
 var $m = $('#modal_window');
+//noinspection JSUnusedGlobalSymbols
 var $cc = $m.find('.modal-body');
-var html_str = "<%= j render :partial => "c80_map_floors/ajax/shared/select_list_unlinked_areas",
+var html_str = "<%= j render :partial => 'c80_map_floors/ajax/shared/select_list_unlinked_areas',
                                             :locals => {
-                                                areas:@unlinked_areas
+                                                areas: @sfloor_areas
                                             } %>";
 $cc.html(html_str);

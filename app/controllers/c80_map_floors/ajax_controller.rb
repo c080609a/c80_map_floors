@@ -5,10 +5,15 @@ module C80MapFloors
       # puts "<AjaxController.map_edit_buttons> #{params}"
     end
 
+    # прислать ВСЕ Площади указанного Этажа
     def fetch_unlinked_areas
-      # Rails.logger.debug "<AjaxController.fetch_unlinked_areas> params = #{params}"
+      Rails.logger.debug "[TRACE] <AjaxController.fetch_unlinked_areas> params = #{params}"
+      # <AjaxController.fetch_unlinked_areas> params = {"sfloor_id"=>"1", "controller"=>"c80_map_floors/ajax", "action"=>"fetch_unlinked_areas"}
 
-      @unlinked_areas = Rent::Area.unlinked_areas
+      # Sfloor - принадлежит моделям host-проекта (в частности, stroy101km)
+      # noinspection RubyResolve
+      @sfloor_areas = Sfloor.find(params[:sfloor_id].to_i).areas
+      Rails.logger.debug "[TRACE] <AjaxController.fetch_unlinked_areas> @sfloor_areas.count = #{@sfloor_areas.count}"
 
     end
 

@@ -4,4 +4,5 @@ C80MapFloors::Engine.routes.draw do
   match '/ajax/link_floor', :to => 'ajax#link_floor', :via => :post
 
   match '/ajax/fetch_unlinked_floors', to: 'ajax#fetch_unlinked_floors', via: :post
+  match '/ajax/fetch_unlinked_areas', to: 'ajax#fetch_unlinked_areas', via: :post
 end

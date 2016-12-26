@@ -1,6 +1,11 @@
-<select id="unlinked_floors" class="selectpicker" data-style="btn-default">
-<% floors.each do |floor| %>
-    <option value="<%= floor.id%>"><%= floor.title %></option>
+<%# список Этажей указанного Здания, который выводится в modal bootstrap окне после нажатия кнопки "назначить этаж" %>
+<%# в названии файла присутствует unlinked - это было так, но я сделал менее строже - добавил возможность переназначить %>
+
+<!--suppress HtmlFormInputWithoutLabel -->
+<select id="unlinked_floors" class="selectpicker" data-style="btn-default" data-width="400px">
+<% # noinspection RubyResolve
+   sfloors.each do |sfloor| %>
+    <option value="<%= sfloor.id%>"><%= "#{sfloor.title} (назначена картинка: #{sfloor.fpolygon_title})" %></option>
 <% end %>
 </select>
 <button type="button" id='submit_floor_link' class="btn btn-success">Сохранить</button>

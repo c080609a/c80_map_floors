@@ -37,11 +37,12 @@ function FloorLinkButton() {
 
         // клик по кнопке "применить" вызовет  _map.link_floor()
         setTimeout(function () {
-            //console.log($cc.find("button"));
-            $cc.find("button").on('click', function () {
-                if ($(this).attr('id') == "submit_floor_link") {
-                    _map.link_floor();
-                }
+            //console.log($cc.find("button#submit_floor_link"));
+            var b = $cc.find("button#submit_floor_link");
+            //console.log('<breakpoint>');
+            b.on('click', function () {
+                //console.log('<ButtonFloorLink.submit_floor_link> CLICK');
+                _map.link_floor();
             });
         }, 1000);
 

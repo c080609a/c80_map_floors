@@ -17,7 +17,12 @@ module C80MapFloors
       Rails.logger.debug "[TRACE] <AjaxController.fetch_unlinked_floors> params = #{params}"
       # [TRACE] <AjaxController.fetch_unlinked_floors> params = {"building_id"=>"1", "controller"=>"c80_map_floors/ajax", "action"=>"fetch_unlinked_floors"}
 
-      @unlinked_floors = Sfloor.unlinked_floors(params[:building_id]) # Sfloor - Этаж из host app, который еще и floor_representator
+      # меняем логику - делаем менее строгой, теперь присылаются ВСЕ этажи указанного Здания
+      # @unlinked_floors = Sfloor.unlinked_floors(params[:building_id]) # Sfloor - Этаж из host app, который еще и floor_representator
+
+      # Building - принадлежит моделям host-проекта (в частности, stroy101km)
+      # noinspection RubyResolve
+      @building_sfloors = Building.find(params[:building_id].to_i).sfloors
 
     end
 
@@ -63,6 +68,30 @@ module C80MapFloors
 
       result = {
           updated_locations_json: C80Map::MapJson.fetch_json
+      }
+
+      respond_to do |format|
+        format.json { render json: result }
+      end
+
+    end
+
+    # связать Этаж и Картинку Этажа (обновится JSON карты)
+    def link_floor
+      Rails.logger.debug "<AjaxController.link_floor> params = #{params}"
+      # <AjaxController.link_floor> params = {"sfloor_id"=>"3", "floor_id"=>"2", "controller"=>"c80_map_floors/ajax", "action"=>"link_floor"}
+
+      # фиксируем участников
+      sfloor = Sfloor.find(params[:sfloor_id])
+      floor = C80MapFloors::Floor.find(params[:floor_id])
+
+      # sfloor has_one floor
+      sfloor.floor.delete_all if sfloor.floor.present?
+      sfloor.floor = floor
+      sfloor.save
+
+      result = {
+          updated_locations_json: C80MapFloors::MapJson.fetch_json
       }
 
       respond_to do |format|

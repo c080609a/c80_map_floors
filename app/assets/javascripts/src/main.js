@@ -1404,9 +1404,40 @@ var InitMap = function (params) {
 
         };
 
-        // взять C80MapFloors::current_floor и назначить ему sfloor.id выбранный в окне _modal_window.html.erb
+        // взять C80MapFloors::current_floor и назначить ему sfloor_id выбранный в окне _modal_window.html.erb
         self.link_floor = function () {
-            console.log('<link_floor> Связать Этаж sfloor.id=' + sfloor.id + ' с полигоном current_floor=' + current_floor + '.');
+
+            // фиксируем компоненты модального окна
+            var $m = $('#modal_window');
+            var $b = $m.find('.modal-footer').find('.btn');
+            var $s = $m.find('select');
+
+            // извлекаем значения
+            var sfloor_id = $s.val(); // id Этажа
+            var current_floor_id = self.current_building.json_current_floor()["id"]; // id Картинки Этажа
+            console.log('<link_floor> Связать Этаж sfloor_id=' + sfloor_id + ' с Картинкой Этажа current_floor_id=' + current_floor_id + '.');
+
+            // нажимаем кнопку "закрыть"
+            $b.click();
+
+            // показываем прелоадер
+            self.save_preloader_klass.show();
+
+            // отправляем запрос на сервер
+            // TODO_MY:: реализовать обработчик ошибок
+            $.ajax({
+                url:'/ajax/link_floor',
+                type:'POST',
+                data: {
+                    sfloor_id: sfloor_id,
+                    floor_id: current_floor_id
+                },
+                dataType:"json"
+            }).done(function (data, result) {
+                self.save_preloader_klass.hide();
+                self.data = data["updated_locations_json"];
+            });
+
         };
 
         // взять C80MapFloors::current_building и назначить ему Rent::building.id,

@@ -444,6 +444,15 @@ var InitMap = function (params) {
                         else if (e.target.tagName === 'rect' || e.target.tagName === 'circle' || e.target.tagName === 'polygon') {
                             //self.edit_type = 'move';
 
+                            // если это полигон здания - фиксируем его
+                            var selected_area_building = self.selected_area.building;
+                            if (selected_area_building != undefined && selected_area_building != null) {
+                                self.current_building = selected_area_building;
+                                console.log("<self.onSvgMousedown> Это не Drag-n-drop, а обычный клик по полигону Здания c id=" + self.current_building.options.id);
+                            } else {
+                                console.log("<self.onSvgMousedown> Это не Drag-n-drop, а обычный клик по фигуре.");
+                            }
+
                         }
 
                         // когда реализуем корректный механизм dnd фигур, тут должен очутиться (b)

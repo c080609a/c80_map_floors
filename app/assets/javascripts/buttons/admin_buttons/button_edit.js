@@ -74,8 +74,20 @@ function EditButton() {
                 _this.setState('viewing');
                 break;
 
+            // переходим в режим просмотра карты из режима редактирования карты
             case 'viewing':
                 _this.setState('editing');
+
+                //<editor-fold desc="// уходя из режима редактирования, чистим кое-какие переменные, связанные с назначением Зданий полигонам">
+                // сбросим css класс (возможно выбранного полигона)
+                if (_map.selected_area != undefined) {
+                    _map.selected_area.deselect();
+                }
+
+                // сбросим значение переменной current_building
+                _map.current_building = null;
+                //</editor-fold>
+
                 break;
 
             case 'view_building':

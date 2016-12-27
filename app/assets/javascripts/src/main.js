@@ -434,15 +434,19 @@ var InitMap = function (params) {
                                 self.selected_area.selected_point = helper.n;
                             }
 
+                            //#-> b) После этого вешаем слушатели
+                            self.addEvent(self.el[0], 'mousemove', self.onMouseMove)
+                                .addEvent(self.el[0], 'mouseup', self.onMouseUp);
+
                         }
                         // если хотим подвинуть фигуру
+                        //#-> отменили dnd фигур 20161227
                         else if (e.target.tagName === 'rect' || e.target.tagName === 'circle' || e.target.tagName === 'polygon') {
-                            self.edit_type = 'move';
+                            //self.edit_type = 'move';
+
                         }
 
-                        //#-> b) После этого вешаем слушатели
-                        self.addEvent(self.el[0], 'mousemove', self.onMouseMove)
-                            .addEvent(self.el[0], 'mouseup', self.onMouseUp);
+                        // когда реализуем корректный механизм dnd фигур, тут должен очутиться (b)
 
                     } else {
                         //app.deselectAll();
@@ -961,22 +965,36 @@ var InitMap = function (params) {
             var _s_f = self.selected_area;
             var edit_type = self.edit_type;
 
-            //#-> определим, был ли drag-n-drop вообще?
+            //#-> определим, был ли drag-n-drop вообще? Код работает неверно, поэтому и закомментирован
 
             var dx = e.pageX - _s_f.delta.x;
             var dy = e.pageY - _s_f.delta.y;
 
-            var delta = Math.sqrt(dx*dx + dy*dy);
-            var is_real_dragging = delta > 2;
-
-            if (is_real_dragging) {
-                console.log("<self.onMouseUp> Drag-n-drop detected.");
+            //var delta = Math.sqrt(dx*dx + dy*dy);
+            //var is_real_dragging = delta > 2;
+            //
+            // Если dnd был - двигаем фигуру
+            //if (is_real_dragging) {
+            //    console.log("<self.onMouseUp> Drag-n-drop detected.");
                 var aa = _s_f[edit_type](dx, dy);
                 var bb = _s_f.dynamicEdit(aa);
                 _s_f.setParams(bb);
-            } else {
-                console.log("<self.onMouseUp> Это не Drag-n-drop, а обычный клик по фигуре.");
-            }
+            //}
+            //
+            // если dnd не было - справляемся о режиме и в случае редактирования карты (т.е. когда допустимо назначать
+            // Здания полигонам зданий) в current_building положим ссылку на фигуру, по которой был клик
+            //else {
+
+                // если это полигон здания - фиксируем его
+                //var selected_area_building = self.selected_area.building;
+                //if (selected_area_building != undefined && selected_area_building != null) {
+                //    self.current_building = selected_area_building;
+                //    console.log("<self.onMouseUp> Это не Drag-n-drop, а обычный клик по полигону Здания c id=" + self.current_building.options.id);
+                //} else {
+                //    console.log("<self.onMouseUp> Это не Drag-n-drop, а обычный клик по фигуре.");
+                //}
+                //console.log('<breakpoint>');
+            //}
 
             self.removeAllEvents();
         };

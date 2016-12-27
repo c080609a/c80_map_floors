@@ -417,27 +417,27 @@ var InitMap = function (params) {
                             'y': e.pageY
                         };
 
-                        // если взаимодействуем с вершиной
+                        //#-> a) Определяем, что хотим подвинуть мышкой методом drag-n-drop
+
+                        // если хотим подвинуть вершину
                         if (utils.hasClass(e.target, 'helper')) {
                             var helper = e.target;
-                            //console.log("<mouseDown> helper.action = ");
-                            //console.log(helper.action);
                             self.edit_type = helper.action; // pointMove
 
                             if (helper.n >= 0) { // if typeof selected_area == polygon
                                 self.selected_area.selected_point = helper.n;
                             }
 
-                            self.addEvent(self.el[0], 'mousemove', self.onEdit)
-                                //self.addEvent(self.el[0], 'mousemove', self.selected_area.onEdit)
-                                .addEvent(self.el[0], 'mouseup', self.onEditStop);
                         }
-
+                        // если хотим подвинуть фигуру
                         else if (e.target.tagName === 'rect' || e.target.tagName === 'circle' || e.target.tagName === 'polygon') {
                             self.edit_type = 'move';
-                            self.addEvent(self.el[0], 'mousemove', self.onEdit)
-                                .addEvent(self.el[0], 'mouseup', self.onEditStop);
                         }
+
+                        //#-> b) После этого вешаем слушатели
+                        self.addEvent(self.el[0], 'mousemove', self.onMouseMove)
+                            .addEvent(self.el[0], 'mouseup', self.onMouseUp);
+
                     } else {
                         //app.deselectAll();
                         //info.unload();
@@ -452,7 +452,7 @@ var InitMap = function (params) {
             // Drag & drop
             function onDragNdrop(event) {
                 //console.log("<mousedown> edit_type = " + self.edit_type);
-                console.log("<mousedown> mode = " + self.mode + " dnd_enable = " + self.o.dnd_enable);
+                console.log("<mousedown> mode = " + self.mode + ", dnd_enable = " + self.o.dnd_enable + ', edit_type = ' + self.edit_type);
                 //console.log(event);
 
                 // если в данный момент не редактируем фигуру (т.е. не двигаем вершину фигуры)
@@ -506,7 +506,7 @@ var InitMap = function (params) {
 
                         console.log("<mouseup> Отпустили мышь после клика, текущий режим карты: mode = " + self.mode);
 
-                        // исключаем случайный dnd дрожащей рукой
+                        // исключаем случайный dnd дрожащей рукой [xdnd?]
                         var dx = map.data('startX') - map.data('lastX');
                         var dy = map.data('startY') - map.data('lastY');
                         var delta = Math.sqrt(dx*dx + dy*dy);
@@ -933,21 +933,48 @@ var InitMap = function (params) {
 
         };
 
-        self.onEdit = function (e) {
+        //<editor-fold desc="// двигаем фигуру мышкой методом drag-n-drop">
+        self.onMouseMove = function (e) { // мышь нажата и двигается
 
-            //console.log("<Polygon.prototype.onEdit> _s_f = " + _s_f);
-            //console.log("<Polygon.prototype.onEdit> e = ");
+            //console.log("<Polygon.prototype.onMouseMove> _s_f = " + _s_f);
+            //console.log("<Polygon.prototype.onMouseMove> e = ");
             //console.log(_s_f);
             //console.log(e.pageX);
 
             var selected_area = self.selected_area;
             var edit_type = self.edit_type;
-            //console.log("<Polygon.prototype.onEdit> edit_type = " + edit_type);
+            //console.log("<Polygon.prototype.onMouseMove> edit_type = " + edit_type);
 
             selected_area.dynamicEdit(selected_area[edit_type](e.pageX - selected_area.delta.x, e.pageY - selected_area.delta.y));
             selected_area.delta.x = e.pageX;
             selected_area.delta.y = e.pageY;
         };
+        self.onMouseUp = function (e) { // отпустили мышь (другими словами - закончили drag'n'drop)
+            console.log("<self.onMouseUp> [for_breakpoint] Отпустили мышь.");
+
+            var _s_f = self.selected_area;
+            var edit_type = self.edit_type;
+
+            //#-> определим, был ли drag-n-drop вообще?
+
+            var dx = e.pageX - _s_f.delta.x;
+            var dy = e.pageY - _s_f.delta.y;
+
+            var delta = Math.sqrt(dx*dx + dy*dy);
+            var is_real_dragging = delta > 2;
+
+            if (is_real_dragging) {
+                console.log("<self.onMouseUp> Drag-n-drop detected.");
+                var aa = _s_f[edit_type](dx, dy);
+                var bb = _s_f.dynamicEdit(aa);
+                _s_f.setParams(bb);
+            } else {
+                console.log("<self.onMouseUp> Это не Drag-n-drop, а обычный клик по фигуре.");
+            }
+
+            self.removeAllEvents();
+        };
+        //</editor-fold>
 
         self.onDrawStop = function (e) {
             console.log("<Map.onDrawStop> Закончили рисовать.");
@@ -1000,16 +1027,6 @@ var InitMap = function (params) {
             }
 
             self.setMode('editing');
-        };
-
-        self.onEditStop = function (e) {
-            //console.log("<Polygon.prototype.onEditStop>");
-            var _s_f = self.selected_area,
-                edit_type = self.edit_type;
-
-            _s_f.setParams(_s_f.dynamicEdit(_s_f[edit_type](e.pageX - _s_f.delta.x, e.pageY - _s_f.delta.y)));
-
-            self.removeAllEvents();
         };
 
         self.registerJustDrownArea = function (area) {

@@ -78,7 +78,7 @@ function StateController() {
             case "editing":
                 //<editor-fold desc="...">
 
-                console.log("<StateController.setMode> <ожидается рисование полигонов Зданий>.");
+                console.log("<StateController.setMode> <ожидается рисование полигонов Зданий или их привязка>.");
 
                 // спрячем надписи "цена за метр" и адрес с телефоном
                 _this.left_side.css("top", -300);
@@ -95,6 +95,9 @@ function StateController() {
                 _this.map_creating.css('display', 'none');
                 _this.map_editing.css('display', 'block');
                 _this.map_removing.css('display', 'none');
+
+                // покажем кнопку "связать здание с полигоном"
+                _map.building_link_button_klass.show();
 
                 // покажем кнопки, присущие этому режиму
                 _this.mzoom_buttons.css('opacity', '1');
@@ -131,6 +134,11 @@ function StateController() {
                 _this.map_creating.css('display', 'none');
                 _this.map_editing.css('display', 'none');
                 _this.map_removing.css('display', 'none');
+
+                // скроем кнопку "связать здание с полигоном"
+                if (_map.building_link_button_klass != null) {
+                    _map.building_link_button_klass.hide();
+                }
 
                 // покажем кнопки zoom
                 _this.mzoom_buttons.css('opacity', '1');

@@ -449,6 +449,10 @@ var InitMap = function (params) {
                             if (selected_area_building != undefined && selected_area_building != null) {
                                 self.current_building = selected_area_building;
                                 console.log("<self.onSvgMousedown> Это не Drag-n-drop, а обычный клик по полигону Здания c id=" + self.current_building.options.id);
+
+                                // включим кнопку "связать Здание"
+                                self.building_link_button_klass.en_check();
+
                             } else {
                                 console.log("<self.onSvgMousedown> Это не Drag-n-drop, а обычный клик по фигуре.");
                             }

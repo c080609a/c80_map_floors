@@ -70,24 +70,29 @@ function EditButton() {
         var mark_restore_svg_overlay = false;
 
         switch (_this.state) {
+
+            // переходим в режим "просмотра карты" из режима "редактирования карты"
             case 'editing':
                 _this.setState('viewing');
-                break;
-
-            // переходим в режим просмотра карты из режима редактирования карты
-            case 'viewing':
-                _this.setState('editing');
 
                 //<editor-fold desc="// уходя из режима редактирования, чистим кое-какие переменные, связанные с назначением Зданий полигонам">
                 // сбросим css класс (возможно выбранного полигона)
+                console.log('<ButtonEdit.onClick> set viewing state, [breakpoint].');
+
                 if (_map.selected_area != undefined) {
                     _map.selected_area.deselect();
+                    _map.selected_area = null;
                 }
 
                 // сбросим значение переменной current_building
                 _map.current_building = null;
                 //</editor-fold>
 
+                break;
+
+            // переходим в режим "редактирования карты" из режима "просмотра карты"
+            case 'viewing':
+                _this.setState('editing');
                 break;
 
             case 'view_building':

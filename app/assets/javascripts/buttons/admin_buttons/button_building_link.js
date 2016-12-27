@@ -84,10 +84,12 @@ function BuildingLinkButton() {
     };
 
     // При входе в режим "Редактирование Карты": кнопка должна быть неактивна, если не выбрано ни одного полигона здания.
-    var _check_and_enable = function () {
+    // также этот публичный метод вызывается, когда кликаем по полигонам Зданий в режиме редактирования (переключаемся между полигонами)
+    _this.en_check = function () {
+        console.log("<en_check> [breakpoint]");
 
         //check
-        var mark_dirty = _map.selected_area != undefined;
+        var mark_dirty = _map.selected_area != null;
 
         // enable
         if (mark_dirty) {
@@ -101,7 +103,7 @@ function BuildingLinkButton() {
     _this.show = function () {
         //console.log("<BuildingLinkButton.show>");
         _this.el.css('display','block');
-        _check_and_enable();
+        _this.en_check();
     };
 
 }

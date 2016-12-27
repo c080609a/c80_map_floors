@@ -539,7 +539,7 @@ var InitMap = function (params) {
                                 if (p.obj && p.obj.building) {
                                     var building = p.obj.building;
                                     console.log("<mouseup> Текущий mode карты 'viewing' => Входим в здание (а потом building сам решит, входить ли на 1й этаж).");
-                                    self.current_building = building;
+                                    self.current_building = building; /* когда вошли в здание, определили переменную */
                                     building.enter();
                                 }
 
@@ -1006,8 +1006,8 @@ var InitMap = function (params) {
                 if (self.prev_mode == "edit_floor") {
                     console.log("<Map.onDrawStop> Создаём Area.");
 
-                    var bo = self.current_building.options;
-                    var fo = self.current_building.json_current_floor();
+                    //var bo = self.current_building.options;
+                    var fo = self.current_building.json_current_floor(); // когда нарисовали полигон Площади - определяем Этаж родитель
                     var a = new Area();
                     a.init({ coords:_n_f.params }, fo, self);
                     //a.is_new = true;
@@ -1437,7 +1437,7 @@ var InitMap = function (params) {
 
             // извлекаем значения
             var sfloor_id = $s.val(); // id Этажа
-            var current_floor_id = self.current_building.json_current_floor()["id"]; // id Картинки Этажа
+            var current_floor_id = self.current_building.json_current_floor()["id"]; // id Картинки Этажа (связываем Этаж с картинкой)
             console.log('<link_floor> Связать Этаж sfloor_id=' + sfloor_id + ' с Картинкой Этажа current_floor_id=' + current_floor_id + '.');
 
             // нажимаем кнопку "закрыть"

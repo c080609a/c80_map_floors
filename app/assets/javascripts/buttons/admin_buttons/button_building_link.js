@@ -56,7 +56,7 @@ function BuildingLinkButton() {
     var $link_show_modal_window = null;
 
     _this.onClick = function (e) {
-        if (_this.el.hasClass('disabled')) return;
+        if (_this.el.hasClass('mapplic-disabled')) return;
         e.preventDefault();
 
         //console.log("<BuildingLinkButton.click>");
@@ -83,9 +83,25 @@ function BuildingLinkButton() {
         _this.el.css('display','none');
     };
 
+    // При входе в режим "Редактирование Карты": кнопка должна быть неактивна, если не выбрано ни одного полигона здания.
+    var _check_and_enable = function () {
+
+        //check
+        var mark_dirty = _map.selected_area != undefined;
+
+        // enable
+        if (mark_dirty) {
+            _this.el.removeClass('mapplic-disabled');
+        } else {
+            _this.el.addClass('mapplic-disabled');
+        }
+
+    };
+
     _this.show = function () {
         //console.log("<BuildingLinkButton.show>");
         _this.el.css('display','block');
+        _check_and_enable();
     };
 
 }

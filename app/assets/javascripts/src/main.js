@@ -398,11 +398,16 @@ var InitMap = function (params) {
                 //#-> Убрал 'edit_building', т.к. мы не можем ничего нарисовать в этом режиме - картинки этажей добавляются через админку
                 if (self.mode === 'editing' || self.mode === 'edit_area' || self.mode === 'edit_floor') { // || self.mode === "edit_building"
                     if (e.target.parentNode.tagName === 'g') {
-                        console.log("<onSvgMousedown> e = ");
+                        console.log("<onSvgMousedown> Нажали мышью на полигон или вершину.");
                         //console.log(e.pageX);
                         //console.log("<mouseDown> e.target.parentNode.tagName = " + e.target.parentNode.tagName);
                         //console.log(e.target);
                         //info.unload();
+
+                        // если ДО этого нажатия уже была "выбранная" область - "снимем" с неё css класс
+                        if (self.selected_area != null && self.selected_area != undefined) {
+                            self.selected_area.deselect();
+                        }
 
                         // запомним ссылку на "выбранную" область
                         self.selected_area = e.target.parentNode.obj;

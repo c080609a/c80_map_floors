@@ -19,7 +19,9 @@ module C80MapFloors
       def acts_as_map_area_representator
         class_eval do
 
-          has_many :map_areas, :as => :area_representator, :class_name => 'C80MapFloors::Area', :dependent => :nullify
+          # has_many :map_areas, :as => :area_representator, :class_name => 'C80MapFloors::Area', :dependent => :nullify
+          has_one :area, :as => :area_representator, :class_name => 'C80MapFloors::Area', :dependent => :nullify
+
           after_save :update_json
 
           def self.unlinked_areas
@@ -32,8 +34,17 @@ module C80MapFloors
             res
           end
 
+          # выдать название привязанного к Площади полигона
+          def apolygon_title
+            res = '-'
+            if self.area.present?
+              res = "id=#{self.area.id}"
+            end
+            res
+          end
+
           def update_json
-            # MapJson.update_json # NOTE:: возможно, временно отключён
+            MapJson.update_json # NOTE:: возможно, временно отключён
           end
 
         end

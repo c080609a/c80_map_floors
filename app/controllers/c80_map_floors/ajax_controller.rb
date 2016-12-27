@@ -5,10 +5,15 @@ module C80MapFloors
       # puts "<AjaxController.map_edit_buttons> #{params}"
     end
 
+    # прислать ВСЕ Площади указанного Этажа
     def fetch_unlinked_areas
-      # Rails.logger.debug "<AjaxController.fetch_unlinked_areas> params = #{params}"
+      Rails.logger.debug "[TRACE] <AjaxController.fetch_unlinked_areas> params = #{params}"
+      # <AjaxController.fetch_unlinked_areas> params = {"sfloor_id"=>"1", "controller"=>"c80_map_floors/ajax", "action"=>"fetch_unlinked_areas"}
 
-      @unlinked_areas = Rent::Area.unlinked_areas
+      # Sfloor - принадлежит моделям host-проекта (в частности, stroy101km)
+      # noinspection RubyResolve
+      @sfloor_areas = Sfloor.find(params[:sfloor_id].to_i).areas
+      Rails.logger.debug "[TRACE] <AjaxController.fetch_unlinked_areas> @sfloor_areas.count = #{@sfloor_areas.count}"
 
     end
 
@@ -36,17 +41,20 @@ module C80MapFloors
     # связать Rent::Area и Map::Area
     # в процессе произойдёт обновление json-файла с данными
     def link_area
-      Rails.logger.debug "<AjaxController.link_area> params = #{params}"
+      Rails.logger.debug "[TRACE] <AjaxController.link_area> params = #{params}"
+      # [TRACE] <AjaxController.link_area> params = {"area_id"=>"364", "apolygon_id"=>"3", "controller"=>"c80_map_floors/ajax", "action"=>"link_area"}
 
-      # TODO:: т.к. ПОКА используем этот gem только в stroy101, то должно быть не Rent::Area
-      rent_area = Rent::Area.find(params[:rent_area_id])
-      map_area = C80Map::Area.find(params[:map_area_id])
-      rent_area.map_areas.delete_all
-      rent_area.map_areas << map_area
+      # фиксируем участников
+      rent_area = ::Area.find(params[:area_id])
+      area = C80MapFloors::Area.find(params[:apolygon_id])
+
+      # rent_area has_one area(полигон)
+      rent_area.area.delete_all if rent_area.area.present?
+      rent_area.area = area
       rent_area.save
 
       result = {
-          updated_locations_json: C80Map::MapJson.fetch_json
+          updated_locations_json: C80MapFloors::MapJson.fetch_json
       }
 
       respond_to do |format|
@@ -78,7 +86,7 @@ module C80MapFloors
 
     # связать Этаж и Картинку Этажа (обновится JSON карты)
     def link_floor
-      Rails.logger.debug "<AjaxController.link_floor> params = #{params}"
+      Rails.logger.debug "[TRACE] <AjaxController.link_floor> params = #{params}"
       # <AjaxController.link_floor> params = {"sfloor_id"=>"3", "floor_id"=>"2", "controller"=>"c80_map_floors/ajax", "action"=>"link_floor"}
 
       # фиксируем участников

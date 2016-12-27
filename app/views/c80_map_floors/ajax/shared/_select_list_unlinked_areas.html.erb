@@ -1,6 +1,8 @@
-<select id="unlinked_areas" class="selectpicker" data-style="btn-default">
-<% areas.each do |area|%>
-    <option value="<%= area.id%>"><%= area.title %></option>
+<%# список Площадей указанного Этажа, который выводится в modal bootstrap окне после нажатия кнопки "назначить площадь" %>
+
+<select id="unlinked_areas" class="selectpicker" data-style="btn-default" data-width="400px">
+<% areas.each do |area| %>
+    <option value="<%= area.id%>"><%= "#{area.name} (назначен полигон: #{area.apolygon_title})" %></option>
 <% end %>
 </select>
-<button type="button" id='submit_area_link' class="btn btn-primary">Сохранить</button>
+<button type="button" id='submit_area_link' class="btn btn-success">Сохранить</button>

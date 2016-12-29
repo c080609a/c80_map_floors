@@ -14,6 +14,7 @@ module C80MapFloors
       klass.send(:include, InstanceMethods)
     end
 
+    # noinspection ALL
     module ClassMethods
 
       def acts_as_map_building_representator
@@ -21,6 +22,8 @@ module C80MapFloors
 
           has_one :map_building, :as => :building_representator, :class_name => 'C80MapFloors::MapBuilding', :dependent => :nullify
           after_save :update_json
+
+          scope :order_title, -> {order(:title => :asc)}
 
           def self.unlinked_buildings
             res = []
@@ -36,10 +39,20 @@ module C80MapFloors
             MapJson.update_json
           end
 
+          # выдать название привязанного к Зданию полигона
+          def bpolygon_title
+            res = '-'
+            if self.map_building.present?
+              res = "'#{self.map_building.title}'"
+            end
+            res
+          end
+
         end
       end
     end
 
+    # noinspection ALL
     module InstanceMethods
 
       def my_as_json

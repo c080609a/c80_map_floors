@@ -32,9 +32,9 @@ module C80MapFloors
     end
 
     def fetch_unlinked_buildings
-      # Rails.logger.debug "<AjaxController.fetch_unlinked_buildings> params = #{params}"
+      Rails.logger.debug "[TRACE] <AjaxController.fetch_unlinked_buildings> params = #{params}"
 
-      @unlinked_buildings = Rent::Building.unlinked_buildings
+      @unlinked_buildings = Building.all.order_title
 
     end
 

@@ -148,7 +148,7 @@ function Building() {
 
     };
 
-    var _proccess_floors_data = function () {
+    var _process_floors_data = function () {
 
         if (_options["floors"] != undefined && _options["floors"].length) {
             _parse_floors(_options["floors"]);
@@ -207,7 +207,7 @@ function Building() {
         setTimeout(function () {
 
             // запустим внутренний механизм парсинга этажей и их отрисовки
-            _proccess_floors_data();
+            _process_floors_data();
 
             // если у ПолигонаЗдания есть ПолигоныЭтажей - войдем в 1й этаж
             if (fCalcObjSize(_map_floors_hash) > 0) {

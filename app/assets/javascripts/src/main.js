@@ -447,8 +447,8 @@ var InitMap = function (params) {
                             // если это полигон здания - фиксируем его
                             var selected_area_building = self.selected_area.building;
                             if (selected_area_building != undefined && selected_area_building != null) {
-                                self.current_building = selected_area_building;
-                                console.log("<self.onSvgMousedown> Это не Drag-n-drop, а обычный клик по полигону Здания c id=" + self.current_building.options.id);
+                                self.current_building = selected_area_building; // фиксируем полигон здания в режиме "редактирования карты" при клике по полигону на карте
+                                console.log("<self.onSvgMousedown> Это не Drag-n-drop, а обычный клик по полигону Здания c id=" + self.current_building.options["id"]);
 
                                 // включим кнопку "связать Здание"
                                 self.building_link_button_klass.en_check();
@@ -1505,9 +1505,9 @@ var InitMap = function (params) {
             var $s = $m.find('select');
 
             // извлекаем значения
-            var rent_building_id = $s.val();
-            var map_building_id = self.current_building.id; //#-> [iddqd]
-            //console.log("<Map.link_area> rent_building_id = " + rent_building_id + "; map_building_id = " + map_building_id);
+            var building_id = $s.val();
+            var map_building_id = self.current_building["id"]; //#-> [iddqd]
+            console.log("<Map.link_area> building_id = " + building_id + "; map_building_id = " + map_building_id);
 
             // нажимаем кнопку "закрыть"
             $b.click();
@@ -1521,7 +1521,7 @@ var InitMap = function (params) {
                 url:'/ajax/link_building',
                 type:'POST',
                 data: {
-                    rent_building_id: rent_building_id,
+                    building_id: building_id,
                     map_building_id: map_building_id
                 },
                 dataType:"json"

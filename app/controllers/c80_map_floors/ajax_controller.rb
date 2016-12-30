@@ -40,6 +40,7 @@ module C80MapFloors
 
     # связать Rent::Area и Map::Area
     # в процессе произойдёт обновление json-файла с данными
+    # noinspection RubyResolve
     def link_area
       Rails.logger.debug "[TRACE] <AjaxController.link_area> params = #{params}"
       # [TRACE] <AjaxController.link_area> params = {"area_id"=>"364", "apolygon_id"=>"3", "controller"=>"c80_map_floors/ajax", "action"=>"link_area"}
@@ -64,18 +65,21 @@ module C80MapFloors
     end
 
     #
+    # noinspection RubyResolve
     def link_building
 
-      Rails.logger.debug "<AjaxController.link_building> params = #{params}"
+      Rails.logger.debug "[TRACE] <AjaxController.link_building> params = #{params}"
+      # [TRACE] <AjaxController.link_building> params = {"rent_building_id"=>"29", "map_building_id"=>"10", "controller"=>"c80_map_floors/ajax", "action"=>"link_building"}
+      rent_building = ::Building.find(params[:building_id])
 
-      rent_building = Rent::Building.find(params[:rent_building_id])
-      map_building = C80Map::MapBuilding.find(params[:map_building_id])
-      rent_building.map_buildings.delete_all
-      rent_building.map_buildings << map_building
+      map_building = C80MapFloors::MapBuilding.find(params[:map_building_id])
+
+      rent_building.map_building.delete_all if rent_building.map_building.present?
+      rent_building.map_building = map_building
       rent_building.save
 
       result = {
-          updated_locations_json: C80Map::MapJson.fetch_json
+          updated_locations_json: C80MapFloors::MapJson.fetch_json
       }
 
       respond_to do |format|

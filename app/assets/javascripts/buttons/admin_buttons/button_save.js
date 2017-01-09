@@ -75,7 +75,7 @@ function SaveChangesButton() {
     };
 
     _this.onClick = function (e) {
-        if (_this.el.hasClass('disabled')) return;
+        if (_this.el.hasClass('mapplic-disabled')) return;
         e.preventDefault();
         _map.save_preloader_klass.show();
         sendDataToServer();

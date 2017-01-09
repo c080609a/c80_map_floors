@@ -1,10 +1,11 @@
-<select id="unlinked_buildings" class="selectpicker" data-style="btn-default">
-<% buildings.each do |building| %>
-      <% tt = building.title %>
-      <% unless building.map_building.present? %>
-        <% tt += ' (полигон назначен)' %>
-      <% end %>
-    <option value="<%= building.id%>"><%= tt %></option>
+<%# список всех Зданий, который выводится в modal bootstrap окне после нажатия кнопки "назначить Здание" %>
+<%# в названии файла присутствует unlinked - это рудимент, legacy from the past %>
+
+<!--suppress HtmlFormInputWithoutLabel -->
+<select id="unlinked_buildings" class="selectpicker" data-style="btn-default" data-width="400px">
+<% # noinspection RubyResolve
+   buildings.each do |building| %>
+      <option value="<%= building.id%>"><%= "#{building.title} (назначен полигон: #{building.bpolygon_title})" %></option>
 <% end %>
 </select>
-<button type="button" id='submit_building_link' class="btn btn-primary">Сохранить</button>
+<button type="button" id='submit_building_link' class="btn btn-success">Назначить</button>

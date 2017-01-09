@@ -40,15 +40,24 @@ function AreaLinkButton() {
 
     };
 
-    var fetch_free_areas = function () {
+    /** функция, запрашивающая с сервера Площади (указанного Этажа).
+     *
+     * @param sfid - ID Этажа, которому должны принадлежать Площади
+     */
+    var fetch_areas_by_floor = function (sfid) {
+        console.log('<ButtonAreaLink.fetch_areas_by_floor> ');
+        
         $.ajax({
             url:'/ajax/fetch_unlinked_areas',
             type:'POST',
-            data: {building_id:"building_id"},
+            data: {
+                sfloor_id: sfid
+            },
             dataType:'script'
-        }).done(fetch_free_areas_done);
+        }).done(fetch_areas_by_floor_done);
+        
     };
-    var fetch_free_areas_done = function (data, result) {
+    var fetch_areas_by_floor_done = function (data, result) {
         _map.save_preloader_klass.hide();
         show_modal_window();
     };
@@ -61,9 +70,22 @@ function AreaLinkButton() {
 
         //console.log("<AreaLinkButton.click>");
 
-        _map.save_preloader_klass.show();
+        //_map.save_preloader_klass.show();
+        //fetch_areas_by_floor();
 
-        fetch_free_areas();
+        // сначала пробуем добраться до данных Этажа картинки этажа        
+        var floor_data = _map.current_building.json_current_floor()["data"];
+
+        if (floor_data == null || floor_data == undefined) {
+            alert('[ERROR] Перед тем, как назначать Площадь, необходимо назначить Этаж.');
+        } else {
+            // ID Этажа, которому должны принадлежать Площади, которые надо вывести в модальном окне
+            var sfid = floor_data["id"];
+            console.log("<ButtonAreaLink.onClick> Нажали кнопку 'Связать Площадь', запрашиваем Площади Этажа sfid = " + sfid);
+            _map.save_preloader_klass.show();
+            fetch_areas_by_floor(sfid);
+        }
+        
     };
 
     _this.init = function (button_css_selector, link_to_map) {

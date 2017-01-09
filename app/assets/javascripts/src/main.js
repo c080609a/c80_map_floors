@@ -392,16 +392,22 @@ var InitMap = function (params) {
                 return false;
             }; // IE drag fix
 
+            /* после запуска приложения - всегда слушаем нажатия мышью на полигоны и вершины */
             function onSvgMousedown(e) {
 
                 //#-> Убрал 'edit_building', т.к. мы не можем ничего нарисовать в этом режиме - картинки этажей добавляются через админку
                 if (self.mode === 'editing' || self.mode === 'edit_area' || self.mode === 'edit_floor') { // || self.mode === "edit_building"
                     if (e.target.parentNode.tagName === 'g') {
-                        console.log("<onSvgMousedown> e = ");
+                        console.log("<onSvgMousedown> Нажали мышью на полигон или вершину.");
                         //console.log(e.pageX);
                         //console.log("<mouseDown> e.target.parentNode.tagName = " + e.target.parentNode.tagName);
                         //console.log(e.target);
                         //info.unload();
+
+                        // если ДО этого нажатия уже была "выбранная" область - "снимем" с неё css класс
+                        if (self.selected_area != null && self.selected_area != undefined) {
+                            self.selected_area.deselect();
+                        }
 
                         // запомним ссылку на "выбранную" область
                         self.selected_area = e.target.parentNode.obj;
@@ -417,27 +423,44 @@ var InitMap = function (params) {
                             'y': e.pageY
                         };
 
-                        // если взаимодействуем с вершиной
+                        //#-> a) Определяем, что хотим подвинуть мышкой методом drag-n-drop
+
+                        // если хотим подвинуть вершину
                         if (utils.hasClass(e.target, 'helper')) {
                             var helper = e.target;
-                            //console.log("<mouseDown> helper.action = ");
-                            //console.log(helper.action);
                             self.edit_type = helper.action; // pointMove
 
                             if (helper.n >= 0) { // if typeof selected_area == polygon
                                 self.selected_area.selected_point = helper.n;
                             }
 
-                            self.addEvent(self.el[0], 'mousemove', self.onEdit)
-                                //self.addEvent(self.el[0], 'mousemove', self.selected_area.onEdit)
-                                .addEvent(self.el[0], 'mouseup', self.onEditStop);
+                            //#-> b) После этого вешаем слушатели
+                            self.addEvent(self.el[0], 'mousemove', self.onMouseMove)
+                                .addEvent(self.el[0], 'mouseup', self.onMouseUp);
+
+                        }
+                        // если хотим подвинуть фигуру
+                        //#-> отменили dnd фигур 20161227
+                        else if (e.target.tagName === 'rect' || e.target.tagName === 'circle' || e.target.tagName === 'polygon') {
+                            //self.edit_type = 'move';
+
+                            // если это полигон здания - фиксируем его
+                            var selected_area_building = self.selected_area.building;
+                            if (selected_area_building != undefined && selected_area_building != null) {
+                                self.current_building = selected_area_building; // фиксируем полигон здания в режиме "редактирования карты" при клике по полигону на карте
+                                console.log("<self.onSvgMousedown> Это не Drag-n-drop, а обычный клик по полигону Здания c id=" + self.current_building.options["id"]);
+
+                                // включим кнопку "связать Здание"
+                                self.building_link_button_klass.en_check();
+
+                            } else {
+                                console.log("<self.onSvgMousedown> Это не Drag-n-drop, а обычный клик по фигуре.");
+                            }
+
                         }
 
-                        else if (e.target.tagName === 'rect' || e.target.tagName === 'circle' || e.target.tagName === 'polygon') {
-                            self.edit_type = 'move';
-                            self.addEvent(self.el[0], 'mousemove', self.onEdit)
-                                .addEvent(self.el[0], 'mouseup', self.onEditStop);
-                        }
+                        // когда реализуем корректный механизм dnd фигур, тут должен очутиться (b)
+
                     } else {
                         //app.deselectAll();
                         //info.unload();
@@ -452,7 +475,7 @@ var InitMap = function (params) {
             // Drag & drop
             function onDragNdrop(event) {
                 //console.log("<mousedown> edit_type = " + self.edit_type);
-                console.log("<mousedown> mode = " + self.mode + " dnd_enable = " + self.o.dnd_enable);
+                console.log("<mousedown> mode = " + self.mode + ", dnd_enable = " + self.o.dnd_enable + ', edit_type = ' + self.edit_type);
                 //console.log(event);
 
                 // если в данный момент не редактируем фигуру (т.е. не двигаем вершину фигуры)
@@ -506,7 +529,7 @@ var InitMap = function (params) {
 
                         console.log("<mouseup> Отпустили мышь после клика, текущий режим карты: mode = " + self.mode);
 
-                        // исключаем случайный dnd дрожащей рукой
+                        // исключаем случайный dnd дрожащей рукой [xdnd?]
                         var dx = map.data('startX') - map.data('lastX');
                         var dy = map.data('startY') - map.data('lastY');
                         var delta = Math.sqrt(dx*dx + dy*dy);
@@ -533,7 +556,7 @@ var InitMap = function (params) {
                                 if (p.obj && p.obj.building) {
                                     var building = p.obj.building;
                                     console.log("<mouseup> Текущий mode карты 'viewing' => Входим в здание (а потом building сам решит, входить ли на 1й этаж).");
-                                    self.current_building = building;
+                                    self.current_building = building; /* когда вошли в здание, определили переменную */
                                     building.enter();
                                 }
 
@@ -933,21 +956,62 @@ var InitMap = function (params) {
 
         };
 
-        self.onEdit = function (e) {
+        //<editor-fold desc="// двигаем фигуру мышкой методом drag-n-drop">
+        self.onMouseMove = function (e) { // мышь нажата и двигается
 
-            //console.log("<Polygon.prototype.onEdit> _s_f = " + _s_f);
-            //console.log("<Polygon.prototype.onEdit> e = ");
+            //console.log("<Polygon.prototype.onMouseMove> _s_f = " + _s_f);
+            //console.log("<Polygon.prototype.onMouseMove> e = ");
             //console.log(_s_f);
             //console.log(e.pageX);
 
             var selected_area = self.selected_area;
             var edit_type = self.edit_type;
-            //console.log("<Polygon.prototype.onEdit> edit_type = " + edit_type);
+            //console.log("<Polygon.prototype.onMouseMove> edit_type = " + edit_type);
 
             selected_area.dynamicEdit(selected_area[edit_type](e.pageX - selected_area.delta.x, e.pageY - selected_area.delta.y));
             selected_area.delta.x = e.pageX;
             selected_area.delta.y = e.pageY;
         };
+        self.onMouseUp = function (e) { // отпустили мышь (другими словами - закончили drag'n'drop)
+            console.log("<self.onMouseUp> [for_breakpoint] Отпустили мышь.");
+
+            var _s_f = self.selected_area;
+            var edit_type = self.edit_type;
+
+            //#-> определим, был ли drag-n-drop вообще? Код работает неверно, поэтому и закомментирован
+
+            var dx = e.pageX - _s_f.delta.x;
+            var dy = e.pageY - _s_f.delta.y;
+
+            //var delta = Math.sqrt(dx*dx + dy*dy);
+            //var is_real_dragging = delta > 2;
+            //
+            // Если dnd был - двигаем фигуру
+            //if (is_real_dragging) {
+            //    console.log("<self.onMouseUp> Drag-n-drop detected.");
+                var aa = _s_f[edit_type](dx, dy);
+                var bb = _s_f.dynamicEdit(aa);
+                _s_f.setParams(bb);
+            //}
+            //
+            // если dnd не было - справляемся о режиме и в случае редактирования карты (т.е. когда допустимо назначать
+            // Здания полигонам зданий) в current_building положим ссылку на фигуру, по которой был клик
+            //else {
+
+                // если это полигон здания - фиксируем его
+                //var selected_area_building = self.selected_area.building;
+                //if (selected_area_building != undefined && selected_area_building != null) {
+                //    self.current_building = selected_area_building;
+                //    console.log("<self.onMouseUp> Это не Drag-n-drop, а обычный клик по полигону Здания c id=" + self.current_building.options.id);
+                //} else {
+                //    console.log("<self.onMouseUp> Это не Drag-n-drop, а обычный клик по фигуре.");
+                //}
+                //console.log('<breakpoint>');
+            //}
+
+            self.removeAllEvents();
+        };
+        //</editor-fold>
 
         self.onDrawStop = function (e) {
             console.log("<Map.onDrawStop> Закончили рисовать.");
@@ -973,8 +1037,8 @@ var InitMap = function (params) {
                 if (self.prev_mode == "edit_floor") {
                     console.log("<Map.onDrawStop> Создаём Area.");
 
-                    var bo = self.current_building.options;
-                    var fo = self.current_building.json_current_floor();
+                    //var bo = self.current_building.options;
+                    var fo = self.current_building.json_current_floor(); // когда нарисовали полигон Площади - определяем Этаж родитель
                     var a = new Area();
                     a.init({ coords:_n_f.params }, fo, self);
                     //a.is_new = true;
@@ -1000,16 +1064,6 @@ var InitMap = function (params) {
             }
 
             self.setMode('editing');
-        };
-
-        self.onEditStop = function (e) {
-            //console.log("<Polygon.prototype.onEditStop>");
-            var _s_f = self.selected_area,
-                edit_type = self.edit_type;
-
-            _s_f.setParams(_s_f.dynamicEdit(_s_f[edit_type](e.pageX - _s_f.delta.x, e.pageY - _s_f.delta.y)));
-
-            self.removeAllEvents();
         };
 
         self.registerJustDrownArea = function (area) {
@@ -1377,9 +1431,9 @@ var InitMap = function (params) {
             var $s = $m.find('select');
 
             // извлекаем значения
-            var rent_area_id = $s.val();
-            var map_area_id = self.current_area.id;
-            //console.log("<Map.link_area> rent_area_id = " + rent_area_id + "; map_area_id = " + map_area_id);
+            var area_id = $s.val();
+            var apolygon_id = self.current_area.id;
+            console.log("<Map.link_area> Связать Площадь area_id = " + area_id + " c полигоном apolygon_id = " + apolygon_id);
 
             // нажимаем кнопку "закрыть"
             $b.click();
@@ -1393,8 +1447,8 @@ var InitMap = function (params) {
                 url:'/ajax/link_area',
                 type:'POST',
                 data: {
-                    rent_area_id: rent_area_id,
-                    map_area_id: map_area_id
+                    area_id: area_id,
+                    apolygon_id: apolygon_id
                 },
                 dataType:"json"
             }).done(function (data, result) {
@@ -1404,9 +1458,40 @@ var InitMap = function (params) {
 
         };
 
-        // взять C80MapFloors::current_floor и назначить ему sfloor.id выбранный в окне _modal_window.html.erb
+        // взять C80MapFloors::current_floor и назначить ему sfloor_id выбранный в окне _modal_window.html.erb
         self.link_floor = function () {
-            console.log('<link_floor> Связать Этаж sfloor.id=' + sfloor.id + ' с полигоном current_floor=' + current_floor + '.');
+
+            // фиксируем компоненты модального окна
+            var $m = $('#modal_window');
+            var $b = $m.find('.modal-footer').find('.btn');
+            var $s = $m.find('select');
+
+            // извлекаем значения
+            var sfloor_id = $s.val(); // id Этажа
+            var current_floor_id = self.current_building.json_current_floor()["id"]; // id Картинки Этажа (связываем Этаж с картинкой)
+            console.log('<link_floor> Связать Этаж sfloor_id=' + sfloor_id + ' с Картинкой Этажа current_floor_id=' + current_floor_id + '.');
+
+            // нажимаем кнопку "закрыть"
+            $b.click();
+
+            // показываем прелоадер
+            self.save_preloader_klass.show();
+
+            // отправляем запрос на сервер
+            // TODO_MY:: реализовать обработчик ошибок
+            $.ajax({
+                url:'/ajax/link_floor',
+                type:'POST',
+                data: {
+                    sfloor_id: sfloor_id,
+                    floor_id: current_floor_id
+                },
+                dataType:"json"
+            }).done(function (data, result) {
+                self.save_preloader_klass.hide();
+                self.data = data["updated_locations_json"];
+            });
+
         };
 
         // взять C80MapFloors::current_building и назначить ему Rent::building.id,
@@ -1420,9 +1505,9 @@ var InitMap = function (params) {
             var $s = $m.find('select');
 
             // извлекаем значения
-            var rent_building_id = $s.val();
-            var map_building_id = self.current_building.id; //#-> [iddqd]
-            //console.log("<Map.link_area> rent_building_id = " + rent_building_id + "; map_building_id = " + map_building_id);
+            var building_id = $s.val();
+            var map_building_id = self.current_building["id"]; //#-> [iddqd]
+            console.log("<Map.link_area> building_id = " + building_id + "; map_building_id = " + map_building_id);
 
             // нажимаем кнопку "закрыть"
             $b.click();
@@ -1436,7 +1521,7 @@ var InitMap = function (params) {
                 url:'/ajax/link_building',
                 type:'POST',
                 data: {
-                    rent_building_id: rent_building_id,
+                    building_id: building_id,
                     map_building_id: map_building_id
                 },
                 dataType:"json"
@@ -1458,6 +1543,59 @@ var InitMap = function (params) {
         self.hide_free_areas_hint = function () {
 
         };
+
+        // показать/скрыть все админские лейблы всех полигонов, которые отображены в данный момент на экране
+        self.admin_label_show_all = function () {
+            if (IS_ADMIN) {
+
+                var s = self.svg;
+                var c = s.children();
+                var l = c.length;
+                var i, ig;
+
+                console.log('<admin_label_show_all> Показать все админские лейблы полигонов в кол-ве ' + l + ' шт.');
+
+                for (i=0; i<l; i++) {
+                    ig = s[0].children[i];          // именно [0]
+                    //console.log(ig['obj']);       // => Polygon
+                    if (ig != undefined) {          // такое тоже бывает
+                        if (ig['obj'] != undefined) {   //
+                            if (ig['obj']['building'] != undefined) {       // добираемся до класса Building.js
+                                ig['obj']['building'].admin_label_show();   // показываем админский лейбл
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        };
+        self.admin_label_hide_all = function () {
+            if (IS_ADMIN) {
+
+                var s = self.svg;
+                var c = s.children();
+                var l = c.length;
+                var i, ig;
+
+                console.log('<admin_label_hide_all> Скрыть все админские лейблы полигонов в кол-ве ' + l + ' шт.');
+
+                for (i=0; i<l; i++) {
+                    ig = s[0].children[i];          // именно [0]
+                    //console.log(ig['obj']);       // => Polygon
+                    if (ig != undefined) {          // такое тоже бывает
+                        if (ig['obj'] != undefined) {   //
+                            if (ig['obj']['building'] != undefined) {       // добираемся до класса Building.js
+                                ig['obj']['building'].admin_label_hide();   // скрываем админский лейбл
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        };
+
 
     };
 

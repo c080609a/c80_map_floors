@@ -1,13 +1,23 @@
-/* Polygon constructor */
-var Polygon = function (x, y, is_overlay, self) {
+/** Конструктор. Создать полигон и прицепить в список отображения карты.
+ *
+ * @param x
+ * @param y
+ * @param is_overlay
+ * @param link_to_map   - ссылка на класс карты
+ * @constructor
+ */
+var Polygon = function (x, y, is_overlay, link_to_map) {
 
-    this._map = self;
+    this._map = link_to_map;
     this._map.is_draw = true;
 
     this.params = [x, y]; //array of coordinates of polygon points
 
+    // создаём полигон
     this.g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
     this.polygon = document.createElementNS('http://www.w3.org/2000/svg', 'polyline');
+
+    // цепляем полигон в список отображения карты
     this._map.addNodeToSvg(this.g, is_overlay);
     this.g.appendChild(this.polygon);
 
@@ -169,12 +179,19 @@ Polygon.prototype.deselect = function () {
     return this;
 };
 
-Polygon.createFromSaved = function (params, is_overlay, self) {
+/** Создать полигон по параметрам (и "прицепить" его в список отображения карты).
+ *
+ * @param params
+ * @param is_overlay
+ * @param link_to_map   - ссылка на класс карты
+ * @returns {Polygon}
+ */
+Polygon.createFromSaved = function (params, is_overlay, link_to_map) {
     //console.log("<Polygon.createFromSaved>");
     //console.log("<Polygon.createFromSaved> is_overlay = " + is_overlay);
 
     var coords = params.coords,
-        area = new Polygon(coords[0], coords[1], is_overlay, self);
+        area = new Polygon(coords[0], coords[1], is_overlay, link_to_map);
 
     for (var i = 2, c = coords.length; i < c; i += 2) {
         area.addPoint(coords[i], coords[i + 1]);
@@ -186,8 +203,8 @@ Polygon.createFromSaved = function (params, is_overlay, self) {
     area.setCoords(area.params).deselect();
     delete(area.polyline);
 
-    self.is_draw = false;
-    self.drawing_poligon = null;
+    link_to_map.is_draw = false;
+    link_to_map.drawing_poligon = null;
 
     return area;
 

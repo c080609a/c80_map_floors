@@ -95,9 +95,9 @@ function Area() {
         _this._options["parent_floor_json"] = parent_floor_json;
 
         _this._polygon = Polygon.createFromSaved(options, false, _map);
-        _this._polygon.area = _this;
+        _this._polygon.area = _this; // FIXME:: после исполнения строки (****) ссылка на area исчезает, разве нет?
         _this._polygon["parent_floor_json"] = parent_floor_json;
-        _this._polygon = $(_this._polygon.polygon);
+        _this._polygon = $(_this._polygon.polygon); // ****
 
         // подпись над полигоном показываем только админам
         if (IS_ADMIN) {
@@ -110,6 +110,7 @@ function Area() {
         _this._polygon_overlay.hover(_this._mouse_in, _this._mouse_out);
         _this._calcBBox();
 
+        // TODO:: старый код не работает: вместо area_hash должно быть data (и так далее)
         var k = 'unassigned';
         if (options.area_hash != undefined) {
             if (typeof options.area_hash.id !== 'undefined') {

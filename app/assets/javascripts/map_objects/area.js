@@ -95,9 +95,9 @@ function Area() {
         _this._options["parent_floor_json"] = parent_floor_json;
 
         _this._polygon = Polygon.createFromSaved(options, false, _map);
-        _this._polygon.area = _this;
+        _this._polygon.area = _this; // FIXME:: после исполнения строки (****) ссылка на area исчезает, разве нет?
         _this._polygon["parent_floor_json"] = parent_floor_json;
-        _this._polygon = $(_this._polygon.polygon);
+        _this._polygon = $(_this._polygon.polygon); // ****
 
         // подпись над полигоном показываем только админам
         if (IS_ADMIN) {

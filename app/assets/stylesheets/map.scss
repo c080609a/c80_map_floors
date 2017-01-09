@@ -1246,7 +1246,7 @@ div#map_wrapper {
       g {
 
         &.free {
-          polygon, polyline { /* СВОБОДНЫЙ полигон */
+          polygon, polyline { /* СВОБОДНЫЙ полигон площади */
             fill: rgba(0, 255, 19, 0.30);
             stroke: rgba(51, 51, 51, 0.36);
             cursor: pointer;
@@ -1260,7 +1260,7 @@ div#map_wrapper {
         }
 
         &.busy {
-          polygon, polyline { /* ЗАНЯТЫЙ полигон */
+          polygon, polyline { /* ЗАНЯТЫЙ полигон площади */
             fill: rgba(255, 4, 0, 0.30);
             stroke: rgba(255, 4, 0, 0.30);
             cursor: pointer;
@@ -1275,7 +1275,7 @@ div#map_wrapper {
 
         &.unassigned {
 
-          polygon, polyline { /* НЕНАЗНАЧЕННЫЙ полигон */
+          polygon, polyline { /* НЕНАЗНАЧЕННЫЙ полигон площади */
             fill: rgba(131, 131, 131, 0.30);
             stroke: rgba(131, 131, 131, 0.40);
             cursor: pointer;
@@ -1287,7 +1287,7 @@ div#map_wrapper {
           }
 
           &.viewing_area {
-            polygon, polyline { /* НЕНАЗНАЧЕННЫЙ и просматриваемый полигон (с пунктиром) */
+            polygon, polyline { /* НЕНАЗНАЧЕННЫЙ и просматриваемый полигон площади (с пунктиром) */
               /*background: transparent url(image_path('loader_button.gif')) no-repeat 0 0;*/
               fill: rgba(131, 131, 131, 0.50);
               stroke: rgba(131, 131, 131, 0.60);
@@ -1305,7 +1305,7 @@ div#map_wrapper {
         }
 
         &.viewing_area {
-          polygon, polyline { /* подразумевается НАЗНАЧЕННЫЙ полигон */
+          polygon, polyline { /* подразумевается НАЗНАЧЕННЫЙ полигон площади */
             /*background: transparent url(image_path('loader_button.gif')) no-repeat 0 0;*/
             fill: rgba(0, 255, 19, 0.10);
             stroke: rgba(255, 246, 242, 0.59);
@@ -1363,7 +1363,7 @@ div#map_wrapper {
         }
 
         g.free {
-          polygon, polyline { /* когда редактируем, СВОБОДНЫЕ полигоны светятся зелёным */
+          polygon, polyline { /* когда редактируем, СВОБОДНЫЕ полигоны площадей светятся зелёным */
             fill: rgba(0, 255, 19, 0.20);
             stroke: rgba(255, 255, 255, 0.90);
             cursor: pointer;
@@ -1377,7 +1377,7 @@ div#map_wrapper {
         }
 
         g.busy {
-          polygon, polyline { /* когда редактируем, ЗАНЯТЫЕ полигоны светятся красным */
+          polygon, polyline { /* когда редактируем, ЗАНЯТЫЕ полигоны площадей светятся красным */
             fill: rgba(255, 4, 0, 0.30);
             stroke: rgba(255, 255, 255, 0.90);
             cursor: pointer;
@@ -1395,7 +1395,8 @@ div#map_wrapper {
 
     &.editing {
       #svg {
-        polygon.selected { /* когда редактируем карту, ВЫБРАННЫЙ полигон [здания] светится фиолетовым */
+
+        polygon.selected, polygon.selected.linked { /* когда редактируем карту, ВЫБРАННЫЙ полигон [здания] светится фиолетовым */
           fill: rgba(135, 18, 237, 0.40);
           stroke: rgba(0, 255, 19, 0.90);
           &:hover {
@@ -1403,6 +1404,16 @@ div#map_wrapper {
             stroke: rgba(255, 0, 169, 0.99);
           }
         }
+
+        polygon.linked { /* когда редактируем карту, НАЗНАЧЕННЫЙ полигон [здания] светится зелёным */
+          fill: rgba(0, 255, 19, 0.70);
+          stroke: rgba(22, 22, 22, 0.90);
+          &:hover {
+            fill: rgba(0, 255, 19, 0.90);
+            stroke: rgba(22, 22, 22, 0.90);
+          }
+        }
+
       }
     }
 

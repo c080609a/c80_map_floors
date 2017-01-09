@@ -196,6 +196,19 @@ function Building() {
             _polygon = Polygon.createFromSaved(options, false, _map);
             _polygon.building = _this;
 
+
+            //<editor-fold desc="// если у полигона здания имеется Здание - добавим css класс (для разукрашивания таких полигонов в режиме редактирования)">
+            var k = '';
+
+            if (_options != null) {
+                if (_options["data"] != null) {
+                    k = 'linked';
+                }
+            }
+
+            $(_polygon.polygon).addClass(k);
+            //</editor-fold>
+
             _this._calcBBox();
 
             // TODO:: подпись над зданием - сколько свободных площадей

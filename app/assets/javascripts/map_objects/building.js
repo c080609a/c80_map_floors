@@ -27,6 +27,9 @@ function Building() {
     // если вошли в какой-то этаж - эта переменная будет хранить ссылку на объект с данными полигона Этажа из locations.json
     var _json_current_floor = null;
 
+    _this._label = null;
+    _this._admin_label = null;
+
     var _zoomToMe = function () {
 
         /* рассчитаем масштаб, при котором можно вписать прямоугольник дома в прямоугольник рабочей области */
@@ -158,6 +161,11 @@ function Building() {
 
     };
 
+    /**
+     *
+     * @param options - Это C80MapFloors::MapBuilding.my_as_json
+     * @param link_to_map
+     */
     _this.init = function (options, link_to_map) {
 
         if (options['coords'] != undefined && options['coords'].length) {
@@ -184,13 +192,20 @@ function Building() {
                 _this.options["id"] = Math.ceil((Math.random()*100000));
             }
 
+            // создать полигон здания и прицепить в список отображения карты [в svg слой (т.к. is_overlay = false)]
             _polygon = Polygon.createFromSaved(options, false, _map);
             _polygon.building = _this;
 
             _this._calcBBox();
 
-            // подпись над зданием - сколько свободных площадей
+            // TODO:: подпись над зданием - сколько свободных площадей
             _this._label = new BuildingLabel(options, _map);
+
+            // подпись над полигоном показываем только админам
+            // UPD: не прокатит, т.к. здания инициализируются ДО того, как приходит ajax/map_edit_buttons, где IS_ADMIN=true
+            //if (IS_ADMIN) {
+            //    _this._admin_label = new AdminBuildingLabel(options, _map);
+            //}
 
         }
     };
@@ -365,4 +380,18 @@ function Building() {
       return result;
     };
 
+    // показать/скрыть админские лейблы
+    this.admin_label_show = function () {
+        if (_this._admin_label == null) {
+            console.log('<Building.admin_label_show> Показать админский лейбл полигона Здания id=' + _this.id);
+            _this._admin_label = new AdminBuildingLabel(_options, _map, {cx:_cx, cy:_cy});
+        }
+    };
+    this.admin_label_hide = function () {
+        if (_this._admin_label != null) {
+            console.log('<Building.admin_label_hide> Уничтожить админский лейбл.');
+            _this._admin_label.destroy();
+            _this._admin_label = null;
+        }
+    };
 }

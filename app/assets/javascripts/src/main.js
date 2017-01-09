@@ -1544,6 +1544,59 @@ var InitMap = function (params) {
 
         };
 
+        // показать/скрыть все админские лейблы всех полигонов, которые отображены в данный момент на экране
+        self.admin_label_show_all = function () {
+            if (IS_ADMIN) {
+
+                var s = self.svg;
+                var c = s.children();
+                var l = c.length;
+                var i, ig;
+
+                console.log('<admin_label_show_all> Показать все админские лейблы полигонов в кол-ве ' + l + ' шт.');
+
+                for (i=0; i<l; i++) {
+                    ig = s[0].children[i];          // именно [0]
+                    //console.log(ig['obj']);       // => Polygon
+                    if (ig != undefined) {          // такое тоже бывает
+                        if (ig['obj'] != undefined) {   //
+                            if (ig['obj']['building'] != undefined) {       // добираемся до класса Building.js
+                                ig['obj']['building'].admin_label_show();   // показываем админский лейбл
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        };
+        self.admin_label_hide_all = function () {
+            if (IS_ADMIN) {
+
+                var s = self.svg;
+                var c = s.children();
+                var l = c.length;
+                var i, ig;
+
+                console.log('<admin_label_hide_all> Скрыть все админские лейблы полигонов в кол-ве ' + l + ' шт.');
+
+                for (i=0; i<l; i++) {
+                    ig = s[0].children[i];          // именно [0]
+                    //console.log(ig['obj']);       // => Polygon
+                    if (ig != undefined) {          // такое тоже бывает
+                        if (ig['obj'] != undefined) {   //
+                            if (ig['obj']['building'] != undefined) {       // добираемся до класса Building.js
+                                ig['obj']['building'].admin_label_hide();   // скрываем админский лейбл
+                            }
+                        }
+                    }
+
+                }
+
+            }
+        };
+
+
     };
 
     //  Create a jQuery plugin

@@ -14,6 +14,7 @@
 #= require ./svg_elements/polygon.js
 #= require ./svg_elements/area_label.js
 #= require ./svg_elements/building_label.js
+#= require ./svg_elements/admin_building_label.js
 
 #= require_tree ./events
 #= require_tree ./map_objects

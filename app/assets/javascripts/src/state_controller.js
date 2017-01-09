@@ -110,6 +110,9 @@ function StateController() {
                 // скроем подсказки - сколько свободных площадей где есть
                 _map.hide_free_areas_hint();
 
+                //Показать все админские лейблы.
+                _map.admin_label_show_all();
+
                 //</editor-fold>
             break;
 
@@ -175,6 +178,10 @@ function StateController() {
 
                 // покажем подсказки - сколько свободных площадей где есть
                 _map.show_free_areas_hint();
+
+                //Скрыть все админские лейблы.
+                _map.admin_label_hide_all();
+
                 //</editor-fold>
             break;
 

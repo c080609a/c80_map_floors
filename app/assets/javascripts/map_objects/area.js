@@ -110,17 +110,19 @@ function Area() {
         _this._polygon_overlay.hover(_this._mouse_in, _this._mouse_out);
         _this._calcBBox();
 
-        // TODO:: старый код не работает: вместо area_hash должно быть data (и так далее)
+        //<editor-fold desc="// если у полигона имеется Площадь - добавим css класс (для разукрашивания таких полигонов)">
         var k = 'unassigned';
-        if (options.area_hash != undefined) {
-            if (typeof options.area_hash.id !== 'undefined') {
-                k = 'free';
-                if (!options.area_hash.is_free) {
-                    k = 'busy';
+        if (options['data'] != undefined) {
+            if (typeof options['data']['id'] !== 'undefined') {
+                console.log('<Area.init> [breakpoint]');
+                k = 'busy';
+                if (options['data']['is_free']) {
+                    k = 'free';
                 }
             }
         }
         _this._polygon.parent().attr("class", k);
+        //</editor-fold>
 
     };
 

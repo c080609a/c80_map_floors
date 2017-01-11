@@ -1359,7 +1359,7 @@ var InitMap = function (params) {
             }
         };
 
-        // показать инфо о просматриваемой площади
+        // TODO:: показать инфо о просматриваемой площади (это код, который остался без изменений от c80_map)
         self.showAreaInfo = function (area_json, parent_floor_json) {
             //console.log(area_hash);
 

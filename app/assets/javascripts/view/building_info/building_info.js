@@ -90,7 +90,11 @@ function BuildingInfo(options) {
         console.log('<BuildingInfo._parseData> Парсим map_building_json, заполняем Tabs компонент:');
 
         // установим заголовок окна
-        _$title.text(_cur_map_building_json["title"]);
+        var titl = _cur_map_building_json["title"];
+        if (_cur_map_building_json['data'] != undefined) {
+            titl = _cur_map_building_json['data']['title'];
+        }
+        _$title.text(titl);
 
         // обойдём этажи, построим вкладки
         for (var i = 0; i < _cur_map_building_json['floors'].length; i++) {

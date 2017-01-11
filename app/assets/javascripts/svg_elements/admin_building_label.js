@@ -35,11 +35,11 @@ var AdminBuildingLabel = function (options, link_to_map, params) {
         this._text_element_ns = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         this._text_element_ns.setAttribute('x', this._x);
         this._text_element_ns.setAttribute('y', this._y);
-        this._text_element_ns.setAttribute('fill', '#000000');
-        this._text_element_ns.setAttribute('style', 'font-size:12px;font-weight:bold;');
+        this._text_element_ns.setAttribute('fill', '#0000ff');
+        this._text_element_ns.setAttribute('style', 'font-size:15px;font-weight:bold;');
 
-        // помещаем текст: id=<id_привязанного_Здания>; title=<Заголовок_привязанного_здания>
-        this._text_element_ns.textContent = "id="+options["data"]["id"] + "; название='" + options["data"]["title"] + "'";
+        // помещаем текст: title=<Заголовок_привязанного_здания>, id=<id_привязанного_Здания>
+        this._text_element_ns.textContent = "'" + options["data"]["title"] + "', id=" + options["data"]["id"];
 
         // "антагонист" метода destroy()
         this._map.addNodeToSvg(this._g, false);

@@ -4,7 +4,7 @@
 
 function BuildingInfo(options) {
 
-    // текуще отображаемое здание
+    // текуще отображаемое здание (Это данные от C80MapFloors::MapBuilding, метод my_as_json)
     var _cur_map_building_json;
 
     // настраиваемые параметры
@@ -29,7 +29,7 @@ function BuildingInfo(options) {
 
     /** Получить данные для отображения.
      *
-     * @param map_building_json Это данные от C80MapFloors::MapBuilding
+     * @param map_building_json     - Это данные от C80MapFloors::MapBuilding, метод my_as_json
      */
     this.setData = function (map_building_json) {
         console.log('<BuildingInfo.setData> Получили данные для отображения - map_building_json.');

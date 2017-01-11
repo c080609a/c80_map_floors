@@ -1,5 +1,11 @@
 module C80MapFloors
 
+  #==========================================================
+  #
+  #   Это Здание (которое привязывается к полигону на карте)
+  #
+  #==========================================================
+
   module BuildingRepresentator
 
     extend ActiveSupport::Concern
@@ -55,6 +61,7 @@ module C80MapFloors
     # noinspection ALL
     module InstanceMethods
 
+      # выдать json Здания, которое привязано к полигону на карте
       def my_as_json
         result = {
             id:             self.id,

@@ -1,5 +1,11 @@
 module C80MapFloors
 
+  #==========================================================
+  #
+  #   Это Площадь (которая привязывается к полигону на карте)
+  #
+  #==========================================================
+
   module AreaRepresentator
 
     extend ActiveSupport::Concern
@@ -62,6 +68,7 @@ module C80MapFloors
       end
 =end
 
+      # Выдать json Площади, которая привязана к полигону на карте
       def my_as_json2
         result = {
             id:             self.id,

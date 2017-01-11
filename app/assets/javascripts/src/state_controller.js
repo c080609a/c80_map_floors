@@ -296,16 +296,28 @@ function StateController() {
             // вошли в площадь
             case "view_area":
                 //<editor-fold desc="...">
+
+                // покажем кнопку "обратно на карту"
                 _map.back_to_map_button_klass.show();
+
+                //
                 _this.masked.removeClass('hiddn');
-                var t = _this.building_info.height() + _this.building_info.offset().top;
-                var tt = _this.building_info.css("left");
-                var tq = (_this.building_info.width() + 40) + "px";
-                _this.area_order_button.css("top", t + "px");
-                // _this.area_order_button.css("bottom","400px");
-                _this.area_order_button.css("left", tt);
-                _this.area_order_button.css("width", tq);
-                _this.area_order_button.css('display', 'block');
+
+                // выдвигаем инфо-панель
+                _this.building_info.css("top", _this.building_info.data("init"));
+
+                // TODO:: реализовать показ кнопки 'оставить заявку'
+                //<editor-fold desc="// спозиционируем и покажем кнопку 'оставить заявку'">
+                //var t = _this.building_info.height() + _this.building_info.offset().top;
+                //var tt = _this.building_info.css("left");
+                //var tq = (_this.building_info.width() + 40) + "px";
+                //_this.area_order_button.css("top", t + "px");
+                _this.area_order_button.css("bottom","400px");
+                //_this.area_order_button.css("left", tt);
+                //_this.area_order_button.css("width", tq);
+                //_this.area_order_button.css('display', 'block');
+                //</editor-fold>
+
                 _map.edit_button_klass.setState('view_area', true); // [a1x7]
 
                 // скроем кнопку "связать площадь с полигоном"
@@ -337,6 +349,10 @@ function StateController() {
                 OpacityButtonsUtils.show(_this.edit_button);
 
                 _map.edit_button_klass.setState('edit_area', true); // [a1x7]
+
+                // спрячем инфу о здании
+                _this.building_info.css("top", -500);
+
                 //</editor-fold>
             break;
 

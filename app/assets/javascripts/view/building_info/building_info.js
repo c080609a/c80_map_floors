@@ -4,7 +4,7 @@
 
 function BuildingInfo(options) {
 
-    // текуще отображаемое здание
+    // текуще отображаемое здание (Это данные от C80MapFloors::MapBuilding, метод my_as_json)
     var _cur_map_building_json;
 
     // настраиваемые параметры
@@ -29,7 +29,7 @@ function BuildingInfo(options) {
 
     /** Получить данные для отображения.
      *
-     * @param map_building_json Это данные от C80MapFloors::MapBuilding
+     * @param map_building_json     - Это данные от C80MapFloors::MapBuilding, метод my_as_json
      */
     this.setData = function (map_building_json) {
         console.log('<BuildingInfo.setData> Получили данные для отображения - map_building_json.');
@@ -90,7 +90,11 @@ function BuildingInfo(options) {
         console.log('<BuildingInfo._parseData> Парсим map_building_json, заполняем Tabs компонент:');
 
         // установим заголовок окна
-        _$title.text(_cur_map_building_json["title"]);
+        var titl = _cur_map_building_json["title"];
+        if (_cur_map_building_json['data'] != undefined) {
+            titl = _cur_map_building_json['data']['title'];
+        }
+        _$title.text(titl);
 
         // обойдём этажи, построим вкладки
         for (var i = 0; i < _cur_map_building_json['floors'].length; i++) {

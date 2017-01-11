@@ -163,7 +163,7 @@ function Building() {
 
     /**
      *
-     * @param options - Это C80MapFloors::MapBuilding.my_as_json
+     * @param options - Это C80MapFloors::MapBuilding.my_as_json5
      * @param link_to_map
      */
     _this.init = function (options, link_to_map) {

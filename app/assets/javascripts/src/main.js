@@ -1377,7 +1377,7 @@ var InitMap = function (params) {
             //            "price": "от 155 руб/кв.м в месяц"
             //    }
 
-            // так было в c80_map
+            // так стало в c80_map_floors
             //"rent_building_hash": {
             //        "id": 2,
             //        "title": "Здание 2",

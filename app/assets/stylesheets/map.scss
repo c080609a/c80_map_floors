@@ -1257,6 +1257,23 @@ div#map_wrapper {
             }
 
           }
+
+          &.viewing_area {
+            polygon, polyline { /* СВОБОДНЫЙ и ТЕКУЩЕ-ПРОСМАТРИВАЕМЫЙ полигон площади */
+              /*background: transparent url(image_path('loader_button.gif')) no-repeat 0 0;*/
+              fill: rgba(0, 255, 19, 0.10);
+              stroke: rgba(255, 246, 242, 0.59);
+              stroke-width: 2px;
+              stroke-dasharray: 10;
+              animation: dash 555s linear;
+
+              &:hover, &.hover {
+                fill: rgba(0, 255, 19, 0.50);
+                stroke: rgba(255, 246, 242, 0.79);
+              }
+            }
+          }
+
         }
 
         &.busy {
@@ -1271,6 +1288,23 @@ div#map_wrapper {
             }
 
           }
+
+          &.viewing_area {
+            polygon, polyline { /* ЗАНЯТЫЙ и ТЕКУЩЕ-ПРОСМАТРИВАЕМЫЙ полигон площади */
+              /*background: transparent url(image_path('loader_button.gif')) no-repeat 0 0;*/
+              fill: rgba(255, 4, 0, 0.40);
+              stroke: rgba(255, 246, 242, 0.59);
+              stroke-width: 2px;
+              stroke-dasharray: 10;
+              animation: dash 555s linear;
+
+              &:hover, &.hover {
+                fill: rgba(255, 4, 0, 0.50);
+                stroke: rgba(255, 246, 242, 0.79);
+              }
+            }
+          }
+
         }
 
         &.unassigned {
@@ -1287,7 +1321,7 @@ div#map_wrapper {
           }
 
           &.viewing_area {
-            polygon, polyline { /* НЕНАЗНАЧЕННЫЙ и просматриваемый полигон площади (с пунктиром) */
+            polygon, polyline { /* НЕНАЗНАЧЕННЫЙ и ТЕКУЩЕ-ПРОСМАТРИВАЕМЫЙ полигон площади (с пунктиром) */
               /*background: transparent url(image_path('loader_button.gif')) no-repeat 0 0;*/
               fill: rgba(131, 131, 131, 0.50);
               stroke: rgba(131, 131, 131, 0.60);
@@ -1304,21 +1338,6 @@ div#map_wrapper {
 
         }
 
-        &.viewing_area {
-          polygon, polyline { /* подразумевается НАЗНАЧЕННЫЙ полигон площади */
-            /*background: transparent url(image_path('loader_button.gif')) no-repeat 0 0;*/
-            fill: rgba(0, 255, 19, 0.10);
-            stroke: rgba(255, 246, 242, 0.59);
-            stroke-width: 2px;
-            stroke-dasharray: 10;
-            animation: dash 555s linear;
-
-            &:hover, &.hover {
-              fill: rgba(0, 255, 19, 0.50);
-              stroke: rgba(255, 246, 242, 0.79);
-            }
-          }
-        }
       }
 
     }

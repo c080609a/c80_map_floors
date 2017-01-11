@@ -74,23 +74,14 @@ module C80MapFloors
             id:             self.id,
             title:          self.name,
             square:         self.square,
-            square_free:    self.square_free,
             desc:           self.desc,
-            floor_height:   self.floor_height,
             price_string:   self.price_string,
-            communications: self.communications
+            communications: self.communications,
+            is_free:        self.is_free?
         }
         result.as_json
       end
 
-      # свободна ли площадь, привязанная к полигону на карте
-      def is_free?
-        res = true
-        if map_areas.count > 0
-          res = map_areas.first.is_free?
-        end
-        res
-      end
     end
 
   end

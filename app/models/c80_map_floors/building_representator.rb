@@ -62,7 +62,7 @@ module C80MapFloors
     module InstanceMethods
 
       # выдать json Здания, которое привязано к полигону на карте
-      def my_as_json
+      def my_as_json6
         result = {
             id:             self.id,
             title:          self.title,

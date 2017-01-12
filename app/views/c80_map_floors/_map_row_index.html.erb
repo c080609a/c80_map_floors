@@ -28,6 +28,11 @@
       <div class="overlay_layers"></div>
       <svg id='svg_overlay' xmlns="http://www.w3.org/2000/svg" version="1.2" viewbox='0 0 <%= mapwidth %> <%=mapheight%>' baseProfile="tiny" preserveAspectRatio="xMaxYMax"></svg>
     </div>
+
+    <div class="container" id="search_container">
+      <%= render 'c80_map_floors/shared/map_row/search_gui' %>
+    </div>
+
     <div class="container" id="ui">
       <%= render "c80_map_floors/shared/map_row/building_info" %>
       <%# render "layouts/shared/map_row/area_order_button" %>

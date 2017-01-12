@@ -1,0 +1,25 @@
+div.container#search_container {
+
+  position:relative;
+  height:0;
+  z-index:5;
+
+  div#search_gui {
+    display: block;
+    margin: 0 auto;
+    padding-top: 15px;
+    width: 500px;
+
+    input.form-control {
+      width: 400px;
+      margin-right: 10px;
+    }
+
+    .btn {
+      padding: 5px 14px;
+      border-width: 1px !important;
+    }
+
+  }
+
+}

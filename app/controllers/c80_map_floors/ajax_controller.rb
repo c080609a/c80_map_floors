@@ -119,7 +119,26 @@ module C80MapFloors
       # [TRACE] <AjaxController.find_shops> params = {"stext"=>"Товары для отдыха", "controller"=>"c80_map_floors/ajax", "action"=>"find_shops"}
 
       result = {
-          result: 'done'
+          buildings: [
+              {   id: 7,
+                  floors: [
+                      {  id: 2,
+                         areas: [3]
+                      }
+                  ]
+              },
+              {
+                  id: 10,
+                  floors: [
+                      { id: 6,
+                        areas: [5,8]
+                      },
+                      { id: 48,
+                        areas: [6]
+                      }
+                  ]
+              }
+          ]
       }
 
       respond_to do |format|

@@ -852,6 +852,12 @@ var InitMap = function (params) {
                 //ip = Polygon.createFromSaved(iobj);
                 //utils.id('svg').appendChild(ip.g);
             }
+
+            // Только после того, как нарисуем всех детей на карте, подсветим результаты поиска
+            if (self.search_gui_klass != null) {
+                self.search_gui_klass.handleSearchResults();
+            }
+
         };
 
         /**

@@ -89,6 +89,7 @@ var InitMap = function (params) {
         self.last_clicked_g = null; // начали просматривать area\building (запустили сессию), и здесь храним ссылку на последний кликнутый полигон из svg_overlay в течение сессии
         //self.o.dnd_enable = null; // если да, то можно карту dnd мышкой
         self.building_info_klass = null; // класс, занимающися отображением данных об этаже\здании\площади
+        self.search_gui_klass = null; // класс, занимающийся обслуживанием поисковых запросов пользователя карты
 
         // во время анимации каждый шаг рассчитывается мгновенный scale
         self.scale_during_animation = null;
@@ -290,6 +291,9 @@ var InitMap = function (params) {
                     self.current_building.enterFloor(floor_id); //#-> только с помощью клика по табам можно войти на Этаж
                 }
             });
+
+            // инициализируем класс, обслуживающий поиск
+            self.search_gui_klass = new SearchGUI(self);
 
             // начнём слушать окно браузера
             $(window).resize(function () {

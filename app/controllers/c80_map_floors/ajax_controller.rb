@@ -1,4 +1,5 @@
 module C80MapFloors
+  # noinspection RubyResolve
   class AjaxController < ApplicationController
 
     def map_edit_buttons
@@ -104,6 +105,21 @@ module C80MapFloors
 
       result = {
           updated_locations_json: C80MapFloors::MapJson.fetch_json
+      }
+
+      respond_to do |format|
+        format.json { render json: result }
+      end
+
+    end
+
+    # от js пришла строка с названием категории. Необходимо найти магазины, соответствующие этой категории.
+    def find_shops
+      Rails.logger.debug "[TRACE] <AjaxController.find_shops> params = #{params}"
+      # [TRACE] <AjaxController.find_shops> params = {"stext"=>"Товары для отдыха", "controller"=>"c80_map_floors/ajax", "action"=>"find_shops"}
+
+      result = {
+          result: 'done'
       }
 
       respond_to do |format|

@@ -5,7 +5,7 @@
 //      На экране присутствует div#search_gui, в котором содержится форма поиска (поле ввода и кнопка).
 //      SearchGUI обслуживает этот див, а именно:
 //          - позволяет управлять видимостью,
-//          - отправляет поисковые запросы на сервер и принимает ответы
+//          - отправляет поисковые запросы на сервер и принимает ответы,
 //
 //----------------------------------------------------------------------------------------------------------------------
 
@@ -39,17 +39,20 @@ var SearchGUI = function (link_to_map) {
             data: {
                 stext: stext
             },
-            dataType: 'script'
+            dataType: 'json'
         }).done(_this._sendSearchRequestDone);
 
     };
 
     /** Получили [какой-то] ответ от сервера на запрос о поиске.
      *
+     * @param data
+     * @param result
      * @private
      */
-    this._sendSearchRequestDone = function () {
-        console.log('<_sendSearchRequestDone> Получили [какой-то] ответ от сервера на запрос о поиске.');
+    this._sendSearchRequestDone = function (data, result) {
+        console.log('<_sendSearchRequestDone> Получили [какой-то] ответ от сервера на запрос о поиске:');
+        console.log(data);
 
         // скроем прелоадер
         _map.save_preloader_klass.hide();

@@ -118,27 +118,34 @@ module C80MapFloors
       Rails.logger.debug "[TRACE] <AjaxController.find_shops> params = #{params}"
       # [TRACE] <AjaxController.find_shops> params = {"stext"=>"Товары для отдыха", "controller"=>"c80_map_floors/ajax", "action"=>"find_shops"}
 
+      # ПЕРВЫЙ ВАРИАНТ
+      # result = {
+      #     buildings: [
+      #         {   id: 7,
+      #             floors: [
+      #                 {  id: 2,
+      #                    areas: [3]
+      #                 }
+      #             ]
+      #         },
+      #         {
+      #             id: 10,
+      #             floors: [
+      #                 { id: 6,
+      #                   areas: [5,8]
+      #                 },
+      #                 { id: 48,
+      #                   areas: [6]
+      #                 }
+      #             ]
+      #         }
+      #     ]
+      # }
+
       result = {
-          buildings: [
-              {   id: 7,
-                  floors: [
-                      {  id: 2,
-                         areas: [3]
-                      }
-                  ]
-              },
-              {
-                  id: 10,
-                  floors: [
-                      { id: 6,
-                        areas: [5,8]
-                      },
-                      { id: 48,
-                        areas: [6]
-                      }
-                  ]
-              }
-          ]
+          buildings: [7,10],
+          floors: [2,6,40],
+          areas: [3,5,8,6]
       }
 
       respond_to do |format|

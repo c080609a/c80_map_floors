@@ -1243,6 +1243,19 @@ div#map_wrapper {
 
       }
 
+      polygon.found {
+        fill: rgba(0, 255, 19, 0.40);
+        stroke: rgba(251, 251, 251, 0.86);
+        stroke-width: 3px;
+        stroke-dasharray: 3;
+        animation: dash 555s linear;
+
+        &:hover, &.hover {
+          fill: rgba(0, 255, 19, 0.50);
+          stroke: rgba(251, 251, 251, 0.96);
+        }
+      }
+
       g {
 
         &.free {

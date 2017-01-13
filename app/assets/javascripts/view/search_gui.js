@@ -30,6 +30,34 @@ var SearchGUI = function (link_to_map) {
     this.handleSearchResults = function () {
         if (_current_search_results != null) {
             console.log('<SearchGUI.handleSearchResults> Подсветим результаты поиска.');
+
+            var s = _map.svg;
+            var c = s.children();
+            var l = c.length;
+            var i, ig, imbid; // <i_map_building_id>
+
+            for (i=0; i<l; i++) {
+                ig = s[0].children[i];          // именно [0]
+                //console.log(ig['obj']);       // => Polygon
+                if (ig != undefined) {          // такое тоже бывает
+                    if (ig['obj'] != undefined) {   //
+                        if (ig['obj']['building'] != undefined) {       // добираемся до класса Building.js
+                            //console.log("Полигон здания: " + ig['obj']['building'].id); => Полигон здания: 10
+                            imbid = ig['obj']['building'].id;
+
+                            // если в результатах поиска присутствует перебираемый map_building_id - полигону добавим класс 'found'
+                            if (_current_search_results['buildings'].indexOf(imbid) != -1) {
+                                console.log('<SearchGUI.handleSearchResults> addClass "found" на полигон здания imdid=' + imbid);
+                                $(ig).find('polygon').addClass('found');
+                            }
+
+                        }
+                    }
+                }
+
+            }
+
+
         }
     };
 
@@ -68,6 +96,13 @@ var SearchGUI = function (link_to_map) {
         console.log('<_sendSearchRequestDone> Получили [какой-то] ответ от сервера на запрос о поиске:');
 
         //console.log(data);
+        // {
+        //    buildings: [7,10],
+        //    floors: [2,6,40],
+        //    areas: [3,5,8,6]
+        //}
+
+        // один из вариантов (unused)
         //{
         //    buildings: [
         //        {   id: 7,

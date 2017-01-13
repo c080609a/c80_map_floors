@@ -27,6 +27,7 @@ function Building() {
     // если вошли в какой-то этаж - эта переменная будет хранить ссылку на объект с данными полигона Этажа из locations.json
     var _json_current_floor = null;
 
+    _this.id = null;
     _this._label = null;
     _this._admin_label = null;
 

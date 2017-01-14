@@ -31,18 +31,22 @@ function SearchGUI(link_to_map) {
         if (_current_search_results != null) {
             console.log('<SearchGUI.handleSearchResults> Подсветим результаты поиска.');
 
-            //<editor-fold desc="// подсветим полигоны на карте">
+            //<editor-fold desc="// подсветим полигоны на карте...">
             var s = _map.svg;
             var c = s.children();
             var l = c.length;
-            var i, ig, imbid; // <i_map_building_id>
+            var i, ig, igobj, imbid, imaid; // <i_map_building_id>, <i_map_area_id>
 
             for (i=0; i<l; i++) {
                 ig = s[0].children[i];          // именно [0]
                 //console.log(ig['obj']);       // => Polygon
                 if (ig != undefined) {          // такое тоже бывает
-                    if (ig['obj'] != undefined) {   //
-                        if (ig['obj']['building'] != undefined) {       // добираемся до класса Building.js
+                    if (ig['obj'] != undefined) {
+                        igobj = ig['obj'];
+                        //console.log('[breakpoint]');
+
+                        // добираемся до класса Building.js
+                        if (ig['obj']['building'] != undefined) {
                             //console.log("Полигон здания: " + ig['obj']['building'].id); => Полигон здания: 10
                             imbid = ig['obj']['building'].id;
 
@@ -52,6 +56,17 @@ function SearchGUI(link_to_map) {
                                 $(ig).find('polygon').addClass('found');
                             }
 
+                        }
+
+                        // добираемся до класса Area.js
+                        else if (ig['obj']['area'] != undefined) {
+                            imaid = ig['obj']['area'].id;
+
+                            // если в результатах поиска присутствует перебираемый map_area_id - полигону добавим класс 'found_area'
+                            if (_current_search_results['areas'].indexOf(imaid) != -1) {
+                                console.log('<SearchGUI.handleSearchResults> addClass "found_area" на полигон площади imaid=' + imaid);
+                                $(ig).find('polygon').addClass('found_area');
+                            }
                         }
                     }
                 }
@@ -177,4 +192,4 @@ function SearchGUI(link_to_map) {
 
     _init(link_to_map);
 
-};
+}

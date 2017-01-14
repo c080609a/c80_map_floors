@@ -33,6 +33,10 @@ function BuildingInfo(options) {
     // текущий результат поиска - какие этажи имеют искомые магазины
     var _search_results_floors = null;
 
+    // todo:: необходимо сбрасывать это значение после того, как сбросили поиск
+    // текущий результат поиска - кол-во магазинов на соответствющих этажах в _search_results_floors
+    var _search_results_floors_shops_count = null;
+
     // привязка данных об этажах здания ко вкладкам в этом удобном хэше
     // NOTE:: но нахуя он был добавлен - пока загадка. В комменты его. Детективная история, главная улика - слово "удобный".
     //var _tabs_floors_data = {};
@@ -78,9 +82,10 @@ function BuildingInfo(options) {
         if (search_results['floors'] != undefined) {
 
             _search_results_floors = search_results['floors'];
+            _search_results_floors_shops_count = search_results['floors_shops_count'];
 
             if (_tabs != null) {
-                _tabs.searchResultsShowFloors(search_results['floors']);
+                _tabs.searchResultsShowFloors(search_results['floors'], search_results['floors_shops_count']);
             } else {
                 console.log('<BuildingInfo.searchResultsShow> [ERROR] Нет компонента: _tabs = null.');
             }

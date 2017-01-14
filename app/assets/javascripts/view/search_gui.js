@@ -31,6 +31,7 @@ var SearchGUI = function (link_to_map) {
         if (_current_search_results != null) {
             console.log('<SearchGUI.handleSearchResults> Подсветим результаты поиска.');
 
+            //<editor-fold desc="// подсветим полигоны на карте">
             var s = _map.svg;
             var c = s.children();
             var l = c.length;
@@ -56,6 +57,7 @@ var SearchGUI = function (link_to_map) {
                 }
 
             }
+            //</editor-fold>
 
 
         }

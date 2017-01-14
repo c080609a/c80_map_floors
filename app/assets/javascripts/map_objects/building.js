@@ -28,8 +28,8 @@ function Building() {
     var _json_current_floor = null;
 
     _this.id = null;
-    _this._label = null;
-    _this._admin_label = null;
+    _this._label = null; // подпись над зданием - сколько магазинов (удовлетворяющих поиску) находятся в Здании
+    _this._admin_label = null; // админский лейбл - айдишник и название Здания (привязанного к полигону), видимый в режиме редактирования
 
     var _zoomToMe = function () {
 
@@ -211,9 +211,6 @@ function Building() {
             //</editor-fold>
 
             _this._calcBBox();
-
-            // TODO:: подпись над зданием - сколько свободных площадей
-            _this._label = new BuildingLabel(options, _map);
 
             // подпись над полигоном показываем только админам
             // UPD: не прокатит, т.к. здания инициализируются ДО того, как приходит ajax/map_edit_buttons, где IS_ADMIN=true
@@ -406,6 +403,25 @@ function Building() {
             console.log('<Building.admin_label_hide> Уничтожить админский лейбл.');
             _this._admin_label.destroy();
             _this._admin_label = null;
+        }
+    };
+
+    // показать/скрыть зеленые кружки с цифрами
+    this.greenCircleShow = function (count) { // count - кол-во (удовлетворяющих поиску) магазинов в здании
+        console.log('<Building.greenCircleShow> Покажем зеленую метку над зданием.');
+        if (_this._label == null) {
+            _this._label = new BuildingLabel({
+                x: _options['coords'][0],
+                y: _options['coords'][1],
+                count: count
+            }, _map);
+        }
+    };
+    this.greenCircleHide = function () {
+        console.log('<Building.greenCircleShow> Скроем зеленую метку над зданием.');
+        if (_this._label != null) {
+            _this._label.destroy();
+            _this._label = null;
         }
     };
 }

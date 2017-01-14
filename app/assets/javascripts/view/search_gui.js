@@ -22,7 +22,8 @@ function SearchGUI(link_to_map) {
 
     //--[ public ]------------------------------------------------------------------------------------------------------
 
-    /** На основе текущих результатов поиска и
+    /**
+     * На основе текущих результатов поиска и
      *  в зависимости от текущего состояния приложения
      *  метод подсвечивает полигоны на карте и табы в инфо-панели
      *
@@ -36,6 +37,7 @@ function SearchGUI(link_to_map) {
             var c = s.children();
             var l = c.length;
             var i, ig, igobj, imbid, imaid; // <i_map_building_id>, <i_map_area_id>
+            var imb; // <i_map_buidling>
 
             for (i=0; i<l; i++) {
                 ig = s[0].children[i];          // именно [0]
@@ -48,12 +50,23 @@ function SearchGUI(link_to_map) {
                         // добираемся до класса Building.js
                         if (ig['obj']['building'] != undefined) {
                             //console.log("Полигон здания: " + ig['obj']['building'].id); => Полигон здания: 10
-                            imbid = ig['obj']['building'].id;
+
+                            imb = ig['obj']['building'];
+                            imbid = imb.id;
 
                             // если в результатах поиска присутствует перебираемый map_building_id - полигону добавим класс 'found'
                             if (_current_search_results['buildings'].indexOf(imbid) != -1) {
                                 console.log('<SearchGUI.handleSearchResults> addClass "found" на полигон здания imdid=' + imbid);
                                 $(ig).find('polygon').addClass('found');
+
+                                // и зажгём лейбл с подсказкой
+                                imb.greenCircleShow(21);
+                            }
+
+                            // иначе - удалим (возможный) класс `found` и скроем (возможный) лейбл с подсказкой
+                            else {
+                                $(ig).find('polygon').removeClass('found');
+                                imb.greenCircleHide();
                             }
 
                         }

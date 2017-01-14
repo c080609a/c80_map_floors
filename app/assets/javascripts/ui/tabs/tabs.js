@@ -110,6 +110,17 @@ function Tabs(options) {
     this.searchResultsShowFloors = function (search_results_floors) {
         console.log('<Tabs.searchResultsShowFloors> Подсветить кнопки-табы, search_results_floors=['+search_results_floors.join(',')+']');
 
+        var ibtn;
+        for (var tab_id in _data) {
+            //noinspection JSUnfilteredForInLoop
+            ibtn = _data[tab_id]['tab_button'];
+            //noinspection JSUnfilteredForInLoop
+            if (search_results_floors.indexOf(Number(tab_id)) != -1) { // если айдишник вкладки имеется в массиве с результатами поиска
+                _this._buttonRedCircleAdd(ibtn);
+            } else {
+                _this._buttonRedCircleRemove(ibtn);
+            }
+        }
 
     };
 
@@ -220,6 +231,34 @@ function Tabs(options) {
         $a_button.remove();
         //noinspection JSUnresolvedFunction
         $a_button.off('click', _this._onTabButtonClick);
+    };
+
+    /**
+     * Снабдить кнопку красным кружочком с цифрой,
+     * т.е. показать, что на этом этаже имеется такое-то кол-во магазинов,
+     * удовлетворяющих поиску.
+     *
+     * @param $a_button
+     * @private
+     */
+    this._buttonRedCircleAdd = function ($a_button) {
+
+        $a_button.addClass('red')
+                 .attr('data-search-count', '3');
+
+        console.log('<Tabs._buttonRedCircleAdd> Добавляем красный индикатор на кнопку: data-id='+$a_button.attr('data-id'));
+    };
+
+    /**
+     * Удалить у кнопки красный кружок с цифрой.
+     * @param $a_button
+     * @private
+     */
+    this._buttonRedCircleRemove = function ($a_button) {
+        console.log('<Tabs._buttonRedCircleRemove> Убираем красный индикатор с кнопки.');
+
+        $a_button.removeClass('red')
+                 .attr('data-search-count', '-1');
     };
 
     //this._contentRemove = function () {

@@ -10,6 +10,8 @@
 
 function BuildingInfo(options) {
 
+    var _this = this;
+
     // текуще отображаемое здание (Это данные от C80MapFloors::MapBuilding, метод my_as_json5)
     var _cur_map_building_json;
 
@@ -26,6 +28,10 @@ function BuildingInfo(options) {
 
     // компонент "вкладки"
     var _tabs = null;
+
+    // todo:: необходимо сбрасывать это значение после того, как сбросили поиск
+    // текущий результат поиска - какие этажи имеют искомые магазины
+    var _search_results_floors = null;
 
     // привязка данных об этажах здания ко вкладкам в этом удобном хэше
     // NOTE:: но нахуя он был добавлен - пока загадка. В комменты его. Детективная история, главная улика - слово "удобный".
@@ -61,17 +67,24 @@ function BuildingInfo(options) {
 
     /**
      * Подсветить результаты поиска: добавить на табы красные кружки с цифрами.
+     * Вызывается как и в момент прихода результата поиска,
+     * так и после установки данных в компонент. Для 2-го случая была введена
+     * переменная _search_results_floors.
      *
      * @param search_results - { buildings: [map_buildings_ias], floors: [map_floors_ids], areas: [map_areas_ids] }
      * Т.е. объект массивов айдишников элементов карты.
      */
     this.searchResultsShow = function (search_results) {
         if (search_results['floors'] != undefined) {
+
+            _search_results_floors = search_results['floors'];
+
             if (_tabs != null) {
                 _tabs.searchResultsShowFloors(search_results['floors']);
             } else {
                 console.log('<BuildingInfo.searchResultsShow> [ERROR] Нет компонента: _tabs = null.');
             }
+
         } else {
             console.log('<BuildingInfo.searchResultsShow> [ERROR] Нет данных: search_results["floors"] = null.');
         }
@@ -142,6 +155,10 @@ function BuildingInfo(options) {
     };
 
     this._updateView = function () {
+
+        if (_search_results_floors != null) {
+            _this.searchResultsShow(_search_results_floors);
+        }
 
     };
 

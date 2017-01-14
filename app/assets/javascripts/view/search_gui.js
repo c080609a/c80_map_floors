@@ -11,7 +11,7 @@
 //
 //----------------------------------------------------------------------------------------------------------------------
 
-var SearchGUI = function (link_to_map) {
+function SearchGUI(link_to_map) {
 
     var _this = this;
     var _map = null;                // ссылка на класс карты

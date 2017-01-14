@@ -8,6 +8,7 @@ module C80MapFloors
 
   module AreaRepresentator
 
+    # noinspection RubyResolve
     extend ActiveSupport::Concern
 
     #  ERROR: Cannot define multiple 'included' blocks for a Concern
@@ -22,6 +23,7 @@ module C80MapFloors
 
     module ClassMethods
 
+      # noinspection RubyResolve
       def acts_as_map_area_representator
         class_eval do
 
@@ -69,6 +71,7 @@ module C80MapFloors
 =end
 
       # Выдать json Площади, которая привязана к полигону на карте
+      # noinspection RubyResolve
       def my_as_json2
         result = {
             id:             self.id,
@@ -77,7 +80,8 @@ module C80MapFloors
             desc:           self.desc,
             price_string:   self.price_string,
             communications: self.communications,
-            is_free:        self.is_free?
+            is_free:        self.is_free?,
+            shop:           self.shop_as_json
         }
         result.as_json
       end

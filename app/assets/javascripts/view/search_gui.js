@@ -38,6 +38,8 @@ function SearchGUI(link_to_map) {
             var l = c.length;
             var i, ig, igobj, imbid, imaid; // <i_map_building_id>, <i_map_area_id>
             var imb; // <i_map_buidling>
+            var iindex; // индекс (айдишника полигона здания) в массиве (полигонов зданий, удовлетворающих поиску)
+            var ibscount; // <i_buildings_shops_count>
 
             for (i=0; i<l; i++) {
                 ig = s[0].children[i];          // именно [0]
@@ -53,14 +55,16 @@ function SearchGUI(link_to_map) {
 
                             imb = ig['obj']['building'];
                             imbid = imb.id;
+                            iindex = _current_search_results['buildings'].indexOf(imbid);
 
                             // если в результатах поиска присутствует перебираемый map_building_id - полигону добавим класс 'found'
-                            if (_current_search_results['buildings'].indexOf(imbid) != -1) {
+                            if (iindex != -1) {
                                 console.log('<SearchGUI.handleSearchResults> addClass "found" на полигон здания imdid=' + imbid);
                                 $(ig).find('polygon').addClass('found');
 
                                 // и зажгём лейбл с подсказкой
-                                imb.greenCircleShow(21);
+                                ibscount = _current_search_results['buildings_shops_count'][iindex];
+                                imb.greenCircleShow(ibscount);
                             }
 
                             // иначе - удалим (возможный) класс `found` и скроем (возможный) лейбл с подсказкой

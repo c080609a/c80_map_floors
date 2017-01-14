@@ -144,7 +144,7 @@ module C80MapFloors
 
       result = {
           buildings: [7,10],
-          floors: [2,6,40],
+          floors: [2,6,48],
           areas: [3,5,8,6]
       }
 

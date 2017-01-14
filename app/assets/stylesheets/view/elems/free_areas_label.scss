@@ -12,6 +12,11 @@ g.free_areas_label {
       fill: #ffffff;
       transform: translateY(12px) translateX(-22px);
       text-shadow: 0 0 1px rgba(0, 0, 0, 0.58);
+
+      &.one_digit {
+        transform: translateY(12px) translateX(-10px);
+      }
+
     }
 
     &.pulse {

@@ -40,7 +40,7 @@ var BuildingLabel = function (options, link_to_map) {
     this._text_element_ns = document.createElementNS('http://www.w3.org/2000/svg', 'text');
     this._text_element_ns.setAttribute('x', center_for_circle_x);
     this._text_element_ns.setAttribute('y', center_for_circle_y);
-    this._text_element_ns.setAttribute('class', 'text');
+    this._text_element_ns.setAttribute('class', this._count > 9 ? 'text':'text one_digit');
     this._text_element_ns.textContent = this._count;
 
     // вертикальная линия

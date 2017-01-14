@@ -59,6 +59,24 @@ function BuildingInfo(options) {
         _tabs.setSelectedIndex(floor_index);
     };
 
+    /**
+     * Подсветить результаты поиска: добавить на табы красные кружки с цифрами.
+     *
+     * @param search_results - { buildings: [map_buildings_ias], floors: [map_floors_ids], areas: [map_areas_ids] }
+     * Т.е. объект массивов айдишников элементов карты.
+     */
+    this.searchResultsShow = function (search_results) {
+        if (search_results['floors'] != undefined) {
+            if (_tabs != null) {
+                _tabs.searchResultsShowFloors(search_results['floors']);
+            } else {
+                console.log('<BuildingInfo.searchResultsShow> [ERROR] Нет компонента: _tabs = null.');
+            }
+        } else {
+            console.log('<BuildingInfo.searchResultsShow> [ERROR] Нет данных: search_results["floors"] = null.');
+        }
+    };
+
  //------------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -108,7 +126,7 @@ function BuildingInfo(options) {
         for (var i = 0; i < _cur_map_building_json['floors'].length; i++) {
 
             var ifloor_data = _cur_map_building_json['floors'][i];
-            var ifloor_id = ifloor_data["id"]; // NOTE:fidfid
+            var ifloor_id = ifloor_data["id"]; // NOTE: fidfid: айди полигона этажа равен айдишнику вкладки
             //console.log(ifloor_data); // => see C80MapFloors::Floor.as_json
 
             // создадим вкладку

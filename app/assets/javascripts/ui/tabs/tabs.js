@@ -102,6 +102,17 @@ function Tabs(options) {
             .click();
     };
 
+    /**
+     * Подсветить кнопки-табы, чей id присутствует в search_results_floors, а именно: снабдить красным кружочком с цифрой
+     *
+     * @param search_results_floors - [map_floors_ids]: айдишники полигонов этажей.
+     */
+    this.searchResultsShowFloors = function (search_results_floors) {
+        console.log('<Tabs.searchResultsShowFloors> Подсветить кнопки-табы, search_results_floors=['+search_results_floors.join(',')+']');
+
+
+    };
+
     //--[ controller ]----------------------------------------------------------------------------------------------------------------------
 
     this._onTabButtonClick = function (e) {

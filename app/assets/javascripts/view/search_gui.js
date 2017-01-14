@@ -59,7 +59,8 @@ var SearchGUI = function (link_to_map) {
             }
             //</editor-fold>
 
-
+            // подсветим вкладки этажей в инфопанели
+            _map.building_info_klass.searchResultsShow(_current_search_results);
         }
     };
 

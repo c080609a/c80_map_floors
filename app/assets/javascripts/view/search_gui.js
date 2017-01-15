@@ -5,6 +5,7 @@
 //      На экране присутствует div#search_gui, в котором содержится форма поиска (поле ввода и кнопка).
 //      SearchGUI обслуживает этот див, а именно:
 //          - позволяет управлять видимостью,
+//          - позволяет двигать его РОДИТЕЛЯ так, чтобы он не загораживался ничем при смене состояния приложения,
 //          - отправляет поисковые запросы на сервер и принимает ответы,
 //          - парсит ответы,
 //          - и содержит публичный метод, подсвечивающий результаты поиска (полигоны) на карте и табы в инфо-панели
@@ -15,6 +16,7 @@ function SearchGUI(link_to_map) {
 
     var _this = this;
     var _map = null;                // ссылка на класс карты
+    var _$container = null;         // родительский див (добавлен только для того, чтобы можно было двигать форму при смене состояния приложения)
     var _$search_gui = null;        // ссылка на обслуживаемый div с формой
     var _$input = null;             // поле ввода (сюда юзер вводит искомый текст)
     var _$submit = null;            // кнопка "найти"
@@ -96,6 +98,38 @@ function SearchGUI(link_to_map) {
         }
     };
 
+    /**
+     * Вернуть родительский div-контейнер в начальную (исходную, `нормальную`) позицию.
+     */
+    this.position_init = function () {
+        // если еще ниразу никуда не сдвигали с начальной позиции
+        if (_$container.data('init_position_top') == undefined) {
+            // запомним начальную позицию
+            _$container.data('init_position_top', _$container.css("top"));
+            _$container.data('init_position_left', _$container.css("left"));
+        }
+        _$container.css("top", _$container.data('init_position_top'));
+        _$container.css("left", _$container.data('init_position_left'));
+    };
+
+    /**
+     * Установить div-контейнер чуть левее исходной позиции так, чтобы инфо-панель не загораживала форму поиска.
+     * Используется при переходе в режимы, где видна инфо-панель: внутри здания, например. Или внутри этажа.
+     */
+    this.position_inside = function () {
+        //console.log('<position_inside> [breakpoint].');
+        _$container.css("left", -200);
+        _$container.css("top", _$container.data('init_position_top'));
+    };
+
+    /**
+     * Спрятать контейнер (задвинуть его за пределы экрана).
+     * Например, когда переходим в режим редактирования.
+     */
+    this.position_hide = function () {
+        _$container.css("top", -200);
+    };
+    
     //--[ private ]-----------------------------------------------------------------------------------------------------
 
     /** Отправляем запрос с текстом для поиска на сервер.
@@ -192,6 +226,9 @@ function SearchGUI(link_to_map) {
         console.log('<SearchGUI.init>');
 
         _map = link_to_map;
+
+        // зафиксируем родителя
+        _$container = $('div.container#search_container');
 
         // найдём обслуживаемый div
         _$search_gui = $('div#search_gui');

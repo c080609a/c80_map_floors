@@ -113,6 +113,9 @@ function StateController() {
                 //Показать все админские лейблы.
                 _map.admin_label_show_all();
 
+                // скроем форму поиска
+                _map.search_gui_klass.position_hide();
+
                 //</editor-fold>
             break;
 
@@ -182,6 +185,11 @@ function StateController() {
                 //Скрыть все админские лейблы.
                 _map.admin_label_hide_all();
 
+                // форму поиска покажем в исходном (нормальном) состоянии
+                if (_map.search_gui_klass != null) {
+                    _map.search_gui_klass.position_init();
+                }
+
                 //</editor-fold>
             break;
 
@@ -247,6 +255,10 @@ function StateController() {
 
                 // скроем подсказки - сколько свободных площадей где есть
                 _map.hide_free_areas_hint();
+
+                // сдвинем форму поиска так, чтобы её не загораживала инфо-панель
+                _map.search_gui_klass.position_inside();
+
                 //</editor-fold>
             break;
 
@@ -290,6 +302,10 @@ function StateController() {
 
                 _map.save_button_klass.show();
                 _map.save_button_klass.check_and_enable();
+
+                // скроем форму поиска
+                _map.search_gui_klass.position_hide();
+
                 //</editor-fold>
             break;
 
@@ -353,6 +369,9 @@ function StateController() {
                 // спрячем инфу о здании
                 _this.building_info.css("top", -500);
 
+                // скроем форму поиска
+                _map.search_gui_klass.position_hide();
+
                 //</editor-fold>
             break;
 
@@ -402,6 +421,10 @@ function StateController() {
 
                 // скроем подсказки - сколько свободных площадей где есть
                 _map.hide_free_areas_hint();
+
+                // сдвинем форму поиска так, чтобы её не загораживала инфо-панель
+                _map.search_gui_klass.position_inside();
+
                 //</editor-fold>
             break;
 
@@ -446,6 +469,9 @@ function StateController() {
                 // покажем кнопку "сохранить"
                 _map.save_button_klass.show();
                 _map.save_button_klass.check_and_enable();
+
+                // скроем форму поиска
+                _map.search_gui_klass.position_hide();
 
                 //</editor-fold>
             break;

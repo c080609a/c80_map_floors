@@ -4,6 +4,10 @@ div.container#search_container {
   height:0;
   z-index:5;
 
+  -webkit-transition: left .8s cubic-bezier(.25, .8, .25, 1), top .8s cubic-bezier(.25, .8, .25, 1);
+  -moz-transition: left .8s cubic-bezier(.25, .8, .25, 1), top .8s cubic-bezier(.25, .8, .25, 1);
+  transition: left .8s cubic-bezier(.25, .8, .25, 1), top .8s cubic-bezier(.25, .8, .25, 1);
+
   div#search_gui {
     display: block;
     margin: 0 auto;

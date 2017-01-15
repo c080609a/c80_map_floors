@@ -27,82 +27,82 @@ function MobjInfoParser() {
         switch (json["class_name"]) {
             case "C80MapFloors::Floor":
 
-            /* json:
-            {
-                <...свойства картинки этажа, чисто класс C80MapFloors::Floor..>
+                /* json:
+                {
+                    <...свойства картинки этажа, чисто класс C80MapFloors::Floor..>
 
-                "areas": [                                              // полигоны площадей этой картинки этажа
-                            {  "id": 5,
-                                <...C80MapFloors::Floor..>
+                    "areas": [                                              // полигоны площадей этой картинки этажа
+                                {  "id": 5,
+                                    <...C80MapFloors::Floor..>
 
-                                "data": {                               // данные привязанной к плоигону Площади
-                                    "id": 9,
-                                    "title": "Дом-1",
-                                    "square": null,
-                                    "desc": "",
-                                    "price_string": null,
-                                    "communications": null,
-                                    "is_free": false,
-                                    "shop": {                           // данные Магазина, который занимает эту Площадь
-                                        "id": 130,
-                                        "title": "ИП Кибардин",
+                                    "data": {                               // данные привязанной к плоигону Площади
+                                        "id": 9,
+                                        "title": "Дом-1",
+                                        "square": null,
                                         "desc": "",
-                                        "tel": "(910) 514 08 68",
-                                        "site": "",
-                                        "url": "/shops/ip-kibardin.html"
+                                        "price_string": null,
+                                        "communications": null,
+                                        "is_free": false,
+                                        "shop": {                           // данные Магазина, который занимает эту Площадь
+                                            "id": 130,
+                                            "title": "ИП Кибардин",
+                                            "desc": "",
+                                            "tel": "(910) 514 08 68",
+                                            "site": "",
+                                            "url": "/shops/ip-kibardin.html"
+                                        }
                                     }
-                                }
-                            },
-                ],
+                                },
+                    ],
 
-                "data":                                                 // данные Этажа, привязанного к картинке этажа
-                    "id": 40,
-                    "ord": 1,
-                    "title": "1 этаж",
-                    "square": 0.0,
-                    "square_free": 0.0,
-                    "areas_count": 2,
-                    "areas_free_count": 2,
-                    "price_string": "от  до  руб./кв.м",
-                    "floor_height": null,
-                    "communications": ""
-                }
-            }*/
+                    "data":                                                 // данные Этажа, привязанного к картинке этажа
+                        "id": 40,
+                        "ord": 1,
+                        "title": "1 этаж",
+                        "square": 0.0,
+                        "square_free": 0.0,
+                        "areas_count": 2,
+                        "areas_free_count": 2,
+                        "price_string": "от  до  руб./кв.м",
+                        "floor_height": null,
+                        "communications": ""
+                    }
+                }*/
 
-            /* или сокращённо
-            json:
-            {
-                "areas": [                                              // полигоны площадей этой картинки этажа
-                            {  "id": 5,
+                /* или сокращённо
+                json:
+                {
+                    "areas": [                                              // полигоны площадей этой картинки этажа
+                                {  "id": 5,
 
-                                "data": {                               // данные привязанной к плоигону Площади
-                                    "id": 9,
-                                    "title": "Дом-1",
-                                    "is_free": false,
-                                    "shop": {                           // данные Магазина, который занимает эту Площадь
-                                        "id": 130,
-                                        "title": "ИП Кибардин",
+                                    "data": {                               // данные привязанной к плоигону Площади
+                                        "id": 9,
+                                        "title": "Дом-1",
+                                        "is_free": false,
+                                        "shop": {                           // данные Магазина, который занимает эту Площадь
+                                            "id": 130,
+                                            "title": "ИП Кибардин",
+                                        }
                                     }
-                                }
-                            },
-                ],
+                                },
+                    ],
 
-                "data":                                                 // данные Этажа, привязанного к картинке этажа
-                    "id": 40,
-                    "title": "1 этаж",
+                    "data":                                                 // данные Этажа, привязанного к картинке этажа
+                        "id": 40,
+                        "title": "1 этаж",
+                    }
                 }
-            }
-            */
+                */
 
-            //<editor-fold desc=" // отобразим данные Этажа: метраж, кол-во площадей, коммуникации, цена за кв.м">
-            result += _this._row('square', json);
-            result += _this._row('square_free', json);
-            //result += _this._row('floor_height', json);
-            result += _this._row('communications', json);
-            result += _this._row('areas_count', json);
-            result += _this._row('areas_free_count', json);
-            result += _this._row('price_string', json);
-            //</editor-fold>
+                //<editor-fold desc=" // отобразим данные Этажа: метраж, кол-во площадей, коммуникации, цена за кв.м">
+                result += _this._row('square', json);
+                result += _this._row('square_free', json);
+                //result += _this._row('floor_height', json);
+                result += _this._row('communications', json);
+                result += _this._row('areas_count', json);
+                result += _this._row('areas_free_count', json);
+                result += _this._row('price_string', json);
+                //</editor-fold>
 
             break;
         }

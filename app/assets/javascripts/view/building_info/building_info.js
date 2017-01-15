@@ -29,13 +29,17 @@ function BuildingInfo(options) {
     // компонент "вкладки"
     var _tabs = null;
 
-    // todo:: необходимо сбрасывать это значение после того, как сбросили поиск
+    // todo-clear22:: необходимо сбрасывать это значение после того, как сбросили поиск
     // текущий результат поиска - какие этажи имеют искомые магазины
     var _search_results_floors = null;
 
-    // todo:: необходимо сбрасывать это значение после того, как сбросили поиск
+    // todo-clear22:: необходимо сбрасывать это значение после того, как сбросили поиск
     // текущий результат поиска - кол-во магазинов на соответствющих этажах в _search_results_floors
     var _search_results_floors_shops_count = null;
+
+    // todo-clear22:: необходимо сбрасывать это значение после того, как сбросили поиск
+    // текущий результат поиска - какие полигоны площадей соответствуют поиску и содержат искомые магазины
+    var _search_results_areas = null;
 
     // привязка данных об этажах здания ко вкладкам в этом удобном хэше
     // NOTE:: но нахуя он был добавлен - пока загадка. В комменты его. Детективная история, главная улика - слово "удобный".
@@ -79,6 +83,7 @@ function BuildingInfo(options) {
      * Т.е. объект массивов айдишников элементов карты.
      */
     this.searchResultsShow = function (search_results) {
+
         if (search_results['floors'] != undefined) {
 
             _search_results_floors = search_results['floors'];
@@ -90,8 +95,28 @@ function BuildingInfo(options) {
                 console.log('<BuildingInfo.searchResultsShow> [ERROR] Нет компонента: _tabs = null.');
             }
 
-        } else {
+        }
+
+        else {
             console.log('<BuildingInfo.searchResultsShow> [ERROR] Нет данных: search_results["floors"] = null.');
+        }
+
+        // в случае наличия данных про полигоны площадей (удовлетворяющих поиску) - отдадим эти данные парсеру
+        if (search_results['areas'] != undefined) {
+
+            _search_results_areas = search_results['areas'];
+
+            // парсер будет ориентироваться на них, и в случае их присутствия
+            // будет понимать, что поиск активен и надо при формировании HTML строки
+            // обнаружить искомое в данных и (в таком случае) отобразить только их
+            if (_mobj_info_parser != undefined) {
+                _mobj_info_parser.setSearchResultAreas(_search_results_areas);
+            }
+
+        }
+
+        else {
+            console.log('<BuildingInfo.searchResultsShow> [ERROR] Нет данных: search_results["areas"] = null.');
         }
     };
 
@@ -145,7 +170,7 @@ function BuildingInfo(options) {
 
             var ifloor_data = _cur_map_building_json['floors'][i];
             var ifloor_id = ifloor_data["id"]; // NOTE: fidfid: айди полигона этажа равен айдишнику вкладки
-            //console.log(ifloor_data); // => see C80MapFloors::Floor.as_json
+            console.log(ifloor_data); // => see C80MapFloors::Floor.as_json
 
             // создадим вкладку
             _tabs.addTab(ifloor_data["title"], ifloor_id, this._onTabShow, {

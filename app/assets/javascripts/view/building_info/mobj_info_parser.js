@@ -16,6 +16,8 @@ function MobjInfoParser() {
     // используется в _row_area
     var _row_area_pattern = "<li><a href='{HREF}' title='{TITLE}' target='_blank'>{TITLE}</a> ({AREA_TITLE}), {PHONE}</li>";
 
+    //--[ public ]------------------------------------------------------------------------------------------------------
+
     /**
      * Лабаем html текст из json-данных полигона Этажа/Здания/Площади.
      *
@@ -181,11 +183,18 @@ function MobjInfoParser() {
 
     };
 
+    /**
+     * Задаём текущие результаты поиска (вызывается из BuildingInfo).
+     * @param sresult_areas
+     */
     this.setSearchResultAreas = function (sresult_areas) {
         _sresults_areas = sresult_areas;
     };
 
-    /** на основе режима пользователя карты (Арендатор или ОбычныйПокупатель) выдать html-строку с `просто данными` об Этаже.
+    //--[ private ]-----------------------------------------------------------------------------------------------------
+
+    /**
+     * На основе режима пользователя карты (Арендатор или ОбычныйПокупатель) выдать html-строку с `просто данными` об Этаже.
      *
      * @param json_floor - данные полигона этажа от C80MapFloors::Floor.my_as_json (пример можно лицезреть в [aa34qq]
      * @returns {string} - html-строка, которая завернётся в <ul>...</ul>
@@ -197,7 +206,7 @@ function MobjInfoParser() {
 
         // todo-umode:: на основе режима пользователя карты (Арендатор или ОбычныйПокупатель) отрисовать `просто данные` об Этаже
 
-        //<editor-fold desc=" // отобразим данные Этажа: метраж, кол-во площадей, коммуникации, цена за кв.м">
+        //<editor-fold desc=" // отобразим данные Этажа: метраж, кол-во площадей, коммуникации, цена за кв.м (режим Арендатора)">
         result += _this._row('square', json_floor);
         result += _this._row('square_free', json_floor);
         //result += _this._row('floor_height', json);
@@ -211,7 +220,7 @@ function MobjInfoParser() {
     };
 
     /**
-     *
+     * Соорудить html-строку для списка свойств Этажа.
      * @param key
      * @param json
      * @returns {string}
@@ -249,6 +258,8 @@ function MobjInfoParser() {
         return res;
     };
 
+    //--[ init ]--------------------------------------------------------------------------------------------------------
+
     var _fInit = function () {
 
         // кастуем locales-помощника
@@ -258,4 +269,3 @@ function MobjInfoParser() {
 
     _fInit();
 }
-

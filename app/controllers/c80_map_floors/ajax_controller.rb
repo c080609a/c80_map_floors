@@ -147,13 +147,7 @@ module C80MapFloors
           buildings_shops_count: [3,12],
           floors: [2,6,48],
           floors_shops_count: [2,1,33],
-          areas: [3,5,8,6],
-          areas_shops: [
-                           {:id=>114, :title=> 'ООО Дом Домыч', :desc=> '', :tel=> '(960) 520 04 25 (48439) 9 36 76', :site=> '', :url=> '/shops/ooo-dom-domych.html'},
-                           {:id=>306, :title=>"ООО \"Мир Климата\"", :desc=>"<p>Компания &quot;Мир климата&quot; - это комфорт вашего дома. Наши специалисты готовы решить ваши проблемы, связанные с комплектацией ,проектированием и монтажом современного оборудования для отопления ,водоснабжения, водоподготовки, индивидуальной канализации, кондиционирования и вентиляции здания.</p>\r\n", :tel=> '8(484) 39-961-39, 8(910) 914-21-79', :site=> 'http://www.pogodavdome.com', :url=> '/shops/ooo-mir-klimata.html'},
-                           {:id=>124, :title=> 'ИП Исаенко', :desc=> '', :tel=> '(906) 640-79-00', :site=> '', :url=> '/shops/ip-dorohova.html'},
-                           {:id=>115, :title=> 'ООО Аэробус', :desc=> '', :tel=> '(961) 111 12 25', :site=> '', :url=> '/shops/ooo-dom-domych.html'}
-          ]
+          areas: [3,5,8,6]
       }
 
       respond_to do |format|

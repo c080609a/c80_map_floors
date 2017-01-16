@@ -21,6 +21,7 @@ function SearchGUI(link_to_map) {
     var _$input = null;             // поле ввода (сюда юзер вводит искомый текст)
     var _$submit = null;            // кнопка "найти"
     var _current_search_results = null; // текущие результаты поиска
+    var _counter = 0;               // счётчик отправленных запросов
 
     //--[ public ]------------------------------------------------------------------------------------------------------
 
@@ -143,12 +144,19 @@ function SearchGUI(link_to_map) {
         // покажем прелоадер
         _map.save_preloader_klass.show();
 
+        // todo-search: реализовать проверку "слишком короткий текст, не отправляем" тут (перенести проверку из _submitOnClick)
+        // todo-search: реализовать проверку "такая строка только что отправлялась и текущие результаты по ней содержатся в _current_search_results)
+
+        // увеличим счётчик запросов
+        _counter = _counter + 1;
+
         // отправим запрос на сервер
         $.ajax({
             url: '/ajax/find_shops',
             type: 'POST',
             data: {
-                stext: stext
+                stext: stext,
+                counter: _counter
             },
             dataType: 'json'
         }).done(_this._sendSearchRequestDone);

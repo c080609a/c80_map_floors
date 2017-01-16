@@ -22,6 +22,7 @@ function SearchGUI(link_to_map) {
     var _$submit = null;            // кнопка "найти"
     var _current_search_results = null; // текущие результаты поиска
     var _counter = 0;               // счётчик отправленных запросов
+    var _$reset_btn = null;         // ссылка/кнопка "сбросить результаты поиска"
 
     //--[ public ]------------------------------------------------------------------------------------------------------
 
@@ -60,7 +61,7 @@ function SearchGUI(link_to_map) {
                             imbid = imb.id;
                             iindex = _current_search_results['buildings'].indexOf(imbid);
 
-                            // если в результатах поиска присутствует перебираемый map_building_id - полигону добавим класс 'found'
+                            //#-> если в результатах поиска присутствует перебираемый map_building_id - полигону добавим класс 'found'
                             if (iindex != -1) {
                                 console.log('<SearchGUI.handleSearchResults> addClass "found" на полигон здания imdid=' + imbid);
                                 $(ig).find('polygon').addClass('found');
@@ -70,7 +71,7 @@ function SearchGUI(link_to_map) {
                                 imb.greenCircleShow(ibscount);
                             }
 
-                            // иначе - удалим (возможный) класс `found` и скроем (возможный) лейбл с подсказкой
+                            //#-> иначе - удалим (возможный) класс `found` и скроем (возможный) лейбл с подсказкой
                             else {
                                 $(ig).find('polygon').removeClass('found');
                                 imb.greenCircleHide();
@@ -210,6 +211,9 @@ function SearchGUI(link_to_map) {
         // скроем прелоадер
         _map.save_preloader_klass.hide();
 
+        // покажем кнопку "сбросить результаты поиска"
+        _$reset_btn.css('display', 'block');
+
         // обработаем результаты поиска
         _this.handleSearchResults();
 
@@ -232,6 +236,34 @@ function SearchGUI(link_to_map) {
         }
     };
 
+    /**
+     * Нажали на кнопку "сбросить результаты поиска".
+     *
+     * @param e
+     * @private
+     */
+    var _resetOnClick = function (e) {
+        e.preventDefault();
+
+        // "обнуляем" результаты поиска (пустые массивы разойдутся в подклассы и там все переменные почистятся)
+        // NOTE:: если в AjaxController.find_shops поменяется вид объекта с результатами поиска - то его надо будет поменять и тут
+        _current_search_results['buildings'] = [];
+        _current_search_results['buildings_shops_count'] = [];
+        _current_search_results['floors'] = [];
+        _current_search_results['floors_shops_count'] = [];
+        _current_search_results['areas'] = [];
+
+        // очищаем поле ввода
+        _$input.val('');
+
+        // прячем саму кнопку "сбросить результаты поиска"
+        _$reset_btn.css('display', 'none');
+
+        // обработаем пустые результаты поиска
+        _this.handleSearchResults();
+
+    };
+
     //--[ init ]--------------------------------------------------------------------------------------------------------
 
     var _init = function (link_to_map) {
@@ -239,19 +271,21 @@ function SearchGUI(link_to_map) {
 
         _map = link_to_map;
 
-        // зафиксируем родителя
-        _$container = $('div.container#search_container');
-
         // найдём обслуживаемый div
         _$search_gui = $('div#search_gui');
         if (_$search_gui.length > 0) {  // работать будем только тогда, когда элемент имеется
 
             // зафиксируем элементы
+            _$container = $('div.container#search_container'); // зафиксируем родителя
             _$input = _$search_gui.find('input.form-control');
             _$submit = _$search_gui.find('button.btn');
+            _$reset_btn = _$container.find('a.reset');
 
             // при клике по кнопке 'submit' - отправим текст на сервер, заблокируем форму поиска, сгенерим событие
             _$submit.on('click', _submitOnClick);
+
+            // при клике по кнопке 'reset' - сбросим текущие результаты поиска
+            _$reset_btn.on('click', _resetOnClick);
         }
 
     };

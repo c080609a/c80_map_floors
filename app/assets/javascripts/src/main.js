@@ -237,6 +237,9 @@ var InitMap = function (params) {
             }).done(function () {
                 console.log('<ajax.done>');
 
+                self.edit_button_klass = new UpdateJsonButton();
+                self.edit_button_klass.init('.mapplic-update-json', self);
+
                 self.edit_button_klass = new EditButton();
                 self.edit_button_klass.init('.mapplic-edit-button', self);
 

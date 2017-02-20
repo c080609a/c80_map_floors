@@ -3,7 +3,12 @@
     //console.log("<js.erb>");
 
     var $btn_layer = $("<%= params[:div_css_selector] %>");
-    var $html = $('<a href="#" class="mapplic-edit-button"></a>');
+    var $html;
+
+    $html = $('<a href="#" class="mapplic-update-json" title="Перегенировать locations.json"></a>');
+    $btn_layer.append($html);
+
+    $html = $('<a href="#" class="mapplic-edit-button"></a>');
     $btn_layer.append($html);
 
     $html = $('<a href="#" class="mapplic-remove-button mapplic-disabled" data-placement="right" data-toggle="tooltip" title="Удалить полигон"></a>');

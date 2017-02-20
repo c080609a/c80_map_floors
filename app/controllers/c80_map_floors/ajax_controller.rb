@@ -194,5 +194,10 @@ module C80MapFloors
 
     end
 
+    # перегенерировать locations.json
+    def update_map_json
+      MapJson.update_json
+    end
+
   end
 end

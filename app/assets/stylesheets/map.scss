@@ -447,6 +447,20 @@
         }
       }
 
+      &.mapplic-update-json {
+        border-radius: 0 0 1px 1px;
+        border-top: none;
+
+        &:after {
+          content: 'json';
+          font-size: 14px;
+        }
+
+        &.editing, &.edit_area, &.edit_floor {
+          background-color: #006ca1;
+        }
+      }
+
       &.mapplic-new-button {
         border-radius: 0 0 1px 1px;
         border-top: none;
@@ -1243,6 +1257,19 @@ div#map_wrapper {
 
       }
 
+      polygon.found { /* удовлетворяющий поиску полигон ЗДАНИЯ */
+        fill: rgba(0, 255, 19, 0.40);
+        stroke: rgba(251, 251, 251, 0.86);
+        stroke-width: 3px;
+        stroke-dasharray: 3;
+        animation: dash 555s linear;
+
+        &:hover, &.hover {
+          fill: rgba(0, 255, 19, 0.50);
+          stroke: rgba(251, 251, 251, 0.96);
+        }
+      }
+
       g {
 
         &.free {
@@ -1285,6 +1312,19 @@ div#map_wrapper {
             &:hover, &.hover {
               fill: rgba(255, 4, 0, 0.40);
               stroke: rgba(251, 251, 251, 0.86);
+            }
+
+            &.found_area { /* удовлетворяющий поиску ЗАНЯТЫЙ polygon площади */
+              fill: rgba(0, 173, 255, 0.40) !important;
+              stroke: rgba(251, 251, 251, 0.86) !important;
+              stroke-width: 3px;
+              stroke-dasharray: 3;
+              animation: dash 555s linear;
+
+              &:hover, &.hover {
+                fill: rgba(0, 173, 255, 0.60) !important;
+                stroke: rgba(251, 251, 251, 0.96) !important;
+              }
             }
 
           }

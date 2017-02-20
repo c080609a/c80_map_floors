@@ -42,7 +42,7 @@ module C80MapFloors
           end
 
           def update_json
-            MapJson.update_json
+            # MapJson.update_json # NOTE-json:: возможно, временно отключён
           end
 
           # выдать название привязанного к Зданию полигона

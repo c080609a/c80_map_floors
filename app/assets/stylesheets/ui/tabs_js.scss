@@ -1,7 +1,32 @@
 div.tabs_js {
 
+  /*
+  <div class="tab_buttons clearfix">
+    <a href="#" data-id="6" data-index="0" class="active">Первый этаж</a>
+    <a href="#" data-id="48" data-index="1" class="red">Второй этаж</a>
+    <a href="#" data-id="49" data-index="2">Третий этаж</a>
+  </div>
+  */
   div.tab_buttons {
+    > a {
+      &.red {
+        position: relative;
+        &:after {
+          content: attr(data-search-count); /* количество магазинов (удовлетворяющих поиску) на этаже */
+          position: absolute;
 
+          width: 20px;
+          height: 20px;
+          background-color: red;
+          border-radius: 5px;
+
+          font-size: 15px;
+          font-weight: bold;
+          color: #ffffff;
+
+        }
+      }
+    }
   }
 
   div.tab_content {

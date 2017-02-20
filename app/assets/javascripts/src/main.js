@@ -53,7 +53,7 @@ var InitMap = function (params) {
             mapfill: true,
             zoom: true,
             zoombuttons: true,
-            maxscale: 1,
+            maxscale: 3,
             fitscale: 0.51,
             skin: '',         // css class name
             scale: 1,
@@ -89,6 +89,7 @@ var InitMap = function (params) {
         self.last_clicked_g = null; // начали просматривать area\building (запустили сессию), и здесь храним ссылку на последний кликнутый полигон из svg_overlay в течение сессии
         //self.o.dnd_enable = null; // если да, то можно карту dnd мышкой
         self.building_info_klass = null; // класс, занимающися отображением данных об этаже\здании\площади
+        self.search_gui_klass = null; // класс, занимающийся обслуживанием поисковых запросов пользователя карты
 
         // во время анимации каждый шаг рассчитывается мгновенный scale
         self.scale_during_animation = null;
@@ -236,6 +237,9 @@ var InitMap = function (params) {
             }).done(function () {
                 console.log('<ajax.done>');
 
+                self.edit_button_klass = new UpdateJsonButton();
+                self.edit_button_klass.init('.mapplic-update-json', self);
+
                 self.edit_button_klass = new EditButton();
                 self.edit_button_klass.init('.mapplic-edit-button', self);
 
@@ -290,6 +294,9 @@ var InitMap = function (params) {
                     self.current_building.enterFloor(floor_id); //#-> только с помощью клика по табам можно войти на Этаж
                 }
             });
+
+            // инициализируем класс, обслуживающий поиск
+            self.search_gui_klass = new SearchGUI(self);
 
             // начнём слушать окно браузера
             $(window).resize(function () {
@@ -848,6 +855,12 @@ var InitMap = function (params) {
                 //ip = Polygon.createFromSaved(iobj);
                 //utils.id('svg').appendChild(ip.g);
             }
+
+            // Только после того, как нарисуем всех детей на карте, подсветим результаты поиска
+            if (self.search_gui_klass != null) {
+                self.search_gui_klass.handleSearchResults();
+            }
+
         };
 
         /**

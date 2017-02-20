@@ -241,12 +241,14 @@ function Area() {
     _this._mouse_in = function () {
         //console.log('<Area._mouse_in>');
         //console.log(_this._polygon);
-        _this._polygon.attr('class', 'hover');
+        //_this._polygon.attr('class', 'hover');
+        $(_this._polygon).addClass('hover');
     };
 
     _this._mouse_out = function () {
         //console.log('<Area._mouse_out>');
-        _this._polygon.attr('class', '');
+        //_this._polygon.attr('class', '');
+        $(_this._polygon).removeClass('hover');
     };
 
     _this._calc_polygon_attr = function () {

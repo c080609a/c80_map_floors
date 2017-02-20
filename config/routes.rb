@@ -10,4 +10,7 @@ C80MapFloors::Engine.routes.draw do
   match '/ajax/fetch_unlinked_buildings', to: 'ajax#fetch_unlinked_buildings', via: :post
   match '/ajax/fetch_unlinked_floors', to: 'ajax#fetch_unlinked_floors', via: :post
   match '/ajax/fetch_unlinked_areas', to: 'ajax#fetch_unlinked_areas', via: :post
+  match '/ajax/find_shops', to: 'ajax#find_shops', via: :post
+  match '/ajax/update_map_json', to: 'ajax#update_map_json', via: :post
+
 end

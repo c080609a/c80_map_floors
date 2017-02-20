@@ -41,7 +41,7 @@ module C80MapFloors
           end
 
           def update_json
-            MapJson.update_json # NOTE:: возможно, временно отключён
+            # MapJson.update_json # NOTE-json:: возможно, временно отключён
           end
 
         end

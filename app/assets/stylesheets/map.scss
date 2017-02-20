@@ -447,6 +447,20 @@
         }
       }
 
+      &.mapplic-update-json {
+        border-radius: 0 0 1px 1px;
+        border-top: none;
+
+        &:after {
+          content: 'json';
+          font-size: 14px;
+        }
+
+        &.editing, &.edit_area, &.edit_floor {
+          background-color: #006ca1;
+        }
+      }
+
       &.mapplic-new-button {
         border-radius: 0 0 1px 1px;
         border-top: none;

@@ -53,7 +53,7 @@ var InitMap = function (params) {
             mapfill: true,
             zoom: true,
             zoombuttons: true,
-            maxscale: 1,
+            maxscale: 3,
             fitscale: 0.51,
             skin: '',         // css class name
             scale: 1,
@@ -236,6 +236,9 @@ var InitMap = function (params) {
                 }
             }).done(function () {
                 console.log('<ajax.done>');
+
+                self.edit_button_klass = new UpdateJsonButton();
+                self.edit_button_klass.init('.mapplic-update-json', self);
 
                 self.edit_button_klass = new EditButton();
                 self.edit_button_klass.init('.mapplic-edit-button', self);

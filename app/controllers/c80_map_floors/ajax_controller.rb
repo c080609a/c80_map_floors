@@ -114,9 +114,10 @@ module C80MapFloors
     end
 
     # от js пришла строка с названием категории. Необходимо найти магазины, соответствующие этой категории.
+    # noinspection RailsChecklist01
     def find_shops
       Rails.logger.debug "[TRACE] <AjaxController.find_shops> params = #{params}"
-      # [TRACE] <AjaxController.find_shops> params = {"stext"=>"Товары для отдыха", "controller"=>"c80_map_floors/ajax", "action"=>"find_shops"}
+      # [TRACE] <AjaxController.find_shops> params = {"stext"=>"Хозтовары", "counter"=>"1", "controller"=>"c80_map_floors/ajax", "action"=>"find_shops"}
 
       # ПЕРВЫЙ ВАРИАНТ
       # result = {
@@ -142,24 +143,60 @@ module C80MapFloors
       #     ]
       # }
 
-      result = {
-          buildings: [7,10],
-          buildings_shops_count: [3,12],
-          floors: [2,6,48],
-          floors_shops_count: [2,1,33],
-          areas: [3,5,8,6],
-          areas_shops: [
-                           {:id=>114, :title=> 'ООО Дом Домыч', :desc=> '', :tel=> '(960) 520 04 25 (48439) 9 36 76', :site=> '', :url=> '/shops/ooo-dom-domych.html'},
-                           {:id=>306, :title=>"ООО \"Мир Климата\"", :desc=>"<p>Компания &quot;Мир климата&quot; - это комфорт вашего дома. Наши специалисты готовы решить ваши проблемы, связанные с комплектацией ,проектированием и монтажом современного оборудования для отопления ,водоснабжения, водоподготовки, индивидуальной канализации, кондиционирования и вентиляции здания.</p>\r\n", :tel=> '8(484) 39-961-39, 8(910) 914-21-79', :site=> 'http://www.pogodavdome.com', :url=> '/shops/ooo-mir-klimata.html'},
-                           {:id=>124, :title=> 'ИП Исаенко', :desc=> '', :tel=> '(906) 640-79-00', :site=> '', :url=> '/shops/ip-dorohova.html'},
-                           {:id=>115, :title=> 'ООО Аэробус', :desc=> '', :tel=> '(961) 111 12 25', :site=> '', :url=> '/shops/ooo-dom-domych.html'}
-          ]
-      }
+      if params[:counter].to_i == 1
+        result = {
+            buildings:             [7, 10],
+            buildings_shops_count: [3, 12],
+            floors:                [5, 7, 48, 8],
+            floors_shops_count:    [2, 1, 33],
+            areas:                 [3, 5, 8, 6]
+        }
+      else
+        result = {
+            buildings:             [],
+            buildings_shops_count: [],
+            floors:                [],
+            floors_shops_count:    [],
+            areas:                 []
+        }
+
+        # находим 3 рандомных полигона зданий (генерим случайное число для каждого здания)
+        3.times do
+
+          map_building = MapBuilding.offset(rand(MapBuilding.count)).first
+          map_building_count = rand(20)
+
+          result[:buildings] << map_building.id
+          result[:buildings_shops_count] << map_building_count
+
+          # в каждом полигоне здания находим один рандомный полигон этажа (генерим случайное число для каждого этажа)
+          map_floor = map_building.floors.offset(rand(map_building.floors.count)).first
+          map_floor_count = rand(20)
+
+          result[:floors] << map_floor.id
+          result[:floors_shops_count] << map_floor_count
+
+          # просто находим 4 рандомных полигонов площадей
+          4.times do
+            map_area = Area.offset(rand(Area.count)).first
+            result[:areas] << map_area.id
+          end
+
+        end
+
+      end
+
+      Rails.logger.debug "[TRACE] <AjaxController.fetch_unlinked_floors> Отправляем ответ: result = #{result}"
 
       respond_to do |format|
         format.json { render json: result }
       end
 
+    end
+
+    # перегенерировать locations.json
+    def update_map_json
+      MapJson.update_json
     end
 
   end

@@ -1,7 +1,14 @@
 module C80MapFloors
 
+  #==========================================================
+  #
+  #   Это Площадь (которая привязывается к полигону на карте)
+  #
+  #==========================================================
+
   module AreaRepresentator
 
+    # noinspection RubyResolve
     extend ActiveSupport::Concern
 
     #  ERROR: Cannot define multiple 'included' blocks for a Concern
@@ -16,23 +23,13 @@ module C80MapFloors
 
     module ClassMethods
 
+      # noinspection RubyResolve
       def acts_as_map_area_representator
         class_eval do
 
-          # has_many :map_areas, :as => :area_representator, :class_name => 'C80MapFloors::Area', :dependent => :nullify
           has_one :area, :as => :area_representator, :class_name => 'C80MapFloors::Area', :dependent => :nullify
 
           after_save :update_json
-
-          def self.unlinked_areas
-            res = []
-            self.all.each do |area|
-              if area.map_areas.count == 0
-                res << area
-              end
-            end
-            res
-          end
 
           # выдать название привязанного к Площади полигона
           def apolygon_title
@@ -44,7 +41,7 @@ module C80MapFloors
           end
 
           def update_json
-            MapJson.update_json # NOTE:: возможно, временно отключён
+            # MapJson.update_json # NOTE-json:: возможно, временно отключён
           end
 
         end
@@ -73,28 +70,22 @@ module C80MapFloors
       end
 =end
 
+      # Выдать json Площади, которая привязана к полигону на карте
+      # noinspection RubyResolve
       def my_as_json2
         result = {
             id:             self.id,
             title:          self.name,
             square:         self.square,
-            square_free:    self.square_free,
             desc:           self.desc,
-            floor_height:   self.floor_height,
             price_string:   self.price_string,
-            communications: self.communications
+            communications: self.communications,
+            is_free:        self.is_free?,
+            shop:           self.shop_as_json
         }
         result.as_json
       end
 
-      # свободна ли площадь, привязанная к полигону на карте
-      def is_free?
-        res = true
-        if map_areas.count > 0
-          res = map_areas.first.is_free?
-        end
-        res
-      end
     end
 
   end

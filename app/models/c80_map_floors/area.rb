@@ -7,7 +7,7 @@ module C80MapFloors
     belongs_to :area_representator, :polymorphic => true
     acts_as_base_map_object
 
-    def my_as_json
+    def my_as_json4
 
       result = {
           id:         self.id,

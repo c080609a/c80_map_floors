@@ -82,7 +82,7 @@ module C80MapFloors
       }
 
       self.areas.each do |area|
-        result[:areas] << area.my_as_json
+        result[:areas] << area.my_as_json4
       end
 
       # если имеются ДАННЫЕ - прицепим их к JSON

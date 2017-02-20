@@ -24,7 +24,7 @@ module C80MapFloors
       C80MapFloors::Areas.joins(:c80_map_floors_floors).where(:building_id => self.if)
     end
 
-    def my_as_json
+    def my_as_json5
 
       result = {
           id: self.id,
@@ -42,7 +42,7 @@ module C80MapFloors
       end
 
       if self.building_representator.present?
-        result[:data] = self.building_representator.my_as_json
+        result[:data] = self.building_representator.my_as_json6
       end
 
       result.as_json

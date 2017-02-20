@@ -1,4 +1,5 @@
 module C80MapFloors
+  # noinspection RubyResolve
   class AjaxController < ApplicationController
 
     def map_edit_buttons
@@ -110,6 +111,92 @@ module C80MapFloors
         format.json { render json: result }
       end
 
+    end
+
+    # от js пришла строка с названием категории. Необходимо найти магазины, соответствующие этой категории.
+    # noinspection RailsChecklist01
+    def find_shops
+      Rails.logger.debug "[TRACE] <AjaxController.find_shops> params = #{params}"
+      # [TRACE] <AjaxController.find_shops> params = {"stext"=>"Хозтовары", "counter"=>"1", "controller"=>"c80_map_floors/ajax", "action"=>"find_shops"}
+
+      # ПЕРВЫЙ ВАРИАНТ
+      # result = {
+      #     buildings: [
+      #         {   id: 7,
+      #             floors: [
+      #                 {  id: 2,
+      #                    areas: [3]
+      #                 }
+      #             ]
+      #         },
+      #         {
+      #             id: 10,
+      #             floors: [
+      #                 { id: 6,
+      #                   areas: [5,8]
+      #                 },
+      #                 { id: 48,
+      #                   areas: [6]
+      #                 }
+      #             ]
+      #         }
+      #     ]
+      # }
+
+      if params[:counter].to_i == 1
+        result = {
+            buildings:             [7, 10],
+            buildings_shops_count: [3, 12],
+            floors:                [5, 7, 48, 8],
+            floors_shops_count:    [2, 1, 33],
+            areas:                 [3, 5, 8, 6]
+        }
+      else
+        result = {
+            buildings:             [],
+            buildings_shops_count: [],
+            floors:                [],
+            floors_shops_count:    [],
+            areas:                 []
+        }
+
+        # находим 3 рандомных полигона зданий (генерим случайное число для каждого здания)
+        3.times do
+
+          map_building = MapBuilding.offset(rand(MapBuilding.count)).first
+          map_building_count = rand(20)
+
+          result[:buildings] << map_building.id
+          result[:buildings_shops_count] << map_building_count
+
+          # в каждом полигоне здания находим один рандомный полигон этажа (генерим случайное число для каждого этажа)
+          map_floor = map_building.floors.offset(rand(map_building.floors.count)).first
+          map_floor_count = rand(20)
+
+          result[:floors] << map_floor.id
+          result[:floors_shops_count] << map_floor_count
+
+          # просто находим 4 рандомных полигонов площадей
+          4.times do
+            map_area = Area.offset(rand(Area.count)).first
+            result[:areas] << map_area.id
+          end
+
+        end
+
+      end
+
+      Rails.logger.debug "[TRACE] <AjaxController.fetch_unlinked_floors> Отправляем ответ: result = #{result}"
+
+      respond_to do |format|
+        format.json { render json: result }
+      end
+
+    end
+
+    # перегенерировать locations.json
+    def update_map_json
+      MapJson.update_json
     end
 
   end

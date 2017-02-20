@@ -1,0 +1,11 @@
+<%# обслуживается классом search_gui.js %>
+
+<div id="search_gui">
+  <form class="navbar-form" role="form">
+    <div class="form-group">
+      <input placeholder="Введите название товара, который вас интересует" class="form-control awesomplete" type="text" data-list="<%= categories_list %>">
+    </div>
+    <button type="submit" class="btn btn-primary"><i class="fa fa-search"></i></button>
+  </form>
+</div>
+<%= link_to 'Сброс', '#', :class => 'reset', :title => 'Сбросить результаты поиска' %>

@@ -554,6 +554,7 @@ var InitMap = function (params) {
                         else {
 
                             var p;
+                            var $viewing_g_from_svg_overlay;
 
                             /* если находимся в режиме просмотра всей карты - входим в здание */
                             if (self.mode == 'viewing') {
@@ -625,7 +626,7 @@ var InitMap = function (params) {
                                 // => g, который живёт в #svg_overlay, или, другими словами,
                                 // тот g, по которому кликнули последний раз,
                                 // просматривая либо здание, либо площадь
-                                var $viewing_g_from_svg_overlay = $(event.target).parent();
+                                $viewing_g_from_svg_overlay = $(event.target).parent();
 
                                 // добираемся до объекта класса Area, который обслуживает полигон
                                 p = $viewing_g_from_svg_overlay[0];
@@ -642,6 +643,25 @@ var InitMap = function (params) {
                                     area.enter();
                                 } else {
                                     console.log('<mouseup> [ERROR] у полигона нет объекта Area.js класса.');
+                                }
+
+                            }
+
+                            else if (self.mode == 'removing') {
+                                console.log('<main.js> mode = removing');
+
+                                // => g, который живёт в #svg_overlay, или, другими словами,
+                                // тот g, по которому кликнули последний раз,
+                                // просматривая либо здание, либо площадь
+                                $viewing_g_from_svg_overlay = $(event.target).parent();
+
+                                // добираемся до объекта класса Area, который обслуживает полигон
+                                p = $viewing_g_from_svg_overlay[0];
+
+                                if (p.obj && p.obj.area) {
+                                    console.log('[breakpoint]');
+                                } else {
+                                    console.log('<main.js> [error] нету у полигона объекта, или этот объект не Area');
                                 }
 
                             }

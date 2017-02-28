@@ -1115,13 +1115,18 @@ var InitMap = function (params) {
         // т.е. помещаем её в список "для удаления",
         // который обработается, когда нажмём кнопку "сохранить изменения".
         self.registerDeletingArea = function(area) {
+            var is_deleted = false;
+
             if (utils.getById(area.id, self.areas_for_delete) == null) {
                 console.log('<registerDeletingArea> Регистрируем: area.id = ' + area.id);
                 self.areas_for_delete.push(area);
+                is_deleted = true;
             } else {
                 console.log('<registerDeletingArea> Убираем: area.id = ' + area.id);
                 utils.deleteById(area.id, self.areas_for_delete);
             }
+
+            area.invalidate_del_mark(is_deleted);
         };
 
         /**

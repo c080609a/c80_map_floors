@@ -77,16 +77,11 @@ module C80MapFloors
         end
       end
 
-      result[:updated_locations_json] = MapJson.fetch_json
-
-      puts "<MapAjaxController.save_map_data> result = #{result.to_json}"
-
-      respond_to do |format|
-        format.json { render json: result }
-      end
+      MapJson.update_json
 
     rescue ActiveRecord::RecordNotFound
-      puts '<MapAjaxController.save_map_data> record not found'
+      Rails.logger.debug '[TRACE] <MapAjaxController.save_map_data> record not found'
+      MapJson.update_json
 
     end
 

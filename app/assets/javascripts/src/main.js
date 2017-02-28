@@ -83,6 +83,7 @@ var InitMap = function (params) {
         self.area_link_button_klass = null;
         self.building_link_button_klass = null;
         self.floor_link_button_klass = null;
+        self.update_json_klass = null;
         self.drawn_areas = []; // если имеются нарисованные но несохранённые Площади - они хранятся тут
         self.drawn_buildings = []; // если имеются нарисованные но несохранённые Здания - они хранятся тут
         self.save_preloader_klass = null;
@@ -237,8 +238,8 @@ var InitMap = function (params) {
             }).done(function () {
                 console.log('<ajax.done>');
 
-                self.edit_button_klass = new UpdateJsonButton();
-                self.edit_button_klass.init('.mapplic-update-json', self);
+                self.update_json_klass = new UpdateJsonButton();
+                self.update_json_klass.init('.mapplic-update-json', self);
 
                 self.edit_button_klass = new EditButton();
                 self.edit_button_klass.init('.mapplic-edit-button', self);

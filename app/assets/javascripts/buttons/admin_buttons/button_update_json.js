@@ -26,6 +26,17 @@ function UpdateJsonButton() {
         _map.save_preloader_klass.hide();
     };
 
+    // спрятать кнопку
+    this.hide = function () {
+        _this.el.css('display','none');
+    };
+
+    // показать кнопку
+    this.show = function () {
+        //console.log("<FloorLinkButton.show>");
+        _this.el.css('display','block');
+    };
+
     // инициализация
     this.init = function (button_css_selector, link_to_map) {
         _map = link_to_map;

@@ -216,6 +216,8 @@ function StateController() {
                 _this.main_map.css('opacity', '1');
 
                 _map.save_button_klass.hide();
+                _map.floor_link_button_klass.hide();
+                _map.update_json_klass.hide();
 
                 // прячем кнопку "создать полигон"
                 OpacityButtonsUtils.hide(_this.new_button);
@@ -472,6 +474,8 @@ function StateController() {
 
                 // скроем форму поиска
                 _map.search_gui_klass.position_hide();
+
+                _map.update_json_klass.show();
 
                 //</editor-fold>
             break;

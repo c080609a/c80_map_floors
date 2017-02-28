@@ -68,6 +68,13 @@ module C80MapFloors
         end
       end
 
+      if params[:deleted_areas].present?
+        params[:deleted_areas].each do |area_id|
+          # Rails.logger.debug "[TRACE] <map_ajax_controller.save_map_data> area_id = #{area_id}."
+          # [TRACE] <map_ajax_controller.save_map_data> area_id = 43.
+        end
+      end
+
       result[:updated_locations_json] = MapJson.fetch_json
 
       puts "<MapAjaxController.save_map_data> result = #{result.to_json}"

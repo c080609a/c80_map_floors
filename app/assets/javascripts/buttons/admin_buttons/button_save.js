@@ -12,6 +12,9 @@ function SaveChangesButton() {
         var areas;
         var buildings;
 
+        // удаляемые полигоны площадей
+        var deleted_areas = [];
+
         var i, len;
 
         // собираем новые полигоны площадей
@@ -32,12 +35,22 @@ function SaveChangesButton() {
             }
         }
 
+        // собираем удаляемые площади
+        len = _map.areas_for_delete.length;
+        if (len > 0) {
+            for (i = 0; i < len; i ++) {
+                deleted_areas.push(_map.areas_for_delete[i].id);
+            }
+        }
+        console.log('<ButtonSave.sendDataToServer> deleted_areas: ' + deleted_areas.join(', '));
+
         $.ajax({
             url: '/save_map_data',
             type: 'POST',
             data: {
                 areas: areas,
-                buildings: buildings
+                buildings: buildings,
+                deleted_areas: deleted_areas
             },
             dataType: 'json'
         }).done(sendDataToServerDone);
@@ -94,7 +107,7 @@ function SaveChangesButton() {
     _this.check_and_enable = function () {
 
         //check
-        var mark_dirty = _map.drawn_areas.length || _map.drawn_buildings.length;
+        var mark_dirty = _map.drawn_areas.length || _map.drawn_buildings.length || _map.areas_for_delete;
 
         // enable
         if (mark_dirty) {

@@ -275,5 +275,13 @@ function Area() {
             coords:             _this._options["coords"],
             parent_floor_id:    _this._options["parent_floor_json"]["id"]
         }
-    }
+    };
+
+    _this.invalidate_del_mark = function (is_deleted) {
+        if (is_deleted) {
+            $(_this._polygon).addClass('for_delete');
+        } else {
+            $(_this._polygon).removeClass('for_delete');
+        }
+    };
 }

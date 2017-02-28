@@ -83,8 +83,10 @@ var InitMap = function (params) {
         self.area_link_button_klass = null;
         self.building_link_button_klass = null;
         self.floor_link_button_klass = null;
+        self.update_json_klass = null;
         self.drawn_areas = []; // если имеются нарисованные но несохранённые Площади - они хранятся тут
         self.drawn_buildings = []; // если имеются нарисованные но несохранённые Здания - они хранятся тут
+        self.areas_for_delete = []; // если имеются Площади, которые готовы к удалению, они хранятся тут
         self.save_preloader_klass = null;
         self.last_clicked_g = null; // начали просматривать area\building (запустили сессию), и здесь храним ссылку на последний кликнутый полигон из svg_overlay в течение сессии
         //self.o.dnd_enable = null; // если да, то можно карту dnd мышкой
@@ -237,8 +239,8 @@ var InitMap = function (params) {
             }).done(function () {
                 console.log('<ajax.done>');
 
-                self.edit_button_klass = new UpdateJsonButton();
-                self.edit_button_klass.init('.mapplic-update-json', self);
+                self.update_json_klass = new UpdateJsonButton();
+                self.update_json_klass.init('.mapplic-update-json', self);
 
                 self.edit_button_klass = new EditButton();
                 self.edit_button_klass.init('.mapplic-edit-button', self);
@@ -553,6 +555,7 @@ var InitMap = function (params) {
                         else {
 
                             var p;
+                            var $viewing_g_from_svg_overlay;
 
                             /* если находимся в режиме просмотра всей карты - входим в здание */
                             if (self.mode == 'viewing') {
@@ -624,7 +627,7 @@ var InitMap = function (params) {
                                 // => g, который живёт в #svg_overlay, или, другими словами,
                                 // тот g, по которому кликнули последний раз,
                                 // просматривая либо здание, либо площадь
-                                var $viewing_g_from_svg_overlay = $(event.target).parent();
+                                $viewing_g_from_svg_overlay = $(event.target).parent();
 
                                 // добираемся до объекта класса Area, который обслуживает полигон
                                 p = $viewing_g_from_svg_overlay[0];
@@ -641,6 +644,27 @@ var InitMap = function (params) {
                                     area.enter();
                                 } else {
                                     console.log('<mouseup> [ERROR] у полигона нет объекта Area.js класса.');
+                                }
+
+                            }
+
+                            else if (self.mode == 'removing') {
+                                console.log('<main.js> mode = removing');
+
+                                // => g, который живёт в #svg_overlay, или, другими словами,
+                                // тот g, по которому кликнули последний раз,
+                                // просматривая либо здание, либо площадь
+                                $viewing_g_from_svg_overlay = $(event.target).parent();
+
+                                // добираемся до объекта класса Area, который обслуживает полигон
+                                p = $viewing_g_from_svg_overlay[0];
+
+                                if (p.obj && p.obj.area) {
+                                    console.log('[breakpoint]');
+                                    var area = p.obj.area;
+                                    self.registerDeletingArea(area);
+                                } else {
+                                    console.log('<main.js> [error] нету у полигона объекта, или этот объект не Area');
                                 }
 
                             }
@@ -1085,6 +1109,24 @@ var InitMap = function (params) {
 
         self.registerJustDrownBuilding = function (building) {
             self.drawn_buildings.push(building);
+        };
+
+        // отмечаем площадь, как "площадь для удаления",
+        // т.е. помещаем её в список "для удаления",
+        // который обработается, когда нажмём кнопку "сохранить изменения".
+        self.registerDeletingArea = function(area) {
+            var is_deleted = false;
+
+            if (utils.getById(area.id, self.areas_for_delete) == null) {
+                console.log('<registerDeletingArea> Регистрируем: area.id = ' + area.id);
+                self.areas_for_delete.push(area);
+                is_deleted = true;
+            } else {
+                console.log('<registerDeletingArea> Убираем: area.id = ' + area.id);
+                utils.deleteById(area.id, self.areas_for_delete);
+            }
+
+            area.invalidate_del_mark(is_deleted);
         };
 
         /**

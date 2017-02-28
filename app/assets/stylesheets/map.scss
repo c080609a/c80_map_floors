@@ -1255,6 +1255,18 @@ div#map_wrapper {
         -moz-transition: stroke 0.6s, fill 0.4s, opacity .8s ease-in;
         transition: stroke 0.6s, fill 0.4s, opacity .8s ease-in;
 
+        &.for_delete { /*polygon*/ /* удаляемый полигон */
+
+           fill: rgba(0,0,0, 0.3) !important;
+           stroke: rgba(0,0,0, 0.6) !important;
+
+           &:hover, &.hover {
+             fill: rgba(0,0,0, 0.4) !important;
+             stroke: rgba(0,0,0, 0.7) !important;
+           }
+
+        }
+
       }
 
       polygon.found { /* удовлетворяющий поиску полигон ЗДАНИЯ */

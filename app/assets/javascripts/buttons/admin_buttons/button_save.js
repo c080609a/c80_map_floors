@@ -8,10 +8,16 @@ function SaveChangesButton() {
 
     var sendDataToServer = function () {
 
+        // новые полигоны площадей и зданий
         var areas;
         var buildings;
-        var i, len;
 
+        // удаляемые полигоны площадей
+        var deleted_areas = [];
+
+        var i, len, iarea;
+
+        // собираем новые полигоны площадей
         len = _map.drawn_areas.length;
         if (len > 0) {
             areas = [];
@@ -20,6 +26,7 @@ function SaveChangesButton() {
             }
         }
 
+        // собираем новые полигоны зданий
         len = _map.drawn_buildings.length;
         if (len > 0) {
             buildings = [];
@@ -28,50 +35,31 @@ function SaveChangesButton() {
             }
         }
 
+        // собираем удаляемые площади
+        len = _map.areas_for_delete.length;
+        if (len > 0) {
+            for (i = 0; i < len; i ++) {
+                iarea = _map.areas_for_delete[i];
+                if (iarea == null) continue;
+                deleted_areas.push(iarea.id);
+            }
+        }
+        console.log('<ButtonSave.sendDataToServer> deleted_areas: ' + deleted_areas.join(', '));
+
         $.ajax({
             url: '/save_map_data',
             type: 'POST',
             data: {
                 areas: areas,
-                buildings: buildings
+                buildings: buildings,
+                deleted_areas: deleted_areas
             },
-            dataType: 'json'
+            dataType: 'script'
         }).done(sendDataToServerDone);
     };
 
     var sendDataToServerDone = function (data, result) {
-
-        //console.log("<ButtonSave.sendDataToServerDone> data,result:");
-        //console.log(data);
-        // => Object
-        //      areas: Array[1]
-        //          0: Object:
-        //                  id: 16,
-        //                  old_temp_id: "76400",
-        //      buildings: Array,
-        //      updated_locations_json: null
-        //console.log(result);
-        // => success
-
-        _map.save_preloader_klass.hide();
-
-        _map.data = data["updated_locations_json"];
-
-        //var i;
-        //var iarea_resp_params;
-        //var idrawn_area;
-        //for (i = 0; i< data["areas"].length; i++) {
-        //    iarea_resp_params = data["areas"][i];
-        //    найдем в массиве drawn_areas область, данные о которой сохранили на сервере
-            //idrawn_area = utils.getById(iarea["old_temp_id"], _map.drawn_areas);
-            //idrawn_area["id"] = iarea["id"];
-        //
-        //}
-
-        _map.drawn_areas = [];
-        _map.drawn_buildings = [];
-        _this.check_and_enable();
-
+        // ничего не делаем, т.к. ответ от скрипта сделает всё сам
     };
 
     _this.onClick = function (e) {
@@ -90,7 +78,7 @@ function SaveChangesButton() {
     _this.check_and_enable = function () {
 
         //check
-        var mark_dirty = _map.drawn_areas.length || _map.drawn_buildings.length;
+        var mark_dirty = _map.drawn_areas.length || _map.drawn_buildings.length || _map.areas_for_delete;
 
         // enable
         if (mark_dirty) {

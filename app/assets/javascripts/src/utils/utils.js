@@ -7,11 +7,26 @@ var utils = {
         var iel;
         for (i=0; i<arr.length; i++) {
             iel = arr[i];
+            if (iel == undefined) continue;
             if (iel.hasOwnProperty('id') && iel['id'] == id) {
                 return iel;
             }
         }
         return null;
+    },
+
+    deleteById: function (id, arr) {
+        var i, iel;
+        var len = arr.length;
+        for (i = len - 1; i >= 0; i--) {
+            iel = arr[i];
+            if (iel == undefined) continue;
+            if (iel.hasOwnProperty('id') && iel['id'] == id) {
+                console.log('<deleteById> deleted: id = ' + iel['id']);
+                delete arr[i];
+                break;
+            }
+        }
     },
 
     offsetX: function (node) {

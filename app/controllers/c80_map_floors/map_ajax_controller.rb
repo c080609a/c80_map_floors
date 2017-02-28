@@ -68,13 +68,21 @@ module C80MapFloors
         end
       end
 
-      result[:updated_locations_json] = MapJson.fetch_json
-
-      puts "<MapAjaxController.save_map_data> result = #{result.to_json}"
-
-      respond_to do |format|
-        format.json { render json: result }
+      if params[:deleted_areas].present?
+        params[:deleted_areas].each do |area_id|
+          # Rails.logger.debug "[TRACE] <map_ajax_controller.save_map_data> area_id = #{area_id}."
+          # [TRACE] <map_ajax_controller.save_map_data> area_id = 43.
+          area = C80MapFloors::Area.find(area_id)
+          area.destroy
+        end
       end
+
+      MapJson.update_json
+
+    rescue ActiveRecord::RecordNotFound
+      Rails.logger.debug '[TRACE] <MapAjaxController.save_map_data> record not found'
+      MapJson.update_json
+
     end
 
   end

@@ -72,6 +72,8 @@ module C80MapFloors
         params[:deleted_areas].each do |area_id|
           # Rails.logger.debug "[TRACE] <map_ajax_controller.save_map_data> area_id = #{area_id}."
           # [TRACE] <map_ajax_controller.save_map_data> area_id = 43.
+          area = C80MapFloors::Area.find(area_id)
+          area.destroy
         end
       end
 
@@ -82,6 +84,10 @@ module C80MapFloors
       respond_to do |format|
         format.json { render json: result }
       end
+
+    rescue ActiveRecord::RecordNotFound
+      puts '<MapAjaxController.save_map_data> record not found'
+
     end
 
   end

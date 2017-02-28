@@ -86,6 +86,7 @@ var InitMap = function (params) {
         self.update_json_klass = null;
         self.drawn_areas = []; // если имеются нарисованные но несохранённые Площади - они хранятся тут
         self.drawn_buildings = []; // если имеются нарисованные но несохранённые Здания - они хранятся тут
+        self.areas_for_delete = []; // если имеются Площади, которые готовы к удалению, они хранятся тут
         self.save_preloader_klass = null;
         self.last_clicked_g = null; // начали просматривать area\building (запустили сессию), и здесь храним ссылку на последний кликнутый полигон из svg_overlay в течение сессии
         //self.o.dnd_enable = null; // если да, то можно карту dnd мышкой
@@ -660,6 +661,8 @@ var InitMap = function (params) {
 
                                 if (p.obj && p.obj.area) {
                                     console.log('[breakpoint]');
+                                    var area = p.obj.area;
+                                    self.registerDeletingArea(area);
                                 } else {
                                     console.log('<main.js> [error] нету у полигона объекта, или этот объект не Area');
                                 }
@@ -1106,6 +1109,13 @@ var InitMap = function (params) {
 
         self.registerJustDrownBuilding = function (building) {
             self.drawn_buildings.push(building);
+        };
+
+        // отмечаем площадь, как "площадь для удаления",
+        // т.е. помещаем её в список "для удаления",
+        // который обработается, когда нажмём кнопку "сохранить изменения".
+        self.registerDeletingArea = function(area) {
+            self.areas_for_delete.push(area);
         };
 
         /**

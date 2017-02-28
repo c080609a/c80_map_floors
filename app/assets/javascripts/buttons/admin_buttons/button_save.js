@@ -8,10 +8,13 @@ function SaveChangesButton() {
 
     var sendDataToServer = function () {
 
+        // новые полигоны площадей и зданий
         var areas;
         var buildings;
+
         var i, len;
 
+        // собираем новые полигоны площадей
         len = _map.drawn_areas.length;
         if (len > 0) {
             areas = [];
@@ -20,6 +23,7 @@ function SaveChangesButton() {
             }
         }
 
+        // собираем новые полигоны зданий
         len = _map.drawn_buildings.length;
         if (len > 0) {
             buildings = [];

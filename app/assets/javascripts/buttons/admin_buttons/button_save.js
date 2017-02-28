@@ -15,7 +15,7 @@ function SaveChangesButton() {
         // удаляемые полигоны площадей
         var deleted_areas = [];
 
-        var i, len;
+        var i, len, iarea;
 
         // собираем новые полигоны площадей
         len = _map.drawn_areas.length;
@@ -39,7 +39,9 @@ function SaveChangesButton() {
         len = _map.areas_for_delete.length;
         if (len > 0) {
             for (i = 0; i < len; i ++) {
-                deleted_areas.push(_map.areas_for_delete[i].id);
+                iarea = _map.areas_for_delete[i];
+                if (iarea == null) continue;
+                deleted_areas.push(iarea.id);
             }
         }
         console.log('<ButtonSave.sendDataToServer> deleted_areas: ' + deleted_areas.join(', '));

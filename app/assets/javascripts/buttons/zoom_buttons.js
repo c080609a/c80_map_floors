@@ -33,6 +33,11 @@ function ZoomButtons() {
             //_map.x = _map.normalizeX(_map.x - (_map.container.width() / 2 - _map.x) * (_map.scale / scale - 1));
             //_map.y = _map.normalizeY(_map.y - (_map.container.height() / 2 - _map.y) * (_map.scale / scale - 1));
 
+            // если зажат ctrl - устанавливаем масштаб в 1
+            if (keyboard_listener.is_ctrl()) {
+                scale = 1;
+            }
+
             self.__execute_zoom(scale);
 
         });

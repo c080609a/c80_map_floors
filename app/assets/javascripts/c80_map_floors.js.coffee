@@ -28,4 +28,5 @@
 #= require ./src/utils/i18n.js
 #= require ./src/state_controller.js
 #= require ./src/image_loader.js
+#= require ./src/keyboard_listener.js
 #= require ./src/main.js

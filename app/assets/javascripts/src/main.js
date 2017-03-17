@@ -325,8 +325,8 @@ var InitMap = function (params) {
                 // т.е. меняем масштаб
                 if (self.mark_virgin) {
                     // рассчитаем масштаб, при котором можно вписать главный прямоугольник карты в прямоугольник рабочей области
-                    var scaleX = self.calcScale(self.o.mapwidth*0.05, self.o.mapwidth *.95, self.X10, self.X20);
-                    var scaleY = self.calcScale(self.o.mapheight*0.05, self.o.mapheight *.95, self.Y10, self.Y20);
+                    var scaleX = self.calcScale(self.o.mapwidth*0.15, self.o.mapwidth *.85, self.X10, self.X20);
+                    var scaleY = self.calcScale(self.o.mapheight*0.15, self.o.mapheight *.85, self.Y10, self.Y20);
                     var scale = (scaleX < scaleY) ? scaleX : scaleY;
                     self.scale = scale; /* NOTE:: вызывается во время window resize */
                 }
@@ -727,7 +727,7 @@ var InitMap = function (params) {
         var $building_info = $('.building_info'); // "layouts/shared/map_row/building_info"
         var $area_order_button = $('.area_order_button');
         var $container_buttons = $('#container_buttons');
-        var _is_debug_drawn = true;
+        var _is_debug_drawn = false;
         var _$address_p = $('#paddress'); // 20161003: после редизайна надо дополнительно позиционировать блок с адресом
 
         self.ivalidateViewArea = function () {

@@ -16,6 +16,7 @@ ActiveAdmin.register C80MapFloors::MapBuilding, as: 'MapBuilding' do
     column :id
     column :tag
     column :title
+    column :building_representator
     column :coords do |mp|
       d = mp.coords
       "<div style='width:100px;overflow:hidden;'>#{d}</div>".html_safe

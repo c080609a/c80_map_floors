@@ -1,6 +1,6 @@
 ActiveAdmin.register C80MapFloors::Floor, as: 'Floor' do
 
-  menu :label => "Этажи", :parent => 'Карта'#, :if => proc { current_admin_user.email == 'tz007@mail.ru' }
+  menu :label => 'Картинки Этажей', :parent => 'Карта'#, :if => proc { current_admin_user.email == 'tz007@mail.ru' }
 
   before_filter :skip_sidebar!, :only => :index
 
@@ -47,7 +47,15 @@ ActiveAdmin.register C80MapFloors::Floor, as: 'Floor' do
       f.input :img_bg, :hint => "#{image_tag(f.object.img_bg.thumb.url)}".html_safe
       # f.input :img_overlay, :hint => "#{image_tag(f.object.img_overlay.thumb.url)}".html_safe
       f.input :map_building,
-              :collection => C80MapFloors::MapBuilding.all.map { |building| ["#{building.title} (id=#{building.id})", building.id]}
+              :collection => C80MapFloors::MapBuilding.all.map { |building| ["title=#{building.title}, tag=#{building.title} (id=#{building.id})", building.id]},
+              :input_html => {
+                  :title => '',
+                  :class => 'selectpicker',
+                  :data => {
+                      :size => 30,
+                      :width => 300
+                  }
+              }
 
     end
 

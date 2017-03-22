@@ -1,6 +1,6 @@
 ActiveAdmin.register C80MapFloors::Setting, as: 'Setting' do
 
-  menu :label => "Свойства", :parent => 'Карта', :if => proc { current_admin_user.email == 'tz007@mail.ru' }
+  menu :label => 'Свойства карты', :parent => 'Карта', :if => proc { current_admin_user.email == 'tz007@mail.ru' }
 
   before_filter :skip_sidebar!, :only => :index
 

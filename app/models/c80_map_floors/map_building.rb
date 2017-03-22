@@ -8,7 +8,7 @@ module C80MapFloors
 
     include ActiveModel::Dirty
 
-    has_many :floors, :class_name => 'C80MapFloors::Floor', :dependent => :destroy
+    has_many :floors, :class_name => 'C80MapFloors::Floor', :dependent => :nullify
     belongs_to :building_representator, :polymorphic => true
 
     after_create :calc_coords_img

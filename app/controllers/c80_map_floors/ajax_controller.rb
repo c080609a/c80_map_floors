@@ -1,3 +1,5 @@
+require 'search_result'
+
 module C80MapFloors
   # noinspection RubyResolve
   class AjaxController < ApplicationController
@@ -48,7 +50,7 @@ module C80MapFloors
 
       # фиксируем участников
       rent_area = ::Area.find(params[:area_id])
-      area = C80MapFloors::Area.find(params[:apolygon_id])
+      area      = C80MapFloors::Area.find(params[:apolygon_id])
 
       # rent_area has_one area(полигон)
       rent_area.area.delete_all if rent_area.area.present?
@@ -96,7 +98,7 @@ module C80MapFloors
 
       # фиксируем участников
       sfloor = Sfloor.find(params[:sfloor_id])
-      floor = C80MapFloors::Floor.find(params[:floor_id])
+      floor  = C80MapFloors::Floor.find(params[:floor_id])
 
       # sfloor has_one floor
       sfloor.floor.delete_all if sfloor.floor.present?
@@ -113,9 +115,98 @@ module C80MapFloors
 
     end
 
+    def find_shops
+      Rails.logger.debug "[TRACE] <AjaxController.find_shops> params = #{params}"
+      # [TRACE] <AjaxController.find_shops> params = {"stext"=>"Ванны акриловые", "counter"=>"1", }
+
+      # result = {
+      #     buildings:             [],
+      #     buildings_shops_count: [],
+      #     floors:                [],    #
+      #     floors_shops_count:    [],
+      #     areas:                 []     # сюда собираем айдишники полигонов площадей
+      # }
+
+      result = SearchResult.new
+
+      # 1. Находим категорию, title которой равен строке.
+      cats   = Cat.where(:name => params[:stext])
+      if cats.count > 0
+        # работаем только с первой попавшейся категорией
+        cat = cats[0]
+
+        # если у категории имеются связанные магазины
+        if cat.shops.count > 0
+
+          # переберём их
+          cat.shops.each do |shop|
+
+            # добираемся до Rent::Area каждого магазина
+            if shop.areas.count > 0
+
+              shop.areas.each do |rent_area|
+
+                # если у Rent::Area имеется связанный полигон
+                if rent_area.area.present? # has_one
+
+                  map_area = rent_area.area
+
+                  # NOTE:: теперь, зная C80MapFloors::Area.id, находим id полигона этажа и id полигона здания
+
+                  Rails.logger.debug "[TRACE] <AjaxController.find_shops> add_area: #{map_area.id}"
+                  # result[:areas] << rent_area.area.id
+                  result.add_area(map_area.id)
+
+                  # посмотрим, имеется ли у полигона площади родители
+                  if map_area.floor.present?
+
+                    map_floor = map_area.floor
+                    Rails.logger.debug "[TRACE] <AjaxController.find_shops> add_floor: #{map_floor.id}"
+                    result.add_floor(map_floor.id)
+
+                    if map_floor.map_building.present?
+                      Rails.logger.debug "[TRACE] <AjaxController.find_shops> add_building: #{map_floor.map_building}"
+                      result.add_building(map_floor.map_building.id)
+                    else
+                      Rails.logger.debug "[TRACE] <AjaxController.find_shops> У Rent::Area нет родителей: #{rent_area.name}"
+                    end
+
+                  else
+                    Rails.logger.debug "[TRACE] <AjaxController.find_shops> У полигона площади нет родителей: #{rent_area.name}"
+                  end
+
+
+                else
+                  Rails.logger.debug "[TRACE] <AjaxController.find_shops> У Rent::Area нет полигона: #{rent_area.name}"
+                end
+
+              end
+
+            else
+              Rails.logger.debug "[TRACE] <AjaxController.find_shops> У магазина нет Rent::Area: #{shop.name}"
+            end
+
+          end
+
+        else
+          Rails.logger.debug "[TRACE] <AjaxController.find_shops> У этой категории нет магазинов: #{params[:stext]}"
+        end
+
+      else
+        Rails.logger.debug "[TRACE] <AjaxController.find_shops> Нет категории с таким именем = #{params[:stext]}"
+      end
+
+      Rails.logger.debug "[TRACE] <AjaxController.find_shops> Отправляем ответ: result = #{result.data}"
+
+      respond_to do |format|
+        format.json { render json: result.data }
+      end
+
+    end
+
     # от js пришла строка с названием категории. Необходимо найти магазины, соответствующие этой категории.
     # noinspection RailsChecklist01
-    def find_shops
+    def _find_shops
       Rails.logger.debug "[TRACE] <AjaxController.find_shops> params = #{params}"
       # [TRACE] <AjaxController.find_shops> params = {"stext"=>"Хозтовары", "counter"=>"1", "controller"=>"c80_map_floors/ajax", "action"=>"find_shops"}
 
@@ -163,14 +254,14 @@ module C80MapFloors
         # находим 3 рандомных полигона зданий (генерим случайное число для каждого здания)
         3.times do
 
-          map_building = MapBuilding.offset(rand(MapBuilding.count)).first
+          map_building       = MapBuilding.offset(rand(MapBuilding.count)).first
           map_building_count = rand(20)
 
           result[:buildings] << map_building.id
           result[:buildings_shops_count] << map_building_count
 
           # в каждом полигоне здания находим один рандомный полигон этажа (генерим случайное число для каждого этажа)
-          map_floor = map_building.floors.offset(rand(map_building.floors.count)).first
+          map_floor       = map_building.floors.offset(rand(map_building.floors.count)).first
           map_floor_count = rand(20)
 
           result[:floors] << map_floor.id
@@ -186,7 +277,7 @@ module C80MapFloors
 
       end
 
-      Rails.logger.debug "[TRACE] <AjaxController.fetch_unlinked_floors> Отправляем ответ: result = #{result}"
+      Rails.logger.debug "[TRACE] <AjaxController.find_shops> Отправляем ответ: result = #{result}"
 
       respond_to do |format|
         format.json { render json: result }

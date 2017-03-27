@@ -1322,8 +1322,9 @@ div#map_wrapper {
             cursor: pointer;
 
             &:hover, &.hover {
-              fill: rgba(255, 4, 0, 0.40);
-              stroke: rgba(251, 251, 251, 0.86);
+              fill: rgba(11, 11, 11, 0.26);
+              stroke: rgba(255, 255, 255, 0.96);
+              stroke-width: 3px;
             }
 
             &.found_area { /* удовлетворяющий поиску ЗАНЯТЫЙ polygon площади */
@@ -1369,6 +1370,7 @@ div#map_wrapper {
             &:hover, &.hover {
               fill: rgba(131, 131, 131, 0.40);
               stroke: rgba(251, 251, 251, 0.86);
+              stroke-width: 3px;
             }
           }
 

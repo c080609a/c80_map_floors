@@ -27,8 +27,8 @@ function Area() {
 
     _this.init = function (options, parent_floor_json, pself) {
 
-        console.log("<Area.init> options: ");
-        console.log(options);
+        //console.log("<Area.init> options: ");
+        //console.log(options);
 
         // нарисовали полигон площади, находясь на этаже:
         // => Object { coords: Array[8] }
@@ -36,8 +36,8 @@ function Area() {
         // полигон площади уже был нарисован, просто вошли на этаж:
         // => Object { id: 2, tag: "test_area", floor_id: 2, class_name: "C80MapFloors::Area", coords: "10,12,110,112", data: null }
 
-        console.log("<Area.init> parent_floor_json: ");
-        console.log(parent_floor_json);
+        //console.log("<Area.init> parent_floor_json: ");
+        //console.log(parent_floor_json);
 
         /*
          Object {
@@ -107,6 +107,8 @@ function Area() {
         _this._polygon_overlay = Polygon.createFromSaved(options, true, _map);
         _this._polygon_overlay.area = _this;
         _this._polygon_overlay = $(_this._polygon_overlay.polygon);
+        _this._polygon_overlay.attr('id', "map_area_id_"+_this.id); // 20170327-hover: внедряем id полигона площади
+        _this._polygon_overlay.addClass('polygon_overlay'); // 20170327-hover: добавляем css класс for the sake of conciseness при использовании
         _this._polygon_overlay.hover(_this._mouse_in, _this._mouse_out);
         _this._calcBBox();
 

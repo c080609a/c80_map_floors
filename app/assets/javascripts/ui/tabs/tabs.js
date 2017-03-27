@@ -286,6 +286,7 @@ function Tabs(options) {
 
                     var json_as_html_text = _options['info_helper'].makeHtmlText(json);
                     _$div_tab_content.html(json_as_html_text);
+                    _options['info_helper'].afterPastingHtmlText();
                 }
 
                 else {

@@ -14,8 +14,9 @@ function MobjInfoParser() {
     var _sresults_areas = null;
 
     // используется в _row_area_with_shop() и в _row_area_shop()
-    // 20170327: был добавлен id='link_shop_{MAP_AREA_ID}', для подсветки полигона, который соответствует магазину при наведении мышкой на ссылку
-    var _row_area_shop_pattern = "<li><a href='{HREF}' id='link_shop_{MAP_AREA_ID}' title='{TITLE}' target='_blank'>{TITLE}</a> ({AREA_TITLE}), {PHONE}</li>";
+    // 20170327-hover: был добавлен id='link_shop_{MAP_AREA_ID}', для подсветки полигона, который соответствует магазину при наведении мышкой на ссылку
+    // 20170327-hover: в тех же целях был добавлен css-класс
+    var _row_area_shop_pattern = "<li><a class='link_shop' href='{HREF}' id='link_shop_{MAP_AREA_ID}' title='{TITLE}' target='_blank'>{TITLE}</a> ({AREA_TITLE}), {PHONE}</li>";
 
     // используется в _row_area_data()
     var _row_area_pattern = "<li><a href='{HREF}' title='{AREA_TITLE}' target='_blank'>{AREA_TITLE}</a></li>";
@@ -206,6 +207,14 @@ function MobjInfoParser() {
       _umode = umode;
     };
 
+    /**
+     * 20170327-hover: После того, как вставили html текст (собранный методом makeHtmlText), вызывается этот hook.
+     *
+     */
+    this.afterPastingHtmlText = function () {
+        $('a.link_shop').hover(_this._row_area_shop_mover, _this._row_area_shop_mout);
+    };
+
     //--[ private ]-----------------------------------------------------------------------------------------------------
 
     /**
@@ -365,6 +374,26 @@ function MobjInfoParser() {
         res = res.split('{AREA_TITLE}').join(area_json['data']['title']);
         res = res.split('{MAP_AREA_ID}').join(area_json['id']);
         return res;
+    };
+
+    // при наведении мышки на ссылку
+    // будут подсвечиваться соответствующие полигоны
+    // при убирании мышки с ссылки - все полигоны не подсвечены
+    this._row_area_shop_mover = function () {
+        console.log('<_row_area_shop_mover>');
+
+        var map_area_id = $(this).attr('id').split('link_shop_').join('');
+
+        // сначала уберём мышку со всех полигонов
+        $('.polygon_overlay').mouseleave();
+
+        // затем "наведём" мышь на соответствующий полигон
+        $('.polygon_overlay#map_area_id_' + map_area_id).mouseenter();
+
+    };
+    this._row_area_shop_mout = function () {
+        // уберём мышку со всех полигонов
+        $('.polygon_overlay').mouseleave();
     };
 
     //--[ init ]--------------------------------------------------------------------------------------------------------

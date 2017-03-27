@@ -14,7 +14,8 @@ function MobjInfoParser() {
     var _sresults_areas = null;
 
     // используется в _row_area_with_shop() и в _row_area_shop()
-    var _row_area_shop_pattern = "<li><a href='{HREF}' title='{TITLE}' target='_blank'>{TITLE}</a> ({AREA_TITLE}), {PHONE}</li>";
+    // 20170327: был добавлен id='link_shop_{MAP_AREA_ID}', для подсветки полигона, который соответствует магазину при наведении мышкой на ссылку
+    var _row_area_shop_pattern = "<li><a href='{HREF}' id='link_shop_{MAP_AREA_ID}' title='{TITLE}' target='_blank'>{TITLE}</a> ({AREA_TITLE}), {PHONE}</li>";
 
     // используется в _row_area_data()
     var _row_area_pattern = "<li><a href='{HREF}' title='{AREA_TITLE}' target='_blank'>{AREA_TITLE}</a></li>";
@@ -340,12 +341,29 @@ function MobjInfoParser() {
      * @private
      */
     this._row_area_shop = function (area_json) {
+        //console.log('<_row_area_shop>');
+        /*
+         { floor_id:6,
+           id: 550,                 # айди полигона
+           coords: Array,
+           data: {
+              id: 444,              # айди Rent-площади
+              desc: '...',
+              is_free: false,
+              price_string: '',
+              square: 130,
+              title: "МЕБ-1"
+           }
+         }
+        */
+
         var shop = area_json['data']['shop'];
         var res = _row_area_shop_pattern;
         res = res.split('{TITLE}').join(shop['title']);
         res = res.split('{HREF}').join(shop['url']);
         res = res.split('{PHONE}').join(shop['tel']);
         res = res.split('{AREA_TITLE}').join(area_json['data']['title']);
+        res = res.split('{MAP_AREA_ID}').join(area_json['id']);
         return res;
     };
 

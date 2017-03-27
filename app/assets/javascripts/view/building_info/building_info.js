@@ -48,7 +48,7 @@ function BuildingInfo(options) {
     //-[ public ]-----------------------------------------------------------------------------------------------------------------------
 
     /**
-     * Получить данные для отображения.
+     * Получить данные для отображения, распарсить их и отобразить в инфо-окне.
      *
      * @param map_building_json     - Это данные от C80MapFloors::MapBuilding, метод my_as_json5
      */
@@ -61,6 +61,7 @@ function BuildingInfo(options) {
         this._removeAll();
         this._parseData();
         this._updateView();
+        this.set_max_height_of_tab_content();
 
     };
 
@@ -118,6 +119,19 @@ function BuildingInfo(options) {
         else {
             console.log('<BuildingInfo.searchResultsShow> [ERROR] Нет данных: search_results["areas"] = null.');
         }
+    };
+
+    /**
+     * 20170327: подгоняем по высоте блок с текстом внутри инфо-панели,
+     * т.к. список арендаторов и площадей может быть очень большим
+     *
+     * Вызывается при resize окна.
+     * Вызывается в конце this.SetData.
+     * @param max_height
+     */
+    this.set_max_height_of_tab_content = function (max_height) {
+        console.log('<set_max_height_of_tab_content>');
+        $('div.tab_content').css('max-height',max_height+'px');
     };
 
  //------------------------------------------------------------------------------------------------------------------------

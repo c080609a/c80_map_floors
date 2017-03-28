@@ -237,7 +237,7 @@ function StateController() {
                 _this.svg_overlay.css('display', 'block');
 
                 // покажем инфо-панель
-                _this.building_info_klass.show();
+                _map.building_info_klass.show();
 
                 _this.masked.addClass('hiddn');
 
@@ -289,7 +289,7 @@ function StateController() {
                 OpacityButtonsUtils.show(_this.edit_button);
 
                 // спрячем инфу о здании
-                _this.building_info_klass.hide();
+                _map.building_info_klass.hide();
 
                 // спрячем статус строку "вы создаёте полигон"
                 _this.map_creating.css('display', 'none');
@@ -318,7 +318,7 @@ function StateController() {
                 _this.masked.removeClass('hiddn');
 
                 // выдвигаем инфо-панель
-                _this.building_info_klass.show();
+                _map.building_info_klass.show();
 
                 // TODO:: реализовать показ кнопки 'оставить заявку'
                 //<editor-fold desc="// спозиционируем и покажем кнопку 'оставить заявку'">

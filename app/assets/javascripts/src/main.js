@@ -130,6 +130,13 @@ var InitMap = function (params) {
              self.o.deeplinking = false;
              }*/
 
+            // инициализиуем класс, занимающийся отображением данных о здании\этаже\площади
+            self.building_info_klass = new BuildingInfo({
+                onFloorTabChange: function (floor_id) {
+                    self.current_building.enterFloor(floor_id); //#-> только с помощью клика по табам можно войти на Этаж
+                }
+            });
+
             if (typeof self.o.source === 'string') {
                 // Loading .json file with AJAX
                 $.getJSON(self.o.source, function (data) { // Success
@@ -289,13 +296,6 @@ var InitMap = function (params) {
 
             // проверим, всё ли уместилось
             self.ivalidateViewArea();
-
-            // инициализиуем класс, занимающийся отображением данных о здании\этаже\площади
-            self.building_info_klass = new BuildingInfo({
-                onFloorTabChange: function (floor_id) {
-                    self.current_building.enterFloor(floor_id); //#-> только с помощью клика по табам можно войти на Этаж
-                }
-            });
 
             // инициализируем класс, обслуживающий поиск
             self.search_gui_klass = new SearchGUI(self);
@@ -728,7 +728,6 @@ var InitMap = function (params) {
 
         var _$m = $("#map_wrapper");
         var _$b = $('.container');//$('footer .container');
-        var $building_info = $('.building_info'); // "layouts/shared/map_row/building_info"
         var $area_order_button = $('.area_order_button');
         var $container_buttons = $('#container_buttons');
         var _is_debug_drawn = false;
@@ -756,7 +755,7 @@ var InitMap = function (params) {
             self.Y20 = _$m.height();
 
             // позиционируем элементы
-            $building_info.css("left", self.X2 + "px");
+            self.building_info_klass.set_left(self.X2);
             $area_order_button.css("left", self.X2 + "px");
             if (self.container) $container_buttons.css("margin-top", (self.container.height() -10) + "px");
 
@@ -1373,57 +1372,9 @@ var InitMap = function (params) {
             //if (self.minimap) self.minimap.update(x, y);
         };
 
-        // TODO:: показать инфо о просматриваемой площади (это код, который остался без изменений от c80_map)
+        // показать инфо о просматриваемой площади
         self.showAreaInfo = function (area_json, parent_floor_json) {
-            //console.log(area_hash);
-
-            // так было в c80_map
-            //"area_hash": {
-            //        "id": 2,
-            //        "title": "Площадь 2.12",
-            //        "is_free": false,
-            //        "props": {
-            //            "square": "100 кв.м.",
-            //            "floor_height": "6 кв. м",
-            //            "column_step": "2 м",
-            //            "gate_type": "распашные",
-            //            "communications": "Интернет, электричество, водоснабжение",
-            //            "price": "от 155 руб/кв.м в месяц"
-            //    }
-
-            // так стало в c80_map_floors
-            //"rent_building_hash": {
-            //        "id": 2,
-            //        "title": "Здание 2",
-            //        "props": {
-            //            "square": "1234 кв.м.",
-            //            "square_free": "124 кв. м",
-            //            "floor_height": "6 кв. м",
-            //            "column_step": "2 м",
-            //            "gate_type": "распашные",
-            //            "communications": "Интернет, электричество, водоснабжение",
-            //            "price": "от 155 руб/кв.м в месяц"
-            //    }
-
-            if (area_json == null || area_json == undefined) {
-                alert('[ERROR] У полигона нет привязки к Площади. Привяжите полигон площади.');
-            } else {
-                $building_info.find("h2").html("</span>" + area_json["title"] + "<span style='color:#D0B2B2;'> / " + parent_floor_json["title"]);
-
-                var v;
-                for (var p in area_json["props"]) {
-                    v = area_json["props"][p];
-                    $building_info.find("#" + p).find('span').text(v);
-                }
-
-                $building_info.find("#square_free").css('height', '0');
-
-                // заполняем данными ссылку 'Оставить заявку'
-                var $a_make_order = $building_info.find('.c80_order_invoking_btn');
-                $a_make_order.data('comment-text', 'Здравствуйте, оставляю заявку на площадь: ' + area_json["title"]);
-                $a_make_order.data('subj-id', area_json["id"]);
-            }
-
+            self.building_info_klass.show_area_info(area_json, parent_floor_json);
         };
 
         // перевод экранных координат в логические

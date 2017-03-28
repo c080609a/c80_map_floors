@@ -15,7 +15,6 @@ function StateController() {
     _this.map_removing = $('#map_removing');
     _this.main_map = $('.main_map'); /*qwwqq*/
     _this.svg_overlay = $('#svg_overlay');
-    _this.building_info = $('.building_info');
     _this.area_order_button = $('.area_order_button');
     _this.edit_button = $('.mapplic-edit-button');
     _this.masked = $('#masked');
@@ -67,7 +66,6 @@ function StateController() {
         if (_this.map_removing.length == 0) _this.map_removing = $('#map_removing');
         if (_this.main_map.length == 0) _this.main_map = $('.main_map'); /*qwwqq*/
         if (_this.svg_overlay.length == 0) _this.svg_overlay = $('#svg_overlay');
-        if (_this.building_info.length == 0) _this.building_info = $('.building_info');
         if (_this.area_order_button.length == 0) _this.area_order_button = $('.area_order_button');
         if (_this.masked.length == 0) _this.masked = $("#masked");
         //</editor-fold>
@@ -158,12 +156,8 @@ function StateController() {
                 // скроем слой, в котором рисуем анимацию по маске, который нужен только когда внутри здания\площади
                 _this.masked.addClass('hiddn');
 
-                // скроем табличку с данными о здании
-                if (_this.building_info.data("init") == undefined) {
-                    _this.building_info.data('init', _this.building_info.css("top"));
-                }
-                _this.building_info.css("top", -400);
-                _this.building_info.css("display", "block");
+                // спрячем инфу о здании
+                _map.building_info_klass.hide();
 
                 // скроем кнопку "забронировать площадь"
                 _this.area_order_button.css('display', 'none');
@@ -242,7 +236,9 @@ function StateController() {
                 //_this.main_map.css('opacity','0.7');
                 _this.svg_overlay.css('display', 'block');
 
-                _this.building_info.css("top", _this.building_info.data("init"));
+                // покажем инфо-панель
+                _this.building_info_klass.show();
+
                 _this.masked.addClass('hiddn');
 
                 _this.area_order_button.css('display', 'none');
@@ -293,7 +289,7 @@ function StateController() {
                 OpacityButtonsUtils.show(_this.edit_button);
 
                 // спрячем инфу о здании
-                _this.building_info.css("top", -300);
+                _this.building_info_klass.hide();
 
                 // спрячем статус строку "вы создаёте полигон"
                 _this.map_creating.css('display', 'none');
@@ -322,7 +318,7 @@ function StateController() {
                 _this.masked.removeClass('hiddn');
 
                 // выдвигаем инфо-панель
-                _this.building_info.css("top", _this.building_info.data("init"));
+                _this.building_info_klass.show();
 
                 // TODO:: реализовать показ кнопки 'оставить заявку'
                 //<editor-fold desc="// спозиционируем и покажем кнопку 'оставить заявку'">
@@ -369,7 +365,7 @@ function StateController() {
                 _map.edit_button_klass.setState('edit_area', true); // [a1x7]
 
                 // спрячем инфу о здании
-                _this.building_info.css("top", -500);
+                _map.building_info_klass.hide();
 
                 // скроем форму поиска
                 _map.search_gui_klass.position_hide();
@@ -391,7 +387,7 @@ function StateController() {
                 _this.svg_overlay.css('display', 'block');
 
                 // выдвигаем инфо-панель
-                _this.building_info.css("top", _this.building_info.data("init"));
+                _map.building_info_klass.show();
 
                 // покажем кнопку "обратно на карту"
                 _map.back_to_map_button_klass.show();
@@ -459,7 +455,7 @@ function StateController() {
                 OpacityButtonsUtils.show(_this.edit_button);
 
                 // спрячем инфу о здании
-                _this.building_info.css("top", -500);
+                _map.building_info_klass.hide();
 
                 // спрячем статус строки "вы создаёте полигон" и ...
                 _this.map_creating.css('display', 'none');

@@ -12,6 +12,8 @@ function BuildingInfo(options) {
 
     var _this = this;
 
+    var _el_building_info = null;
+
     // текуще отображаемое здание (Это данные от C80MapFloors::MapBuilding, метод my_as_json5)
     var _cur_map_building_json;
 
@@ -134,6 +136,83 @@ function BuildingInfo(options) {
         $('div.tab_content').css('max-height',max_height+'px');
     };
 
+    this.show = function() {
+        _el_building_info.css("top", _el_building_info.data("init"));
+    };
+
+    this.hide = function() {
+
+        if (_el_building_info.data("init") == undefined) {
+            _el_building_info.data('init', _el_building_info.css("top"));
+        }        
+        
+        var h = _el_building_info.height() + 100;
+        _el_building_info.css("top", -h+'px');
+        _el_building_info.css("display", "block");
+    };
+
+    /**
+     * Показать инфо о просматриваемой площади (это код, который остался без изменений от c80_map)
+     *
+     * @param area_json
+     * @param parent_floor_json
+     */
+    this.show_area_info = function (area_json, parent_floor_json) {
+        //console.log(area_hash);
+
+        // так было в c80_map
+        //"area_hash": {
+        //        "id": 2,
+        //        "title": "Площадь 2.12",
+        //        "is_free": false,
+        //        "props": {
+        //            "square": "100 кв.м.",
+        //            "floor_height": "6 кв. м",
+        //            "column_step": "2 м",
+        //            "gate_type": "распашные",
+        //            "communications": "Интернет, электричество, водоснабжение",
+        //            "price": "от 155 руб/кв.м в месяц"
+        //    }
+
+        // так стало в c80_map_floors
+        //"rent_building_hash": {
+        //        "id": 2,
+        //        "title": "Здание 2",
+        //        "props": {
+        //            "square": "1234 кв.м.",
+        //            "square_free": "124 кв. м",
+        //            "floor_height": "6 кв. м",
+        //            "column_step": "2 м",
+        //            "gate_type": "распашные",
+        //            "communications": "Интернет, электричество, водоснабжение",
+        //            "price": "от 155 руб/кв.м в месяц"
+        //    }
+
+        if (area_json == null || area_json == undefined) {
+            alert('[ERROR] У полигона нет привязки к Площади. Привяжите полигон площади.');
+        } else {
+            _el_building_info.find("h2").html("</span>" + area_json["title"] + "<span style='color:#D0B2B2;'> / " + parent_floor_json["title"]);
+
+            var v;
+            for (var p in area_json["props"]) {
+                v = area_json["props"][p];
+                _el_building_info.find("#" + p).find('span').text(v);
+            }
+
+            _el_building_info.find("#square_free").css('height', '0');
+
+            // заполняем данными ссылку 'Оставить заявку'
+            var $a_make_order = _el_building_info.find('.c80_order_invoking_btn');
+            $a_make_order.data('comment-text', 'Здравствуйте, оставляю заявку на площадь: ' + area_json["title"]);
+            $a_make_order.data('subj-id', area_json["id"]);
+        }
+
+    };
+
+    this.set_left = function(left) {
+        _el_building_info.css("left", left + "px");
+    };
+
  //------------------------------------------------------------------------------------------------------------------------
 
     /**
@@ -153,6 +232,10 @@ function BuildingInfo(options) {
     //---[ dsd ]---------------------------------------------------------------------------------------------------------------------
 
     this._fInit = function (options) {
+
+        // фиксируем html-узел
+        _el_building_info = $('.building_info');
+
         // TODO:: _options extend options
         _options = $.extend(_options, options);
 
@@ -165,7 +248,7 @@ function BuildingInfo(options) {
         });
 
         // находим заголовок
-        _$title = $('.building_info').find('h3');
+        _$title = _el_building_info.find('h3');
 
     };
 

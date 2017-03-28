@@ -44,7 +44,7 @@ var InitMap = function (params) {
     var Map = function () {
         var self = this;
 
-        self.debug = true;
+        self.debug = false;
         self.o = {
             source: 'locations.json', // data
             height: 400,    // viewbox height, pixels
@@ -329,8 +329,8 @@ var InitMap = function (params) {
                 // т.е. меняем масштаб
                 if (self.mark_virgin) {
                     // рассчитаем масштаб, при котором можно вписать главный прямоугольник карты в прямоугольник рабочей области
-                    var scaleX = self.calcScale(self.o.mapwidth*0.15, self.o.mapwidth *.85, self.X10, self.X20);
-                    var scaleY = self.calcScale(self.o.mapheight*0.15, self.o.mapheight *.85, self.Y10, self.Y20);
+                    var scaleX = self.calcScale(self.o.mapwidth*0.05, self.o.mapwidth *.95, self.X10, self.X20);
+                    var scaleY = self.calcScale(self.o.mapheight*0.05, self.o.mapheight *.95, self.Y10, self.Y20);
                     var scale = (scaleX < scaleY) ? scaleX : scaleY;
                     self.scale = scale; /* NOTE:: вызывается во время window resize */
                 }

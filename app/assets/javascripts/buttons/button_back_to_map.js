@@ -49,6 +49,7 @@ function BackToMapButton() {
         _btn.on('click', _onClick);
         _cnt.append(_btn);
 
+        // фиксируем вспомогательный элемент
         _$building_info = $('.building_info');
 
     };

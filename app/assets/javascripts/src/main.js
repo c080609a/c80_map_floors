@@ -1373,51 +1373,6 @@ var InitMap = function (params) {
             //if (self.minimap) self.minimap.update(x, y);
         };
 
-        // показать инфо о здании
-        self.showBuildingInfo_old = function (rent_building_hash) {
-            //console.log("<main.showBuildingInfo> Показать информацию о Rent-здании с id = " + rent_building_hash.id);
-
-            //"rent_building_hash": {
-            //    "id": 2,
-            //        "title": "Здание 2",
-            //        "props": {
-            //            "square": "1234 кв.м.",
-            //            "square_free": "124 кв. м",
-            //            "floor_height": "124 кв. м",
-            //            "column_step": "2 м",
-            //            "gate_type": "распашные",
-            //            "communications": "Интернет, электричество, водоснабжение",
-            //            "price": "от 155 руб/кв.м в месяц"
-            //    }
-
-            if (rent_building_hash.id == undefined) {
-                $building_info.css('display','none');
-            } else {
-                $building_info.css('display','block');
-                $building_info.find("h2").text(rent_building_hash["title"]);
-
-                var v, $ili, p;
-                for (p in rent_building_hash["props"]) {
-
-                    v = rent_building_hash["props"][p];
-                    $ili = $building_info.find("#" + p);
-                    $ili.find('span').text(v);
-                    //console.log("."+v+".");
-
-                    // Не показывать пользователю карты незаполненные поля
-                    var li_css_display = 'block';
-                    if (v == '' || v == '-1' || v === 'null' || v == null) {
-                        li_css_display = 'none';
-                    }
-                    $ili.css('display',li_css_display);
-
-
-                }
-
-                $building_info.find("#square_free").css('height', 'auto');
-            }
-        };
-
         // TODO:: показать инфо о просматриваемой площади (это код, который остался без изменений от c80_map)
         self.showAreaInfo = function (area_json, parent_floor_json) {
             //console.log(area_hash);

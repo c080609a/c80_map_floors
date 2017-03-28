@@ -8,6 +8,7 @@ function BackToMapButton() {
     var _cnt = null;
     var _btn = null;
 
+    // вспомогательно: относительно окна выравниваем кнопку
     var _$building_info = null;
 
     var _onClick = function () {

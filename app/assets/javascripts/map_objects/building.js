@@ -32,6 +32,7 @@ function Building() {
     _this._admin_label = null; // админский лейбл - айдишник и название Здания (привязанного к полигону), видимый в режиме редактирования
 
     var _zoomToMe = function () {
+        console.log('<_zoomToMe>');
 
         /* рассчитаем масштаб, при котором можно вписать прямоугольник дома в прямоугольник рабочей области */
 
@@ -43,12 +44,12 @@ function Building() {
         scale = _map.normalizeScale(scale);
 
         var x = _map.normalizeX({
-            x: _map.CX - scale * _cx - _map.container.offset().left,
+            x: _map.CX - scale * _cx, // + _map.container.offset().left,
             scale: scale
         });
 
         var y = _map.normalizeY({
-            y: _map.CY - scale * _cy - _map.container.offset().top,
+            y: _map.CY - scale * _cy, // - _map.container.offset().top,
             scale: scale
         });
 
@@ -290,8 +291,8 @@ function Building() {
 
 
     };
-
     _this.exit = function () {
+
         if (_$image_bg != null) _$image_bg.remove();
         if (_image_overlay != null) {
             _image_overlay.remove();

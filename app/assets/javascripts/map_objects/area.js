@@ -151,12 +151,12 @@ function Area() {
         //_map.y = _map.normalizeY(_map.CY - _map.scale * _cy - _map.container.offset().top);
 
         var x = _map.normalizeX({
-            x: _map.CX - scale * _cx - _map.container.offset().left,
+            x: _map.CX - scale * _cx,// - _map.container.offset().left,
             scale: scale
         });
 
         var y = _map.normalizeY({
-            y: _map.CY - scale * _cy - _map.container.offset().top,
+            y: _map.CY - scale * _cy,// - _map.container.offset().top,
             scale: scale
         });
 

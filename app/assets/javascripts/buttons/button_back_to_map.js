@@ -63,7 +63,7 @@ function BackToMapButton() {
     };
     var __show = function () {
         // фиксируем
-        var building_info_top = _$building_info.offset().top;
+        var building_info_top = _$building_info.offset().top - _map.container.offset().top;
         var building_info_height = _$building_info.height();
 
         // считаем

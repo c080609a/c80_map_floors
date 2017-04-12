@@ -104,14 +104,16 @@ function SearchGUI(link_to_map) {
      * Вернуть родительский div-контейнер в начальную (исходную, `нормальную`) позицию.
      */
     this.position_init = function () {
-        // если еще ниразу никуда не сдвигали с начальной позиции
-        if (_$container.data('init_position_top') == undefined) {
-            // запомним начальную позицию
-            _$container.data('init_position_top', _$container.css("top"));
-            _$container.data('init_position_left', _$container.css("left"));
+        if (_$container != null) { // может быть null, если вдруг gui поиска не пришёл с сервера
+            // если еще ниразу никуда не сдвигали с начальной позиции
+            if (_$container.data('init_position_top') == undefined) {
+                // запомним начальную позицию
+                _$container.data('init_position_top', _$container.css("top"));
+                _$container.data('init_position_left', _$container.css("left"));
+            }
+            _$container.css("top", _$container.data('init_position_top'));
+            _$container.css("left", _$container.data('init_position_left'));
         }
-        _$container.css("top", _$container.data('init_position_top'));
-        _$container.css("left", _$container.data('init_position_left'));
     };
 
     /**

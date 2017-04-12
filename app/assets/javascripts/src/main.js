@@ -853,6 +853,7 @@ var InitMap = function (params) {
          *           можно было отобразить характеристики Здания родителя C80Rent:Building.
          */
         self.draw_childs = function (childs, parent_hash) {
+            if (childs == undefined) return;
             console.log("<Map.draw_childs>");
 
             //var ip;

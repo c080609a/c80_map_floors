@@ -122,8 +122,10 @@ function SearchGUI(link_to_map) {
      */
     this.position_inside = function () {
         //console.log('<position_inside> [breakpoint].');
-        _$container.css("left", -200);
-        _$container.css("top", _$container.data('init_position_top'));
+        if (_$container != null) { // может быть null, если вдруг gui поиска не пришёл с сервера
+            _$container.css("left", -200);
+            _$container.css("top", _$container.data('init_position_top'));
+        }
     };
 
     /**
@@ -131,7 +133,9 @@ function SearchGUI(link_to_map) {
      * Например, когда переходим в режим редактирования.
      */
     this.position_hide = function () {
-        _$container.css("top", -200);
+        if (_$container != null) { // может быть null, если вдруг gui поиска не пришёл с сервера
+            _$container.css("top", -200);
+        }
     };
     
     //--[ private ]-----------------------------------------------------------------------------------------------------

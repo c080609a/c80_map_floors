@@ -16,7 +16,8 @@ function MobjInfoParser() {
     // используется в _row_area_with_shop() и в _row_area_shop()
     // 20170327-hover: был добавлен id='link_shop_{MAP_AREA_ID}', для подсветки полигона, который соответствует магазину при наведении мышкой на ссылку
     // 20170327-hover: в тех же целях был добавлен css-класс
-    var _row_area_shop_pattern = "<li><a class='link_shop' href='{HREF}' id='link_shop_{MAP_AREA_ID}' title='{TITLE}' target='_blank'>{TITLE}</a> ({AREA_TITLE}), {PHONE}</li>";
+    // 20170328-view_area: был добавлен id вцелом элементу списка, чтобы можно было скрывать нерелевантные элементы при входе в площадь
+    var _row_area_shop_pattern = "<li id='li_area_{MAP_AREA_ID}' class='li_area'><a class='link_shop' href='{HREF}' id='link_shop_{MAP_AREA_ID}' title='{TITLE}' target='_blank'>{TITLE}</a> ({AREA_TITLE}), {PHONE}</li>";
 
     // используется в _row_area_data()
     var _row_area_pattern = "<li><a href='{HREF}' title='{AREA_TITLE}' target='_blank'>{AREA_TITLE}</a></li>";

@@ -496,8 +496,8 @@ var InitMap = function (params) {
                     self.dragging = false;
                     map.stop();
 
-                    map.data('mouseX', event.pageX);
-                    map.data('mouseY', event.pageY);
+                    map.data('mouseX', event.pageX - self.x);
+                    map.data('mouseY', event.pageY - self.y);
                     map.data('lastX', self.x);
                     map.data('lastY', self.y);
                     map.data('startX', self.x);
@@ -509,8 +509,8 @@ var InitMap = function (params) {
                         self.dragging = true;
 
                         if (self.o.dnd_enable) { // NOTE:: добавить возможность делать dnd находясь в режиме рисования (админа?)
-                            var x = event.pageX - map.data('mouseX') + self.x;
-                            var y = event.pageY - map.data('mouseY') + self.y;
+                            var x = event.pageX - map.data('mouseX');// + self.x;
+                            var y = event.pageY - map.data('mouseY');// + self.y;
 
                             x = self.normalizeX({
                                 x:x,
@@ -853,6 +853,7 @@ var InitMap = function (params) {
          *           можно было отобразить характеристики Здания родителя C80Rent:Building.
          */
         self.draw_childs = function (childs, parent_hash) {
+            if (childs == undefined) return;
             console.log("<Map.draw_childs>");
 
             //var ip;

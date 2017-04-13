@@ -39,12 +39,27 @@ Add this to `routes.rb`:
 
 # Configure
 
+Migrate:
+
+```
+   $ mi
+```   
+
 Use seeds:
 
 ```
-    $ rake db:seed:801_fill_map_settings
+    $ rake db:seed:c80_map_floors_01_fill_map_settings
 ```
 
+Create `public/locations.json`:
+
+```
+{
+  "mapwidth": "3000",
+  "mapheight": "1558",
+  "img": "/uploads/map/none.jpg"
+}
+```
 
 ## Start
 

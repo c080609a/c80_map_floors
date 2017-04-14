@@ -24,18 +24,17 @@ var InitMap = function (params) {
     var y = (window_height - image_height)/2;
     // - to delete end -----------------------------------------------------------------------------------------------------------------------
 
-    map_on_index_page = $('#map_wrapper').beMap(
-        {
-            source:LOCS_HASH,
-            scale: scale,
-            x: x,
-            y: y,
-            mapwidth: MAP_WIDTH,
-            mapheight: MAP_HEIGHT,
-            height: window_height,
-            dnd_enable: dnd_enable
-        }
-    );
+    var map_params = {
+        source:LOCS_HASH,
+        scale: scale,
+        x: x,
+        y: y,
+        mapwidth: MAP_WIDTH,
+        mapheight: MAP_HEIGHT,
+        height: window_height
+    };
+    map_params = $.extend(map_params, params);
+    map_on_index_page = $('#map_wrapper').beMap(map_params);
 
 };
 
@@ -44,7 +43,6 @@ var InitMap = function (params) {
     var Map = function () {
         var self = this;
 
-        self.debug = false;
         self.o = {
             source: 'locations.json', // data
             height: 400,    // viewbox height, pixels
@@ -59,7 +57,8 @@ var InitMap = function (params) {
             scale: 1,
             x: 0,
             y: 0,
-            dnd_enable: true
+            dnd_enable: true,
+            debug: false
         };
         self.svg = null;
         self.svg_overlay = null;
@@ -295,7 +294,7 @@ var InitMap = function (params) {
             self.draw_childs(data["buildings"]);
 
             // проверим, всё ли уместилось
-            self.ivalidateViewArea();
+            self.invalidateViewArea();
 
             // инициализируем класс, обслуживающий поиск
             self.search_gui_klass = new SearchGUI(self);
@@ -390,7 +389,7 @@ var InitMap = function (params) {
                 // ------------------------------------------------------------------------------------------------------------------------
 
 
-                self.ivalidateViewArea();
+                self.invalidateViewArea();
 
             }).resize();
 
@@ -724,7 +723,7 @@ var InitMap = function (params) {
             return pageC - scale * logicC;
         };
 
-        /* --- ivalidateViewArea BEGIN --------------------------------------------------------------------------------- */
+        /* --- invalidateViewArea BEGIN --------------------------------------------------------------------------------- */
 
         var _$m = $("#map_wrapper");
         var _$b = $('.container');//$('footer .container');
@@ -733,8 +732,8 @@ var InitMap = function (params) {
         var _is_debug_drawn = false;
         var _$address_p = $('#paddress'); // 20161003: после редизайна надо дополнительно позиционировать блок с адресом
 
-        self.ivalidateViewArea = function () {
-            //console.log('<init> _$b.offset().left = ' + _$b.offset().left);
+        self.invalidateViewArea = function () {
+            console.log('<invalidateViewArea>');
 
             // рассчитаем "константы" - прямоугольник, в который надо вписывать картинки зданий при входе в них
             self.X1 = _$b.offset().left + 100;
@@ -760,7 +759,7 @@ var InitMap = function (params) {
             if (self.container) $container_buttons.css("margin-top", (self.container.height() -10) + "px");
 
             // DEBUG
-            if (self.debug) {
+            if (self.o.debug) {
 
                 if (!_is_debug_drawn) {
                     _is_debug_drawn = true;
@@ -799,7 +798,7 @@ var InitMap = function (params) {
 
         };
 
-        /* --- ivalidateViewArea END ----------------------------------------------------------------------------------- */
+        /* --- invalidateViewArea END ----------------------------------------------------------------------------------- */
 
         self.addEvent = function (target, eventType, func) {
             self.events.push(new AppEvent(target, eventType, func));

@@ -24,18 +24,17 @@ var InitMap = function (params) {
     var y = (window_height - image_height)/2;
     // - to delete end -----------------------------------------------------------------------------------------------------------------------
 
-    map_on_index_page = $('#map_wrapper').beMap(
-        {
-            source:LOCS_HASH,
-            scale: scale,
-            x: x,
-            y: y,
-            mapwidth: MAP_WIDTH,
-            mapheight: MAP_HEIGHT,
-            height: window_height,
-            dnd_enable: dnd_enable
-        }
-    );
+    var map_params = {
+        source:LOCS_HASH,
+        scale: scale,
+        x: x,
+        y: y,
+        mapwidth: MAP_WIDTH,
+        mapheight: MAP_HEIGHT,
+        height: window_height
+    };
+    map_params = $.extend(map_params, params);
+    map_on_index_page = $('#map_wrapper').beMap(map_params);
 
 };
 
@@ -44,7 +43,6 @@ var InitMap = function (params) {
     var Map = function () {
         var self = this;
 
-        self.debug = false;
         self.o = {
             source: 'locations.json', // data
             height: 400,    // viewbox height, pixels
@@ -59,7 +57,12 @@ var InitMap = function (params) {
             scale: 1,
             x: 0,
             y: 0,
-            dnd_enable: true
+            dnd_enable: true,
+            debug: false,
+            left_padding: 20,
+            focus_area_width: 520,
+            top_padding: 20,
+            focus_area_height: 520
         };
         self.svg = null;
         self.svg_overlay = null;
@@ -295,7 +298,7 @@ var InitMap = function (params) {
             self.draw_childs(data["buildings"]);
 
             // проверим, всё ли уместилось
-            self.ivalidateViewArea();
+            self.invalidateViewArea();
 
             // инициализируем класс, обслуживающий поиск
             self.search_gui_klass = new SearchGUI(self);
@@ -390,7 +393,7 @@ var InitMap = function (params) {
                 // ------------------------------------------------------------------------------------------------------------------------
 
 
-                self.ivalidateViewArea();
+                self.invalidateViewArea();
 
             }).resize();
 
@@ -724,7 +727,7 @@ var InitMap = function (params) {
             return pageC - scale * logicC;
         };
 
-        /* --- ivalidateViewArea BEGIN --------------------------------------------------------------------------------- */
+        /* --- invalidateViewArea BEGIN --------------------------------------------------------------------------------- */
 
         var _$m = $("#map_wrapper");
         var _$b = $('.container');//$('footer .container');
@@ -733,21 +736,24 @@ var InitMap = function (params) {
         var _is_debug_drawn = false;
         var _$address_p = $('#paddress'); // 20161003: после редизайна надо дополнительно позиционировать блок с адресом
 
-        self.ivalidateViewArea = function () {
-            //console.log('<init> _$b.offset().left = ' + _$b.offset().left);
+        self.invalidateViewArea = function () {
+            console.log('<invalidateViewArea>');
 
             // рассчитаем "константы" - прямоугольник, в который надо вписывать картинки зданий при входе в них
-            self.X1 = _$b.offset().left + 100;
+            self.X1 = self.o.left_padding;
+            self.X2 = self.o.left_padding + self.o.focus_area_width;
+
+            self.Y1 = self.o.top_padding;
+            self.Y2 = self.o.top_padding + self.o.focus_area_height;
+
+            self.CX = (self.X2 + self.X1) / 2;
+            self.CY = (self.Y2 + self.Y1) / 2;
+
             self.X1S = _$b.offset().left + 200;
-            self.Y1 = 73;
             self.Y1S = 140;
-            self.X2 = self.X1 + _$b.width() * .5;
             self.X2S = self.X1 + _$b.width() * .4;
             self.X3 = self.X1 + _$b.width() - 100;
-            self.Y2 = _$m.height() - 20;
             self.Y2S = _$m.height() - 80;
-            self.CX = (self.X2 - self.X1) / 2 - 2 + self.X1;
-            self.CY = (self.Y2 - self.Y1) / 2 - 2 + self.Y1;
 
             self.X10 = _$b.offset().left + 15;
             self.X20 = self.X10 + _$b.width();
@@ -760,21 +766,24 @@ var InitMap = function (params) {
             if (self.container) $container_buttons.css("margin-top", (self.container.height() -10) + "px");
 
             // DEBUG
-            if (self.debug) {
+            if (self.o.debug) {
 
                 if (!_is_debug_drawn) {
                     _is_debug_drawn = true;
 
-                    var style = "display:block;position:absolute;background-color:#00ff00;opacity:0.4;";
+                    var style = "display:block;position:absolute;background-color:#00ff00;opacity:0.7;";
                     var style_x = style + "width:1px;height:800px;top:0;left:{X}px;";
                     var style_y = style + "width:3000px;height:1px;left:0;top:{Y}px;";
                     //var style_dot = style + 'width:4px;height:4px;left:{X}px;top:{Y}px;';
 
                     var to_draw = [
-                        {x: self.X10},
-                        {x: self.X20},
-                        {y: self.Y10},
-                        {y: self.Y20},
+                        {x: self.X1},
+                        {x: self.X2},
+                        {y: self.Y1},
+                        {y: self.Y2},
+                        //{x: self.X20},
+                        //{y: self.Y10},
+                        //{y: self.Y20},
                         {x: self.CX},
                         {y: self.CY}
                     ];
@@ -799,7 +808,7 @@ var InitMap = function (params) {
 
         };
 
-        /* --- ivalidateViewArea END ----------------------------------------------------------------------------------- */
+        /* --- invalidateViewArea END ----------------------------------------------------------------------------------- */
 
         self.addEvent = function (target, eventType, func) {
             self.events.push(new AppEvent(target, eventType, func));
@@ -942,7 +951,9 @@ var InitMap = function (params) {
         };
 
         self._draw_map_object_image_bg_onload = function ($image) {
-            self.clear_all_map_object_image_bg();
+            setTimeout(function() {
+                self.clear_all_map_object_image_bg();
+            }, 500);
             self.__compose_css_style_for_map_object_image($image); // рассчитаем позиционирующий стиль и применим его к созданной оверлейной картинке
         };
 

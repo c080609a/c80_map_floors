@@ -104,14 +104,7 @@ function Building() {
         }
         if (map_floor_as_json["img_bg"]["url"] != "null") {
 
-            // NOTE::картинку этажа рисуем не по bounding box здания, а по значениям из базы
-
-            // сначала возьём координаты coords_img здания
-            var tmp = _options["coords_img"].split(",");
-            var xx = parseFloat(tmp[0]);
-            var yy = parseFloat(tmp[1]);
-
-            // и сложим их с корректирующими координатами coords этажа
+            // картинку этажа рисуем по значениям из базы
             var xx2 = 0;
             var yy2 = 0;
             if (map_floor_as_json["coords"].length) {
@@ -125,8 +118,8 @@ function Building() {
 
             // просим карту нарисовать картинку с данными характеристиками
             _$image_bg = _map.draw_map_object_image_bg(map_floor_as_json["img_bg"]["url"], {
-                x: xx + xx2,
-                y: yy + yy2,
+                x: xx2,
+                y: yy2,
                 width: map_floor_as_json["img_bg_width"],
                 height: map_floor_as_json["img_bg_height"]
             }/*, 'building'*/);

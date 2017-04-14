@@ -1,5 +1,5 @@
 #BackToMapButton {
-  background-color: #3377A8;
+  background-color: #5FCE4B;
   color: #fff !important;
   display: block;
   font-size: 17px;
@@ -20,9 +20,10 @@
   text-transform: uppercase;
   /*font-family: FrankRegular, sans-serif;*/
   font-weight: normal;
+  margin: 10px 0;
 
   &:hover {
-    background-color: #5FCE4B;
+    background-color: #3377A8;
   }
 
 }

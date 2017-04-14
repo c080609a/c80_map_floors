@@ -69,12 +69,17 @@ Create in host app's assets\javascripts:
 $(document).ready(function() {
     if ($('#map_wrapper').length) {
         InitMap({
-            dnd_enable:false
+            dnd_enable:false,
+            debug: true,
+            left_padding: 50,
+            right_padding: 50,
+            focus_area_width: 500,
+            focus_area_height: 500
         });
     }
 });
 ```
-
+![map padding tuning](map_padding_tuning.jpg)
 
 # Helpers
 ```

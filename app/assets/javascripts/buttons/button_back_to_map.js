@@ -11,7 +11,8 @@ function BackToMapButton() {
     // вспомогательно: относительно окна выравниваем кнопку
     var _$building_info = null;
 
-    var _onClick = function () {
+    var _onClick = function (e) {
+        e.preventDefault();
         _map.setMode('viewing');
 
         if (_map.current_building) {

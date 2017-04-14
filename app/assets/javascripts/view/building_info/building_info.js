@@ -12,7 +12,7 @@ function BuildingInfo(options) {
 
     var _this = this;
 
-    var _el_building_info = null;
+    var _$el_building_info = null;
 
     // текуще отображаемое здание (Это данные от C80MapFloors::MapBuilding, метод my_as_json5)
     var _cur_map_building_json;
@@ -137,18 +137,18 @@ function BuildingInfo(options) {
     };
 
     this.show = function() {
-        _el_building_info.css("top", _el_building_info.data("init"));
+        _$el_building_info.css("top", _$el_building_info.data("init"));
     };
 
     this.hide = function() {
 
-        if (_el_building_info.data("init") == undefined) {
-            _el_building_info.data('init', _el_building_info.css("top"));
+        if (_$el_building_info.data("init") == undefined) {
+            _$el_building_info.data('init', _$el_building_info.css("top"));
         }        
         
-        var h = _el_building_info.height() + 100;
-        _el_building_info.css("top", -h+'px');
-        _el_building_info.css("display", "block");
+        var h = _$el_building_info.height() + 100;
+        _$el_building_info.css("top", -h+'px');
+        _$el_building_info.css("display", "block");
     };
 
     /**
@@ -220,7 +220,7 @@ function BuildingInfo(options) {
 
             // TODO:: этот код должен переехать туда, где будем выводить инфо о площади без арендатора
             /*// заполняем данными ссылку 'Оставить заявку'
-            var $a_make_order = _el_building_info.find('.c80_order_invoking_btn');
+            var $a_make_order = _$el_building_info.find('.c80_order_invoking_btn');
             $a_make_order.data('comment-text', 'Здравствуйте, оставляю заявку на площадь: ' + area_json["title"]);
             $a_make_order.data('subj-id', area_json["id"]);*/
 
@@ -229,7 +229,7 @@ function BuildingInfo(options) {
     };
 
     this.set_left = function(left) {
-        _el_building_info.css("left", left + "px");
+        _$el_building_info.css("left", left + "px");
     };
 
  //------------------------------------------------------------------------------------------------------------------------
@@ -253,7 +253,7 @@ function BuildingInfo(options) {
     this._fInit = function (options) {
 
         // фиксируем html-узел
-        _el_building_info = $('.building_info');
+        _$el_building_info = $('.building_info');
 
         // TODO:: _options extend options
         _options = $.extend(_options, options);
@@ -267,7 +267,7 @@ function BuildingInfo(options) {
         });
 
         // находим заголовок
-        _$title = _el_building_info.find('h3');
+        _$title = _$el_building_info.find('h3');
 
     };
 

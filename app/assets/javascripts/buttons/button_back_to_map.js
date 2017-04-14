@@ -6,10 +6,10 @@ function BackToMapButton() {
     var _this = this;
 
     var _cnt = null;
-    var _btn = null;
-
-    // вспомогательно: относительно окна выравниваем кнопку
-    var _$building_info = null;
+    var _$btn = null;
+    
+    var __$building_info = null; // вспомогательно: относительно окна выравниваем кнопку
+    var __$mcontainer = null;     // вспомогательно: для выравнивания кнопки
 
     var _onClick = function (e) {
         e.preventDefault();
@@ -45,13 +45,13 @@ function BackToMapButton() {
         _map = link_to_map;
         _cnt = $('<div></div>').addClass('back_to_map_button');
         _cnt.appendTo($(parent_div_selector));
-        _btn = $('<a href="#" id="BackToMapButton">Обратно на карту</a>');
+        _$btn = $('<a href="#" id="BackToMapButton">Обратно на карту</a>');
         //noinspection JSUnresolvedFunction
-        _btn.on('click', _onClick);
-        _cnt.append(_btn);
+        _$btn.on('click', _onClick);
+        _cnt.append(_$btn);
 
-        // фиксируем вспомогательный элемент
-        _$building_info = $('.building_info');
+        __$building_info = $('.building_info'); // фиксируем вспомогательные элементы
+        __$mcontainer = $('.mcontainer'); // фиксируем вспомогательные элементы
 
     };
 
@@ -64,25 +64,25 @@ function BackToMapButton() {
     };
     var __show = function () {
         // фиксируем
-        var building_info_top = _$building_info.offset().top - _map.container.offset().top;
-        var building_info_height = _$building_info.height();
+        var building_info_top = __$building_info.offset().top - __$mcontainer.offset().top;
+        var building_info_height = __$building_info.outerHeight(true);
 
         // считаем
         var btn_top = building_info_top + building_info_height;
-        var btn_left = _$building_info.offset().left;
+        var btn_left = __$building_info.offset().left - __$mcontainer.offset().left;
 
         // позиционируем
-        _btn.css('top', btn_top + 'px');
-        _btn.css('left', btn_left + 'px');
+        _$btn.css('top', btn_top + 'px');
+        _$btn.css('left', btn_left + 'px');
 
         // показываем
-        _btn.css('opacity','1');
+        _$btn.css('opacity','1');
         _cnt.css('display', 'block');
     };
 
     _this.hide = function () {
         _cnt.css('display', 'none');
-        _btn.css('opacity', '0');
+        _$btn.css('opacity', '0');
     }
 
 }

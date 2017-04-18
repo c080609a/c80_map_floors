@@ -111,8 +111,9 @@ function SearchGUI(link_to_map) {
                 _$container.data('init_position_top', _$container.css("top"));
                 _$container.data('init_position_left', _$container.css("left"));
             }
-            _$container.css("top", _$container.data('init_position_top'));
-            _$container.css("left", _$container.data('init_position_left'));
+            // _$container.css("top", _$container.data('init_position_top'));
+            // _$container.css("left", _$container.data('init_position_left'));
+            _$container.removeClass('hdn');
         }
     };
 
@@ -123,8 +124,9 @@ function SearchGUI(link_to_map) {
     this.position_inside = function () {
         //console.log('<position_inside> [breakpoint].');
         if (_$container != null) { // может быть null, если вдруг gui поиска не пришёл с сервера
-            _$container.css("left", -200);
-            _$container.css("top", _$container.data('init_position_top'));
+            // _$container.css("left", -200);
+            // _$container.css("top", _$container.data('init_position_top'));
+            _$container.addClass('hdn');
         }
     };
 

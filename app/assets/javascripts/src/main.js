@@ -328,7 +328,7 @@ var InitMap = function (params) {
                 //     self.Y10,
                 //     self.Y20);
                 // var scale = (scaleX < scaleY) ? scaleX : scaleY;
-                // self.scale = scaleX;
+                // self.scale = scale;
 
                 self.scale = scaleX;
             //</editor-fold>

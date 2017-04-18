@@ -72,7 +72,7 @@ $(document).ready(function() {
             dnd_enable:false,
             debug: true,
             left_padding: 50,
-            right_padding: 50,
+            top_padding: 50,
             focus_area_width: 500,
             focus_area_height: 500,
             bounding_box: {

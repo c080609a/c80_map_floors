@@ -1216,6 +1216,7 @@ g.mapplic-clickable:hover > * {
 
 div#map_wrapper {
   position: relative;
+  height: 550px; /* переопределить в host-приложении */
 
   div.mcontainer {
     background-color: #D9D9D9;

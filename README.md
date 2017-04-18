@@ -74,12 +74,25 @@ $(document).ready(function() {
             left_padding: 50,
             right_padding: 50,
             focus_area_width: 500,
-            focus_area_height: 500
+            focus_area_height: 500,
+            bounding_box: {
+                x: 401,
+                y: 90,
+                width: 3576,
+                height: 2142
+            }
         });
     }
 });
 ```
+
+Focus area:
+
 ![map padding tuning](map_padding_tuning.jpg)
+
+Bounding box:
+
+![bounding box](bounding_box.jpg)
 
 # Helpers
 ```

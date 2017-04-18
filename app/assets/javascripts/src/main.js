@@ -13,15 +13,11 @@ var InitMap = function (params) {
     // - to delete start -----------------------------------------------------------------------------------------------------------------------
     var scale = 0.599999;
 
-    var window_height = $(window).height() - 200;
-    if (window_height < 400) window_height = 400;
-
-    var window_width = $(window).width();
     var image_width = MAP_WIDTH * scale;
     var image_height = MAP_HEIGHT * scale;
 
-    var x = (window_width - image_width)/2;
-    var y = (window_height - image_height)/2;
+    var x = image_width/2;
+    var y = image_height/2;
     // - to delete end -----------------------------------------------------------------------------------------------------------------------
 
     var map_params = {
@@ -30,8 +26,7 @@ var InitMap = function (params) {
         x: x,
         y: y,
         mapwidth: MAP_WIDTH,
-        mapheight: MAP_HEIGHT,
-        height: window_height
+        mapheight: MAP_HEIGHT
     };
     map_params = $.extend(map_params, params);
     map_on_index_page = $('#map_wrapper').beMap(map_params);
@@ -59,10 +54,23 @@ var InitMap = function (params) {
             y: 0,
             dnd_enable: true,
             debug: false,
+
+            // координаты области (в системе координат контейнера, который содержит карту),
+            // в которую вписывается картинка этажа при входе в него
             left_padding: 20,
             focus_area_width: 520,
             top_padding: 20,
-            focus_area_height: 520
+            focus_area_height: 520,
+
+            // прямоугольник, который расположен на изображении, в котором находится осмысленное
+            // содержимое карты. Значения в системе координат изображения, получены с помощью photoshop.
+            // TODO:: эти значения должны высчитываться при геренации json при наличии полигонов зданий
+            bounding_box: {
+                x: 0,
+                y: 0,
+                width: 0,
+                height: 0
+            }
         };
         self.svg = null;
         self.svg_overlay = null;
@@ -119,6 +127,7 @@ var InitMap = function (params) {
 
             // extend options
             self.o = $.extend(self.o, params);
+            self.o.height = _$m.outerHeight();
 
             self.x = self.o.x;
             self.y = self.o.y;
@@ -168,9 +177,6 @@ var InitMap = function (params) {
         var initProcessData = function (data) {
 
             self.data = data;
-
-            //var nrlevels = 0;
-            //var shownLevel;
 
             self.container = $('.mcontainer'); //$('<div></div>').addClass('mcontainer').appendTo(self.el);
             self.map = self.container.find('.mmap'); //$('<div></div>').addClass('mmap').appendTo(self.container);
@@ -297,108 +303,74 @@ var InitMap = function (params) {
             // NOTE:: запускаем данные в карту
             self.draw_childs(data["buildings"]);
 
-            // проверим, всё ли уместилось
-            self.invalidateViewArea();
-
             // инициализируем класс, обслуживающий поиск
             self.search_gui_klass = new SearchGUI(self);
 
-            // начнём слушать окно браузера
-            $(window).resize(function () {
-
-                // Mobile
-                //if ($(window).width() < 668) {
-                //    self.container.height($(window).height() - 66);
-                //}
-                //else self.container.height('100%');
-
-                // Контейнер с картой должен слушать изменения габаритов окна и подгоняться по высоте
-                var window_height = $(window).height() - 200;
-                if (window_height < 400) window_height = 400;
-                self.el.height(window_height + "px");
-
-                // 20161003: заодно после редизайна необходимо позиционировать текстовый блок с адресом
-                var hh = _$address_p.outerHeight(true);
-                _$address_p.css('margin-top',(window_height - hh - 200)+"px");
-
-                // 20170327: подгоняем по высоте блок с текстом внутри инфо-панели
-                // т.к. список арендаторов и площадей может быть очень большим
-                self.building_info_klass.set_max_height_of_tab_content(window_height - 220);
-
-                // ------------------------------------------------------------------------------------------------------------------------
-
-                // если пользователь еще не взаимодействовал с картой или вне здания\площади
-                // вписываем картинку карты в главный прямоугольник карты
-                // т.е. меняем масштаб
-                if (self.mark_virgin) {
-                    // рассчитаем масштаб, при котором можно вписать главный прямоугольник карты в прямоугольник рабочей области
-                    var scaleX = self.calcScale(self.o.mapwidth*0.05, self.o.mapwidth *.95, self.X10, self.X20);
-                    var scaleY = self.calcScale(self.o.mapheight*0.05, self.o.mapheight *.95, self.Y10, self.Y20);
-                    var scale = (scaleX < scaleY) ? scaleX : scaleY;
-                    self.scale = scale; /* NOTE:: вызывается во время window resize */
-                }
-
-                // совмещаем точку на экране, в которую надо центрировать карту,
-                // с центром карты (или с центром здания\площади, в котором находится юзер),
-                // с учётом рассчитанного масштаба
-
-                // если пользователь еще не взаимодействовал с картой или вне здания\площади,
-                // то фокусируемся на центр карты,
-                // иначе - фокусируемся на центр здания\площади, в котором находится пользователь и
-                // фокус сдвигаем, с учётом того, что сбоку открыта панель с информацией о здании
-
-                // NOTE-25::хардкод
-                // логические координаты - геометрический центр картинки
-                var cx = self.o.mapwidth/2;
-                var cy = self.o.mapheight/2;
-                var mark_do_moving = false;
-
-                if (self.current_building) {
-                    cx = self.current_building.cx();
-                    cy = self.current_building.cy();
-                    mark_do_moving = true;
-                } else if (self.current_area) {
-                    cx = self.current_area.cx();
-                    cy = self.current_area.cy();
-                    mark_do_moving = true;
-                } else if (self.mark_virgin) {
-                    mark_do_moving = true;
-                }
-
-                if (mark_do_moving) {
-                    self.x = self.normalizeX({
-                        x: self.CX - self.scale * cx - self.container.offset().left,
-                        scale: self.scale
-                    });
-                    self.y = self.normalizeY({
-                        y: self.CY - self.scale * cy - self.container.offset().top,
-                        scale: self.scale
-                    });
-                    console.log("<$(window).resize> call moveTo");
-                    self.moveTo(self.x, self.y, self.scale, 100);
-
-                    // если пользователь ещё не взаимодействовал с картой (т.е. она только загрузилась и готова к использованию)
-                    // запомним позицию, чтобы при нажатии на кнопку "назад на карту" происходил возврат с исходному
-                    // состоянию
-                    if (self.mark_virgin) {
-                        self.initial_map_position = {
-                            x: self.x,
-                            y: self.y,
-                            scale: self.scale
-                        }
-                    }
-
-                }
-
-                // ------------------------------------------------------------------------------------------------------------------------
-
-
-                self.invalidateViewArea();
-
-            }).resize();
+            self.calcViewArea();            
+            self.invalidateViewArea();
 
         };
 
+        // позиционируем картинку и gui елементы
+        self.invalidateViewArea = function () {
+
+            //<editor-fold desc="// вписываем картинку карты в "главный" прямоугольник карты (т.е. рассчитываем масштаб)">
+                var scaleX = self.calcScale(
+                    self.o['bounding_box']['x'],
+                    self.o['bounding_box']['x'] + self.o['bounding_box']['width'],
+                    self.X10, self.X20);
+
+                // note:: вписываем по ширине
+                // var scaleY = self.calcScale(
+                //     self.o['bounding_box']['y'],
+                //     self.o['bounding_box']['y'] + self.o['bounding_box']['height'],
+                //     self.Y10,
+                //     self.Y20);
+                // var scale = (scaleX < scaleY) ? scaleX : scaleY;
+                // self.scale = scaleX;
+
+                self.scale = scaleX;
+            //</editor-fold>
+
+            // совмещаем точку на экране, в которую надо центрировать карту,
+            // с центром карты,
+            // с учётом рассчитанного масштаба
+
+            // центр в системе координат контейнера который совмещаем с центром картинки.
+            var screen_center_x, screen_center_y;
+
+            // центр картинки (координаты в системе координат картинки)
+            var cx, cy;
+
+            screen_center_x = self.CX0;
+            screen_center_y = self.CY0;
+            cx = self.o['bounding_box']['x'] + self.o['bounding_box']['width']/2;
+            cy = self.o['bounding_box']['y'] + self.o['bounding_box']['height']/2;
+
+            self.x = self.normalizeX({
+                x: screen_center_x - self.scale * cx,
+                scale: self.scale
+            });
+            self.y = self.normalizeY({
+                y: screen_center_y - self.scale * cy,
+                scale: self.scale
+            });
+            self.moveTo(self.x, self.y, self.scale, 100);
+
+            // будет использован при клике по кнопке "обратно на карту"
+            self.initial_map_position = {
+                x: self.x,
+                y: self.y,
+                scale: self.scale
+            };
+
+            // позиционируем элементы
+            self.building_info_klass.set_left(self.X2);
+            $area_order_button.css("left", self.X2 + "px");
+            if (self.container) $container_buttons.css("margin-top", (self.container.height() -10) + "px");
+
+        };
+        
         // драг энд дроп и прочая мышь
         var initAddControls = function () {
             var map = self.map,
@@ -727,8 +699,6 @@ var InitMap = function (params) {
             return pageC - scale * logicC;
         };
 
-        /* --- invalidateViewArea BEGIN --------------------------------------------------------------------------------- */
-
         var _$m = $("#map_wrapper");
         var _$b = $('.container');//$('footer .container');
         var $area_order_button = $('.area_order_button');
@@ -736,36 +706,34 @@ var InitMap = function (params) {
         var _is_debug_drawn = false;
         var _$address_p = $('#paddress'); // 20161003: после редизайна надо дополнительно позиционировать блок с адресом
 
-        self.invalidateViewArea = function () {
-            console.log('<invalidateViewArea>');
+        // рассчитаем опорные переменные для view
+        self.calcViewArea = function () {
 
-            // рассчитаем "константы" - прямоугольник, в который надо вписывать картинки зданий при входе в них
+            // прямоугольник, в который надо вписывать картинки зданий при входе в них
             self.X1 = self.o.left_padding;
             self.X2 = self.o.left_padding + self.o.focus_area_width;
-
             self.Y1 = self.o.top_padding;
             self.Y2 = self.o.top_padding + self.o.focus_area_height;
-
             self.CX = (self.X2 + self.X1) / 2;
             self.CY = (self.Y2 + self.Y1) / 2;
 
+            // прямоугольник, в который надо вписывать полигоны площадей при входе в них
             self.X1S = _$b.offset().left + 200;
             self.Y1S = 140;
             self.X2S = self.X1 + _$b.width() * .4;
             self.X3 = self.X1 + _$b.width() - 100;
             self.Y2S = _$m.height() - 80;
 
-            self.X10 = _$b.offset().left + 15;
-            self.X20 = self.X10 + _$b.width();
-            self.Y10 = 73;
-            self.Y20 = _$m.height();
+            // "главный" прямоугольник (тот, в который вписывается картинка карты в режиме `view` )
+            // (координаты прямоугольника даны в системе координат контейнера, содержащего карту)
+            self.X10 = self.X1;
+            self.X20 = _$m.outerWidth() - 15;
+            self.Y10 = self.Y1;
+            self.Y20 = _$m.outerHeight() - 15;
+            self.CX0 = (self.X20 + self.X10) / 2;
+            self.CY0 = (self.Y20 + self.Y10) / 2;
 
-            // позиционируем элементы
-            self.building_info_klass.set_left(self.X2);
-            $area_order_button.css("left", self.X2 + "px");
-            if (self.container) $container_buttons.css("margin-top", (self.container.height() -10) + "px");
-
-            // DEBUG
+            // DEBUG DRAWING
             if (self.o.debug) {
 
                 if (!_is_debug_drawn) {
@@ -777,15 +745,19 @@ var InitMap = function (params) {
                     //var style_dot = style + 'width:4px;height:4px;left:{X}px;top:{Y}px;';
 
                     var to_draw = [
-                        {x: self.X1},
-                        {x: self.X2},
-                        {y: self.Y1},
-                        {y: self.Y2},
-                        //{x: self.X20},
-                        //{y: self.Y10},
-                        //{y: self.Y20},
-                        {x: self.CX},
-                        {y: self.CY}
+                        // {x: self.X1},
+                        // {x: self.X2},
+                        // {y: self.Y1},
+                        // {y: self.Y2},
+                        // {x: self.CX},
+                        // {y: self.CY},
+
+                        {x: self.X10},
+                        {x: self.X20},
+                        {y: self.Y10},
+                        {y: self.Y20},
+                        {x: self.CX0},
+                        {y: self.CY0}
                     ];
 
 
@@ -807,8 +779,6 @@ var InitMap = function (params) {
             }
 
         };
-
-        /* --- invalidateViewArea END ----------------------------------------------------------------------------------- */
 
         self.addEvent = function (target, eventType, func) {
             self.events.push(new AppEvent(target, eventType, func));

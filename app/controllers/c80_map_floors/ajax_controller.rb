@@ -15,7 +15,7 @@ module C80MapFloors
 
       # Sfloor - принадлежит моделям host-проекта (в частности, stroy101km)
       # noinspection RubyResolve
-      @sfloor_areas = Sfloor.find(params[:sfloor_id].to_i).areas
+      @sfloor_areas = ::Floor.find(params[:sfloor_id].to_i).areas
       Rails.logger.debug "[TRACE] <AjaxController.fetch_unlinked_areas> @sfloor_areas.count = #{@sfloor_areas.count}"
 
     end
@@ -97,7 +97,7 @@ module C80MapFloors
       # <AjaxController.link_floor> params = {"sfloor_id"=>"3", "floor_id"=>"2", "controller"=>"c80_map_floors/ajax", "action"=>"link_floor"}
 
       # фиксируем участников
-      sfloor = Sfloor.find(params[:sfloor_id])
+      sfloor = ::Floor.find(params[:sfloor_id])
       floor  = C80MapFloors::Floor.find(params[:floor_id])
 
       # sfloor has_one floor

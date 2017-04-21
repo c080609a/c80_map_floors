@@ -75,7 +75,7 @@ module C80MapFloors
       def my_as_json2
         result = {
             id:             self.id,
-            title:          self.name,
+            title:          self.title,
             square:         self.square,
             desc:           self.desc,
             price_string:   self.price_string,

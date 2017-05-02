@@ -53,7 +53,7 @@ module C80MapFloors
       area      = C80MapFloors::Area.find(params[:apolygon_id])
 
       # rent_area has_one area(полигон)
-      rent_area.area.delete_all if rent_area.area.present?
+      rent_area.area.delete if rent_area.area.present?
       rent_area.area = area
       rent_area.save
 
@@ -77,7 +77,7 @@ module C80MapFloors
 
       map_building = C80MapFloors::MapBuilding.find(params[:map_building_id])
 
-      rent_building.map_building.delete_all if rent_building.map_building.present?
+      rent_building.map_building.delete if rent_building.map_building.present?
       rent_building.map_building = map_building
       rent_building.save
 
@@ -101,7 +101,7 @@ module C80MapFloors
       floor  = C80MapFloors::Floor.find(params[:floor_id])
 
       # sfloor has_one floor
-      sfloor.floor.delete_all if sfloor.floor.present?
+      sfloor.floor.delete if sfloor.floor.present?
       sfloor.floor = floor
       sfloor.save
 

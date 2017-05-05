@@ -143,7 +143,8 @@ function Area() {
         var scaleX = _map.calcScale(_bbox.xmin, _bbox.xmax, _map.X1S, _map.X2S);
         var scaleY = _map.calcScale(_bbox.ymin, _bbox.ymax, _map.Y1S, _map.Y2S);
         var scale = (scaleX < scaleY) ? scaleX : scaleY;
-
+        scale = _map.normalizeScale(scale);
+        
         //_map.scale = scale;
 
         // совмещаем точку на экране, в которую надо центрировать дома, с центром дома с учётом рассчитанного масштаба

@@ -1136,6 +1136,7 @@ var InitMap = function (params) {
          * @returns {*}
          */
         self.normalizeX = function (params) {
+            // console.log("[normalizeX]");
 
             var x = params['x'];
             var scale = params['scale'];

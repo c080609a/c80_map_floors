@@ -130,16 +130,16 @@ module C80MapFloors
       result = SearchResult.new
 
       # 1. Находим категорию, title которой равен строке.
-      cats   = Cat.where(:name => params[:stext])
+      cats   = ::Category.where(:name => params[:stext])
       if cats.count > 0
         # работаем только с первой попавшейся категорией
         cat = cats[0]
 
         # если у категории имеются связанные магазины
-        if cat.shops.count > 0
+        if cat.leasers.count > 0
 
           # переберём их
-          cat.shops.each do |shop|
+          cat.leasers.each do |shop|
 
             # добираемся до Rent::Area каждого магазина
             if shop.areas.count > 0

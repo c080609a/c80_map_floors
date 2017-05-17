@@ -147,6 +147,7 @@ var InitMap = function (params) {
             self.building_info_klass = new BuildingInfo({
                 onFloorTabChange: function (floor_id) {
                     self.current_building.enterFloor(floor_id); //#-> только с помощью клика по табам можно войти на Этаж
+                    self.back_to_map_button_klass.show(10);
                 }
             });
 

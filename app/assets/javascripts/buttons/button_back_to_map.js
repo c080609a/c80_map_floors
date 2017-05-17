@@ -55,11 +55,12 @@ function BackToMapButton() {
 
     };
 
-    _this.show = function () {
+    _this.show = function (delay) {
+
+        var used_delay = (delay === undefined) ? 1000:delay;
 
         // хардкод - подгоняем под длину анимации, прописанной в css (+200 ms на возможный лаг)
-        setTimeout(__show, 1000);
-
+        setTimeout(__show, used_delay);
 
     };
     var __show = function () {

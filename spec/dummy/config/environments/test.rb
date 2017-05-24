@@ -36,4 +36,14 @@ Rails.application.configure do
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
+
+  logger = Logging.logger['test']
+  logger.add_appenders(
+      Logging.appenders.stdout,
+      Logging.appenders.file('example.log')
+  )
+  logger.level = :info
+  config.logger = logger
+
 end
+

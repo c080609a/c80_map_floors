@@ -9,5 +9,6 @@ group :development, :test do
   gem 'guard'
   gem 'guard-rspec'
   gem 'guard-zeus'
+  gem 'logging'
 
 end

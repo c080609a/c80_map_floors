@@ -4506,3 +4506,36 @@ Processing by C80MapFloors::AjaxController#find_shops as JSON
 [TRACE] <AjaxController.find_shops> Нет категории с таким именем = 
 [TRACE] <AjaxController.find_shops> Отправляем ответ: result = {:buildings=>[], :buildings_shops_count=>[], :floors=>[], :floors_shops_count=>[], :areas=>[]}
 Completed 200 OK in 42ms (Views: 0.4ms | ActiveRecord: 1.2ms)
+  [1m[35m (0.6ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+  [1m[35m (0.6ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+  [1m[35m (0.7ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+Processing by C80MapFloors::AjaxController#find_shops as JSON
+  Parameters: {"stext"=>"БРОСК (магазин)"}
+[TRACE] <AjaxController.find_shops> params = #<ActionController::Parameters:0xa9c6274>
+  [1m[35m (0.6ms)[0m  [1m[34mSELECT COUNT(*) FROM `categories` WHERE `categories`.`name` = 'БРОСК (магазин)'[0m
+[TRACE] <AjaxController.find_shops> Нет категории с таким именем = БРОСК (магазин)
+[TRACE] <AjaxController.find_shops> Отправляем ответ: result = {:buildings=>[], :buildings_shops_count=>[], :floors=>[], :floors_shops_count=>[], :areas=>[]}
+Completed 200 OK in 45ms (Views: 0.4ms | ActiveRecord: 1.5ms)
+  [1m[35m (0.6ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+Processing by C80MapFloors::AjaxController#find_shops as JSON
+  Parameters: {"stext"=>"БРОСК (магазин)"}
+[TRACE] <AjaxController.find_shops> params = #<ActionController::Parameters:0xa9c6030>
+[TRACE] <AjaxController.find_shops> Нет категории с таким именем = БРОСК (магазин)
+[TRACE] <AjaxController.find_shops> Отправляем ответ: result = {:buildings=>[], :buildings_shops_count=>[], :floors=>[], :floors_shops_count=>[], :areas=>[]}
+Completed 200 OK in 45ms (Views: 1.4ms | ActiveRecord: 1.2ms)
+  [1m[35m (0.6ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+Processing by C80MapFloors::AjaxController#find_shops as JSON
+  Parameters: {"stext"=>"БРОСК (магазин)"}
+[TRACE] <AjaxController.find_shops> params = #<ActionController::Parameters:0xa9c60bc>
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT COUNT(*) FROM `categories` WHERE `categories`.`name` = 'БРОСК (магазин)'[0m
+[TRACE] <AjaxController.find_shops> Нет категории с таким именем = БРОСК (магазин)
+[TRACE] <AjaxController.find_shops> Отправляем ответ: result = {:buildings=>[], :buildings_shops_count=>[], :floors=>[], :floors_shops_count=>[], :areas=>[]}
+Completed 200 OK in 47ms (Views: 0.5ms | ActiveRecord: 1.2ms)
+  [1m[35m (0.8ms)[0m  [1m[35mSET NAMES utf8,  @@SESSION.sql_mode = CONCAT(CONCAT(@@sql_mode, ',STRICT_ALL_TABLES'), ',NO_AUTO_VALUE_ON_ZERO'),  @@SESSION.sql_auto_is_null = 0, @@SESSION.wait_timeout = 2147483[0m
+Processing by C80MapFloors::AjaxController#find_shops as JSON
+  Parameters: {"stext"=>"БРОСК (магазин)"}
+[TRACE] <AjaxController.find_shops> params = #<ActionController::Parameters:0xa9887f8>
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT COUNT(*) FROM `categories` WHERE `categories`.`name` = 'БРОСК (магазин)'[0m
+[TRACE] <AjaxController.find_shops> Нет категории с таким именем = БРОСК (магазин)
+[TRACE] <AjaxController.find_shops> Отправляем ответ: result = {:buildings=>[], :buildings_shops_count=>[], :floors=>[], :floors_shops_count=>[], :areas=>[]}
+Completed 200 OK in 50ms (Views: 0.5ms | ActiveRecord: 1.2ms)

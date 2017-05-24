@@ -43,7 +43,7 @@ Rails.application.configure do
       Logging.appenders.file('example.log')
   )
   logger.level = :info
-  config.logger = logger
+  # config.logger = logger # эту строчку опционально можно добавлять в before хуки, если нужен трейс
 
 end
 

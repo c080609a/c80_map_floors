@@ -26,6 +26,10 @@
     padding: 0;
     margin: 0;
     background: #fff;
+
+    /*20170524: my patch*/
+    max-height: 410px;
+    overflow-y: auto;
 }
 
 .awesomplete > ul:empty {

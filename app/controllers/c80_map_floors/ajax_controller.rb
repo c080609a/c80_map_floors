@@ -131,7 +131,11 @@ module C80MapFloors
 
       result = SearchResult.new
 
-      find_areas_by_category!(result)
+      if params[:stext][' (магазин)']
+        find_areas_by_shop!(result, params[:stext])
+      else
+        find_areas_by_category!(result, params[:stext])
+      end
 
       Rails.logger.debug "[TRACE] <AjaxController.find_shops> Отправляем ответ: result = #{result.data}"
 

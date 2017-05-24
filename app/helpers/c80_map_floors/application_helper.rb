@@ -24,5 +24,24 @@ module C80MapFloors
 
     end
 
+    # рендер поисковой формы, которая видна сверху поцентру в слое над картой
+    # noinspection RubyResolve
+    def render_search_input
+
+      # NOTE:: названия всех категорий в алфавитном порядке через запятую в одну строку возьмём из HOST-приложения
+      cl = ::Category.filled_cats.map { |c| c.name }.join(', ')
+
+      # NOTE:: названия всех магазинов, у которых есть площадь, через запятую в одну строку возьмём из HOST-приложения
+      sl = ::Leaser.assigned_to_areas.map { |e| e }.join(' (магазин), ')
+      sl = "#{sl} (магазин)" # про последний элемент не забудем
+
+      render :partial => 'c80_map_floors/shared/map_row/search_gui',
+             :locals => {
+                 # categories_list: categories_list
+                 categories_list: [cl, sl].join(', ')
+             }
+
+    end
+
   end
 end

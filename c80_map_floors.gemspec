@@ -25,4 +25,12 @@ Gem::Specification.new do |spec|
   spec.add_dependency 'bootstrap-sass', '~> 3.3.4'
   spec.add_dependency 'bootstrap-select-rails'
   spec.add_dependency 'historyjs-rails'
+  spec.add_development_dependency 'friendly_id'
+  spec.add_development_dependency 'babosa'
+  spec.add_development_dependency 'mysql2'
+  spec.add_development_dependency 'rails'
+  # spec.add_development_dependency 'rspec-rails'
+  # spec.add_development_dependency 'guard'
+  # spec.add_development_dependency 'guard-rspec'
+  # spec.add_development_dependency 'guard-zeus'
 end

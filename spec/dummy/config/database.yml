@@ -1,0 +1,8 @@
+test:
+  adapter: mysql2
+  encoding: utf8
+  pool: 5
+  username: s40
+  password: koi8rus
+  reconnect: true
+  database: s40_test_db

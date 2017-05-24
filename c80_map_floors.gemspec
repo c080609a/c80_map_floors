@@ -29,5 +29,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'babosa'
   spec.add_development_dependency 'mysql2'
   spec.add_development_dependency 'rails'
-  spec.add_development_dependency 'rspec-rails'
+  # spec.add_development_dependency 'rspec-rails'
+  # spec.add_development_dependency 'guard'
+  # spec.add_development_dependency 'guard-rspec'
+  # spec.add_development_dependency 'guard-zeus'
 end

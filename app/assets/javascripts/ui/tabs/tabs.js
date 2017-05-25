@@ -176,7 +176,8 @@ function Tabs(options) {
     //--[ private ]----------------------------------------------------------------------------------------------------------------------
 
     /** Добавить tab-кнопку.
-     *
+     *  Если tab_button_title пуст (что допустимо, и означает, что это площадь под открытым небом без этажей),
+     *  то кнопка будет невидна.
      * @param tab_button_title
      * @param button_id             Это ID Полигона Этажа // NOTE:fidfid
      * @param on_click_callback
@@ -200,6 +201,10 @@ function Tabs(options) {
         _callbacks[button_id] = on_click_callback;
 
         _tab_buttons.push(b);
+
+        if (tab_button_title === '') {
+            b.css('display','none');
+        }
 
         return b;
 
